@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "app_base" "\0"
+            VALUE "CompanyName", "com.hazem" "\0"
+            VALUE "FileDescription", "White Label Provider" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "app_base" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "app_base.exe" "\0"
-            VALUE "ProductName", "app_base" "\0"
+            VALUE "InternalName", "white_label_provider" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 com.hazem. All rights reserved." "\0"
+            VALUE "OriginalFilename", "white_label_provider.exe" "\0"
+            VALUE "ProductName", "White Label Provider" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

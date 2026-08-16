@@ -4,8 +4,8 @@ import 'dart:ui' as ui;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:vivacare_white_label/core/utils/app_colors.dart';
-import 'package:vivacare_white_label/core/utils/locale_keys.dart';
+import 'package:white_label_provider/core/utils/app_colors.dart';
+import 'package:white_label_provider/core/utils/locale_keys.dart';
 
 import 'countries.dart';
 
@@ -447,11 +447,12 @@ class _CountryPickerSheetState extends State<_CountryPickerSheet> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: ClipRRect(
+      child: Material(
+        color: Colors.white,
+        clipBehavior: Clip.antiAlias,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).size.height * 0.7,
-          color: Colors.white,
           child: Column(
             children: [
               const SizedBox(height: 10),

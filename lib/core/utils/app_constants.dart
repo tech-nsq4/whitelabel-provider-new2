@@ -1,11 +1,11 @@
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vivacare_white_label/features/auth/data/models/user_model.dart';
+import 'package:white_label_provider/features/auth/data/models/manager_model.dart';
 
 class AppConstants {
   AppConstants._();
 
   // ─── App ──────────────────────────────────────────────────────────────────
-  static const String appName = 'Vivacare';
+  static const String appName = 'White Label Provider';
 
   // ─── Pagination ───────────────────────────────────────────────────────────
   static const int pageSize = 15;
@@ -34,9 +34,10 @@ class AppFonts {
   static String get headingFont => GoogleFonts.readexPro().fontFamily!;
 }
 
-/// The currently authenticated user. `null` means the user is browsing as a guest.
-UserModel? kUserModel;
+/// The currently authenticated clinic manager. `null` before login (or once
+/// a session goes stale) — every screen behind [Routes.layoutScreen] expects
+/// this to be set, since there's no guest mode for a staff-only app.
+ManagerModel? kUserModel;
 
-/// Returns `true` when the user is NOT logged in (guest mode).
-/// Use this everywhere in the app to guard authenticated-only actions.
+/// Returns `true` when no manager is signed in.
 bool get kIsGuest => kUserModel == null;

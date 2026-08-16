@@ -30,7 +30,8 @@ class DioClient {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'X-API-Key': '3e91ca5165b97d06d7d846e1620369970e11078ee0d232e920d95e9029ae28b7',
+          'X-API-Key':
+              'd7ac249766b9dc90ab6c3db4bae39dfe98f04c8803b2eb44face6e9d187107f1',
         },
       ),
     );
@@ -164,7 +165,8 @@ class _AuthInterceptor extends Interceptor {
   @override
   Future<void> onError(
       DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode == 401) {
+    final hadAuthHeader = err.requestOptions.headers['Authorization'] != null;
+    if (err.response?.statusCode == 401 && hadAuthHeader) {
       await _storage.clearAll();
       AppOverlay.showError(LocaleKeys.error_unauthorized.tr());
       NavigationService.navigationKey.currentState

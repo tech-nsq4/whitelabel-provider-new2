@@ -16,11 +16,11 @@ final class ProfileLoading extends ProfileState {
 }
 
 final class ProfileSuccess extends ProfileState {
-  final UserModel user;
-  const ProfileSuccess(this.user);
+  final ManagerModel manager;
+  const ProfileSuccess(this.manager);
 
   @override
-  List<Object?> get props => [user];
+  List<Object?> get props => [manager];
 }
 
 final class ProfileError extends ProfileState {

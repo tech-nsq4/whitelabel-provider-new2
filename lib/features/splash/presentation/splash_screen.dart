@@ -49,20 +49,20 @@ class _SplashScreenState extends State<SplashScreen>
       return;
     }
 
-    // Logged in — check whether the profile still needs completing before
-    // deciding where to land, so a half-finished signup keeps resuming here
-    // instead of slipping into the app.
+    // Logged in — refresh the cached manager before landing in the app so
+    // the shell always has fresh data (and so an expired/revoked token gets
+    // caught here instead of failing mid-screen later).
     final profileCubit = context.read<ProfileCubit>();
     await profileCubit.getProfile();
     if (!mounted) return;
 
-    final state = profileCubit.state;
-    final needsCompletion = state is ProfileSuccess && !state.user.profileCompleted;
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      needsCompletion ? Routes.completeProfileScreen : Routes.layoutScreen,
-      (_) => false,
-    );
+    if (profileCubit.state is ProfileSuccess) {
+      Navigator.pushNamedAndRemoveUntil(context, Routes.layoutScreen, (_) => false);
+    } else {
+      await storage.removeToken();
+      if (!mounted) return;
+      Navigator.pushNamedAndRemoveUntil(context, Routes.loginScreen, (_) => false);
+    }
   }
 
   @override

@@ -23,12 +23,16 @@ class CustomNavBar extends StatelessWidget {
     required this.onTap,
     required this.items,
     required this.onFabTap,
+    this.badges = const {},
   });
 
   final int currentIndex;
   final ValueChanged<int> onTap;
   final List<NavBarItem> items;
   final VoidCallback onFabTap;
+
+  /// Item index → small count badge shown over its icon (e.g. queue size).
+  final Map<int, int> badges;
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +91,7 @@ class CustomNavBar extends StatelessWidget {
                       isActive: currentIndex == i,
                       activeColor: primary,
                       inactiveColor: muted,
+                      badgeCount: badges[i],
                       onTap: () => onTap(i),
                     ),
                   SizedBox(width: 50.w),
@@ -96,6 +101,7 @@ class CustomNavBar extends StatelessWidget {
                       isActive: currentIndex == mid + i,
                       activeColor: primary,
                       inactiveColor: muted,
+                      badgeCount: badges[mid + i],
                       onTap: () => onTap(mid + i),
                     ),
                 ],
@@ -116,6 +122,7 @@ class _NavButton extends StatelessWidget {
     required this.activeColor,
     required this.inactiveColor,
     required this.onTap,
+    this.badgeCount,
   });
 
   final NavBarItem data;
@@ -123,6 +130,7 @@ class _NavButton extends StatelessWidget {
   final Color activeColor;
   final Color inactiveColor;
   final VoidCallback onTap;
+  final int? badgeCount;
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +142,36 @@ class _NavButton extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AppSvgIcon(data.icon, size: 22.sp, color: color),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                AppSvgIcon(data.icon, size: 22.sp, color: color),
+                if (badgeCount != null && badgeCount! > 0)
+                  PositionedDirectional(
+                    top: -5.h,
+                    start: -9.w,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 4.w),
+                      constraints: BoxConstraints(minWidth: 15.r, minHeight: 15.r),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: AppColors.errorColor.themeColor,
+                        borderRadius: BorderRadius.circular(99.r),
+                        border: Border.all(
+                            color: AppColors.cardColor.themeColor, width: 2),
+                      ),
+                      child: Text(
+                        '$badgeCount',
+                        style: TextStyle(
+                          fontSize: 9.sp,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
             3.height,
             Text(
               data.labelKey.tr(),

@@ -158,4 +158,21 @@ $paths
   static final String home2 = _icon(
     '<path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M12 11v5M9.5 13.5h5"/>',
   );
+
+  /// Asymmetric 4-tile dashboard grid — bottom-nav "Today" destination.
+  static final String dashboardGrid = _icon(
+    '<rect x="3" y="3" width="7.5" height="8.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="5" rx="2"/>'
+    '<rect x="3" y="14.5" width="7.5" height="6.5" rx="2"/><rect x="13.5" y="11" width="7.5" height="10" rx="2"/>',
+  );
+
+  /// Even 2×2 tile grid — "Services" setup entry.
+  static final String grid2x2 = _icon(
+    '<rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/>'
+    '<rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/>',
+  );
+
+  static final String arrowRight = _icon(
+    '<path d="M5 12h14M13 6l6 6-6 6"/>',
+    strokeWidth: 2,
+  );
 }

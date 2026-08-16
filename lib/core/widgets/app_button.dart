@@ -1,7 +1,7 @@
-import 'package:vivacare_white_label/core/extensions/extensions.dart';
-import 'package:vivacare_white_label/core/utils/app_colors.dart';
-import 'package:vivacare_white_label/core/widgets/app_text.dart';
-import 'package:vivacare_white_label/core/widgets/custom_loading_widget.dart';
+import 'package:white_label_provider/core/extensions/extensions.dart';
+import 'package:white_label_provider/core/utils/app_colors.dart';
+import 'package:white_label_provider/core/widgets/app_text.dart';
+import 'package:white_label_provider/core/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -83,7 +83,7 @@ class CustomButton extends StatelessWidget {
               ? RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(radius),
                   side: BorderSide(
-                      color: _borderColor ?? Theme.of(context).primaryColor,
+                      color: _borderColor ?? Colors.transparent,
                       width: 1.5.w))
               : RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(radius),

@@ -4,9 +4,9 @@
 /// enum here so the slide data stays presentation-agnostic.
 enum OnboardingIllustrationType {
   welcome,
-  telemed,
-  pharmacy,
-  family,
+  queue,
+  staff,
+  setup,
 }
 
 /// One page of the onboarding flow: what it looks like + what it says.

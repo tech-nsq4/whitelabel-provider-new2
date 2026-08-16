@@ -59,4 +59,28 @@ class LocalStorage {
 
   String getLang() => read<String>(_langKey) ?? 'ar';
   Future<void> setLang(String lang) => write(_langKey, lang);
+
+  // ─── Consultation drafts ────────────────────────────────────────────────
+  static const _consultationDraftsKey = 'consultation_drafts';
+
+  Map<String, dynamic> _consultationDrafts() =>
+      read<Map>(_consultationDraftsKey)?.cast<String, dynamic>() ?? {};
+
+  Map<String, dynamic>? getConsultationDraft(String appointmentId) {
+    final draft = _consultationDrafts()[appointmentId];
+    return draft == null ? null : (draft as Map).cast<String, dynamic>();
+  }
+
+  Future<void> saveConsultationDraft(
+      String appointmentId, Map<String, dynamic> draft) async {
+    final drafts = _consultationDrafts();
+    drafts[appointmentId] = draft;
+    await write(_consultationDraftsKey, drafts);
+  }
+
+  Future<void> removeConsultationDraft(String appointmentId) async {
+    final drafts = _consultationDrafts();
+    drafts.remove(appointmentId);
+    await write(_consultationDraftsKey, drafts);
+  }
 }

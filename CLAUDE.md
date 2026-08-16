@@ -134,24 +134,37 @@ AppColors.primaryColor.themeColor
 
 ```
 UI (Screen)
-  └─ context.read<XCubit>().doSomething(...)
+  └─ getIt<XCubit>().doSomething(...)   (أو الـ `_cubit` المخزّن: `late final _cubit = getIt<XCubit>()`)
         └─ Cubit: emit(Loading) → يستدعي Repo.method()
               └─ Repo: بيستخدم getIt<DioClient>() (get/post/put/patch/delete/postForm/putForm)
                     └─ DioClient: بيحط baseUrl + Authorization header (لو فيه token) + Accept-Language + PrettyDioLogger (debug فقط)
-                          └─ عند 401: يمسح كل التخزين ويرجع Login تلقائيًا (AuthInterceptor.onError) + AppOverlay.showError
-              └─ Repo: يحول response.data لـ Model (UserModel.fromJson) أو يرمي NetworkException.fromDioException(e)
+                          └─ عند 401 (وكان فيه Authorization header أصلاً — يعني جلسة حقيقية ماتت، مش محاولة لوجن غلط): يمسح كل التخزين ويرجع Login تلقائيًا (AuthInterceptor.onError) + AppOverlay.showError
+              └─ Repo: يحول response.data لـ Model (`Model.fromJson`) أو يرمي NetworkException.fromDioException(e)
         └─ Cubit: emit(Success(model)) أو catch(e) → emit(Error(msg)) + غالبًا AppOverlay.showError(msg)
-  └─ UI: BlocBuilder/BlocListener/BlocSelector بيقرأ الـ State ويبني الشاشة (أو CustomScreenStateLayout لو فيه loading/error/empty)
+  └─ UI: BlocBuilder/BlocListener/BlocConsumer بيقرأ الـ State ويبني الشاشة (أو CustomScreenStateLayout لو فيه loading/error/empty)
 ```
 
 نقط مهمة:
 - **الـ Cubit لا يكلم `DioClient` مباشرة أبدًا** — دايمًا عن طريق `Repo`. الـ `Repo` هو اللي فيه try/catch على `DioException` ويحوّله لـ `NetworkException`.
-- الـ Repos بتاخد dependencies بتاعتها (`DioClient`, `LocalStorage`) في الـ constructor، ومسجلة كـ `registerLazySingleton` في `injection.dart`. الـ Cubits مسجلة كـ `registerFactory` (نسخة جديدة كل مرة تتعمل provide).
+- الـ Repos بتاخد dependencies بتاعتها (`DioClient`, `LocalStorage`) في الـ constructor، ومسجلة كـ `registerLazySingleton` في `injection.dart`. الـ Cubits مسجلة كـ `registerFactory` (نسخة جديدة كل مرة تتعمل provide) — إلا لو محتاجة تعيش طول الـ session (زي `QueueCubit`/`OrdersCubit`) فبتتسجل `registerLazySingleton`.
 - شكل الـ Response القياسي من الباك إند: `{ "message": str, "status": bool, "data": {...} }` — فيه `ApiResponse<T>` جاهز لو حبيت تستخدمه، لكن الـ Repos الحالية بتعمل parsing يدوي من `response.data['data']`.
 - الـ States دايمًا `sealed class` بأربع حالات أساسية: `Initial` / `Loading` / `Success(data)` / `Error(message)`، معمولة بـ `Equatable`، وموجودة في ملف `part of` منفصل (`<feature>_state.dart`).
 - الـ Endpoints/paths كلها مركزية في `ApiEndpoints` — ممنوع تكتب string path مباشر في الـ Repo.
 - الـ Token محفوظ في `FlutterSecureStorage` (مش `GetStorage` العادي) لأنه بيانات حساسة؛ باقي البيانات (user json، lang، onboarding seen) في `GetStorage`.
 - `kUserModel` / `kIsGuest` (في `app_constants.dart`) متغيرين global بيتحدّثوا من `ProfileCubit.getProfile()` — استخدمهم لو محتاج تعرف حالة الجست من أي مكان من غير ما تعمل `context.watch`.
+
+### 6.1) اختيار الأداة الصح: BlocBuilder / BlocListener / BlocConsumer / context.watch / context.read
+
+قاعدة تتطبق على أي كود جديد أو أي شاشة بتتلمس من دلوقتي — ممنوع تتنسى:
+
+- **عرض + فعل جانبي مع بعض من نفس الـ Cubit** (مثال: زرار submit بيعمل loading + بعد النجاح يعمل navigation/توست) → **`BlocConsumer`**، مش `BlocListener` بيلف `BlocBuilder` بشكل منفصل. الاتنين شغالين بنفس الظبط من جوا `flutter_bloc` (`BlocConsumer` هو حرفيًا `BlocListener` بيلف `BlocBuilder`)، لكن `BlocConsumer` أقل nesting فهو الافتراضي. الـ side effects (`Navigator.push*`, `AppOverlay.show*`, `showDialog`) دايمًا في `listener`، أبدًا في `builder` — الـ `builder` ممكن يتنفذ أكتر من مرة لأسباب تانية غير تغيّر الـ state، فأي side effect فيه ممكن يتكرر/يتنفذ في توقيت غلط.
+- **محتاج تعرض جزء بسيط من الـ state جوا widget معين** (مش الشاشة كلها) → **`context.watch<XCubit>()`** *لو* الـ Cubit ده متوفر كـ `BlocProvider` أب في شجرة الـ widgets (دلوقتي: `AuthCubit`/`ProfileCubit` بس — المتاحين app-wide من `MultiBlocProvider` في `app.dart`). لأي Cubit تاني (المعظم — مسجّل `registerFactory`/`registerLazySingleton` في GetIt **من غير** `BlocProvider`) استخدم بدلاً منه `BlocBuilder` مُصغّر النطاق حوالين الـ widget الصغير بس (`bloc: _cubit`) — نفس فكرة الـ rebuild المحدود، لكن من غير الحاجة لـ `BlocProvider` أب.
+- **مجرد نداء فعل/method** (`submit`, `reset`, `toggle`...) **من غير ما محتاج تعرض حاجة من الـ state** → **ممنوع** تلف الشاشة (أو أي جزء منها) في `BlocBuilder`/`BlocConsumer` عشان بس توصل لنسخة الـ Cubit. استخدم:
+  - `context.read<XCubit>().method()` لو الـ Cubit تريّ-بروفايدد (`AuthCubit`/`ProfileCubit` بس حاليًا).
+  - `getIt<XCubit>().method()` أو الـ `_cubit` المخزّن (`late final _cubit = getIt<XCubit>()..loadX();`) لأي Cubit تاني.
+- **الخلاصة:** `Builder` للعرض، `Listener` للفعل الجانبي، `Consumer` للاتنين مع بعض، `watch` لقراءة صغيرة جوا widget، `read` لنداء فعل بس.
+
+⚠️ **ملاحظة معمارية مهمة (سبب وجود الاستثناء فوق):** `context.watch`/`context.read` مبيشتغلوش إلا مع Cubit متاح فعليًا كـ `BlocProvider` أب في شجرة الـ widgets. غالبية الـ Cubits في المشروع (`ServicesCubit`, `StaffCubit`, `QueueCubit`, `SchedulesCubit`...) مسجّلة في GetIt **من غير** `BlocProvider` مقابلهم — استخدامهم بـ `context.read`/`context.watch` هيرمي `ProviderNotFoundException` (ده بالظبط البَج اللي حصل قبل كده مع `QueueCubit`/`DashboardCubit`). الاستثناء الوحيد دلوقتي: `AuthCubit` و`ProfileCubit`. لو حسّيت إنك محتاج `context.watch`/`context.read` مع Cubit تاني، الحل مش إنك "تلفه بـ BlocProvider جديد" من غير داعي — استخدم الـ GetIt pattern العادي (`getIt<XCubit>()` / `bloc:` صريح) زي باقي الشاشات.
 
 ---
 
@@ -191,3 +204,8 @@ UI (Screen)
 - الألوان/النصوص/الصور/المسافات كلها من الملفات المركزية (`AppColors`, `LocaleKeys`, `AppImages`, `AppConstants`) — مفيش hardcoded values في نص الشاشة إلا لو تفصيلة فريدة جدًا مش هتتكرر.
 - الـ Models: `Equatable` + `fromJson`/`toJson` صريحين (من غير code generation حاليًا في المشروع).
 - الـ Cubit بيرمي/يمسك الأخطاء بنفسه ويعرض `AppOverlay.showError` — الـ UI مش المفروض تعمل try/catch بتاعها.
+- **القاعدة الافتراضية: من غير كومنتات خالص.** ده تكرر أكتر من مرة والقاعدة اتخففت في كل مرة، فخليها واضحة قد ما تقدر: **الافتراض إنك متكتبش كومنت خالص** — مش "قلل الكومنتات"، مش "اكتب بس لو مهم" — **من غير**. لو حسّيت إن سطر محتاج توضيح، الحل إنك تحسّن اسم المتغير/الفانكشن/الكلاس لحد ما الكود يشرح نفسه، مش إنك تضيف كومنت جنبه. ده يشمل بالتحديد:
+  - كومنتات بتشرح "ليه الفلاج/المتغير ده موجود" أو "ليه الحماية دي لازمة" (زي "`_hydrated` عشان الداتا متتمسحش لو حصل رebuild") — الاسم `_hydrated` نفسه المفروض يكفي.
+  - كومنتات بتشرح "ليه استخدمت الباترن ده هنا" أو بتوثّق قرار معماري متكرر (القرار موثّق في الملف ده مرة واحدة، مش محتاج يتكرر جوا الكود).
+  - أي كومنت بيوصف اللي السطر اللي تحته بيعمله (لو السطر مش واضح، أعد كتابته أوضح — الحل مش كومنت فوقه).
+  - **الاستثناء الوحيد:** توثيق سلوك خارجي غريب موثّق فعليًا (زي API بيرجع status غير متوقع، أو بَج حقيقي في السيرفر لازم القارئ يعرفه عشان مايرجعش يمسح الكود ظنًا إنه غلط) — وده لازم يكون قصير جدًا (سطر واحد) ومربوط بحقيقة خارجية فعلية اتأكدنا منها (زي لوج حقيقي شفناه)، مش تبرير لقرار تصميم داخلي.

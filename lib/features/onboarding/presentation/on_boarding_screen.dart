@@ -1,5 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:vivacare_white_label/core/extensions/extensions.dart';
+import 'package:white_label_provider/core/extensions/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -36,17 +36,17 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         subtitle: LocaleKeys.onboarding_slide1_subtitle.tr(),
       ),
       OnboardingSlideData(
-        illustration: OnboardingIllustrationType.telemed,
+        illustration: OnboardingIllustrationType.queue,
         title: LocaleKeys.onboarding_slide2_title.tr(),
         subtitle: LocaleKeys.onboarding_slide2_subtitle.tr(),
       ),
       OnboardingSlideData(
-        illustration: OnboardingIllustrationType.pharmacy,
+        illustration: OnboardingIllustrationType.staff,
         title: LocaleKeys.onboarding_slide3_title.tr(),
         subtitle: LocaleKeys.onboarding_slide3_subtitle.tr(),
       ),
       OnboardingSlideData(
-        illustration: OnboardingIllustrationType.family,
+        illustration: OnboardingIllustrationType.setup,
         title: LocaleKeys.onboarding_slide4_title.tr(),
         subtitle: LocaleKeys.onboarding_slide4_subtitle.tr(),
       ),

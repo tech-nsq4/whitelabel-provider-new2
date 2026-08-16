@@ -4,8 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../utils/app_colors.dart';
 import 'custom_tap_effect.dart';
 
-/// The white rounded, bordered, softly-shadowed card used everywhere in the
-/// design (the `.tile` class) — appointment cards, list groups, grid tiles.
+/// The reference design's `.tile` — a white rounded card with a hairline
+/// border and a soft shadow. Used everywhere a screen groups content into
+/// a card: stat tiles, list rows, form sections...
 class AppCard extends StatelessWidget {
   const AppCard({
     super.key,
@@ -14,6 +15,7 @@ class AppCard extends StatelessWidget {
     this.onTap,
     this.color,
     this.borderColor,
+    this.radius = 18,
     this.margin,
   });
 
@@ -22,6 +24,7 @@ class AppCard extends StatelessWidget {
   final VoidCallback? onTap;
   final Color? color;
   final Color? borderColor;
+  final double radius;
   final EdgeInsetsGeometry? margin;
 
   @override
@@ -31,14 +34,13 @@ class AppCard extends StatelessWidget {
       padding: padding ?? EdgeInsets.all(15.r),
       decoration: BoxDecoration(
         color: color ?? AppColors.cardColor.themeColor,
-        borderRadius: BorderRadius.circular(18.r),
+        borderRadius: BorderRadius.circular(radius.r),
         border: Border.all(color: borderColor ?? AppColors.dividerColor.themeColor),
         boxShadow: [
           BoxShadow(
-            color:
-                AppColors.textPrimaryColor.themeColor.withValues(alpha: 0.04),
+            color: AppColors.textPrimaryColor.themeColor.withValues(alpha: 0.04),
             blurRadius: 16,
-            offset: const Offset(0, 4),
+            offset: const Offset(0, 1),
           ),
         ],
       ),
@@ -46,6 +48,6 @@ class AppCard extends StatelessWidget {
     );
 
     if (onTap == null) return card;
-    return CustomTapEffect(onTap: onTap!, child: card);
+    return CustomTapEffect(onTap: onTap, child: card);
   }
 }

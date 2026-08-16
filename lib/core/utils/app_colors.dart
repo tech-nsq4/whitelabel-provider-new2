@@ -1,4 +1,4 @@
-import 'package:vivacare_white_label/app/router/navigation_services.dart';
+import 'package:white_label_provider/app/router/navigation_services.dart';
 import 'package:flutter/material.dart';
 
 class ColorModel {
@@ -109,5 +109,20 @@ class AppColors {
   static const ColorModel accentGold = ColorModel(
     lightColor: Color(0xFFC9A227),
     darkColor: Color(0xFFC9A227),
+  );
+
+  // ─── Status chip backgrounds ─────────────────────────────────────────────
+  /// Tinted background behind [warningColor] text — "قيد الانتظار" /
+  /// "بانتظار الدفع" style chips and banners.
+  static const ColorModel warningBgColor = ColorModel(
+    lightColor: Color(0xFFFDF3E3),
+    darkColor: Color(0xFFFDF3E3),
+  );
+
+  /// Tinted background behind [errorColor] text — "حرج" / allergy-alert
+  /// style chips and banners.
+  static const ColorModel criticalBgColor = ColorModel(
+    lightColor: Color(0xFFFBEDEA),
+    darkColor: Color(0xFFFBEDEA),
   );
 }

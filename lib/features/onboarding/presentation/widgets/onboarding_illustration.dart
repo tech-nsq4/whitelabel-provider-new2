@@ -18,30 +18,30 @@ class OnboardingIllustration extends StatelessWidget {
       case OnboardingIllustrationType.welcome:
         return _IllustrationStyle(
           blobColor: AppColors.primaryColor.themeColor,
-          leadIcon: Icons.favorite_rounded,
+          leadIcon: Icons.dashboard_customize_rounded,
           accentIconA: Icons.calendar_month_rounded,
-          accentIconB: Icons.medical_services_rounded,
+          accentIconB: Icons.groups_rounded,
         );
-      case OnboardingIllustrationType.telemed:
+      case OnboardingIllustrationType.queue:
         return _IllustrationStyle(
           blobColor: AppColors.secondaryColor.themeColor,
-          leadIcon: Icons.video_call_rounded,
-          accentIconA: Icons.chat_bubble_rounded,
-          accentIconB: Icons.headset_mic_rounded,
+          leadIcon: Icons.pending_actions_rounded,
+          accentIconA: Icons.medical_information_rounded,
+          accentIconB: Icons.timer_rounded,
         );
-      case OnboardingIllustrationType.pharmacy:
+      case OnboardingIllustrationType.staff:
         return _IllustrationStyle(
           blobColor: AppColors.accentGold.themeColor,
-          leadIcon: Icons.medication_rounded,
-          accentIconA: Icons.local_pharmacy_rounded,
-          accentIconB: Icons.delivery_dining_rounded,
+          leadIcon: Icons.medical_services_rounded,
+          accentIconA: Icons.event_available_rounded,
+          accentIconB: Icons.badge_rounded,
         );
-      case OnboardingIllustrationType.family:
+      case OnboardingIllustrationType.setup:
         return _IllustrationStyle(
           blobColor: AppColors.primaryLightColor.themeColor,
-          leadIcon: Icons.folder_shared_rounded,
-          accentIconA: Icons.groups_rounded,
-          accentIconB: Icons.shield_rounded,
+          leadIcon: Icons.storefront_rounded,
+          accentIconA: Icons.bar_chart_rounded,
+          accentIconB: Icons.tune_rounded,
         );
     }
   }

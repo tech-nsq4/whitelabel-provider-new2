@@ -1,4 +1,4 @@
-import 'package:vivacare_white_label/app/router/navigation_services.dart';
+import 'package:white_label_provider/app/router/navigation_services.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,8 +20,8 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<AuthCubit>(create: (_) => getIt<AuthCubit>()),
         // The splash screen itself awaits `getProfile()` (when logged in)
-        // before deciding whether to route to the layout or to the
-        // complete-profile step, so it isn't kicked off here too.
+        // before deciding whether to land in the layout or bounce back to
+        // login, so it isn't kicked off here too.
         BlocProvider<ProfileCubit>(create: (_) => getIt<ProfileCubit>()),
       ],
       child: ScreenUtilInit(

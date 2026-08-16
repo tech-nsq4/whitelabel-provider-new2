@@ -1,128 +1,137 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/di/injection.dart';
 import '../../../core/extensions/extensions.dart';
 import '../../../core/utils/app_colors.dart';
-import '../../../core/utils/app_constants.dart';
-import '../../../core/widgets/app_button.dart';
+import '../../../core/utils/app_overlay.dart';
+import '../../../core/utils/app_svg_icons.dart';
+import '../../../core/utils/locale_keys.dart';
+import '../../../core/widgets/app_card.dart';
+import '../../../core/widgets/app_header_icon_button.dart';
+import '../../../core/widgets/app_screen_header.dart';
+import '../../../core/widgets/app_section_title.dart';
+import '../../../core/widgets/app_svg_icon.dart';
 import '../../../core/widgets/app_text.dart';
-import '../../../core/widgets/screen_header.dart';
+import '../../../core/widgets/screen_state_layout.dart';
+import '../logic/homecare_cubit.dart';
+import 'widgets/homecare_request_card.dart';
+import 'widgets/homecare_stat_tile.dart';
 
-class HomeCareScreen extends StatefulWidget {
-  const HomeCareScreen({super.key});
+/// "الرعاية المنزلية" — home-visit requests waiting to be assigned to a
+/// doctor, plus the ones already on their way.
+class HomecareScreen extends StatefulWidget {
+  const HomecareScreen({super.key});
 
   @override
-  State<HomeCareScreen> createState() => _HomeCareScreenState();
+  State<HomecareScreen> createState() => _HomecareScreenState();
 }
 
-class _HomeCareScreenState extends State<HomeCareScreen> {
-  int _serviceIndex = 0;
-  int _timeIndex = 0;
+class _HomecareScreenState extends State<HomecareScreen> {
+  late final _cubit = getIt<HomecareCubit>()..loadRequests();
 
-  static const _services = [
-    ('زيارة طبيب', 250),
-    ('تمريض منزلي', 150),
-    ('سحب عينات', 80),
-    ('علاج طبيعي', 200),
-  ];
-  static const _times = ['اليوم مساءً', 'غدًا صباحًا', 'غدًا مساءً'];
+  @override
+  void dispose() {
+    _cubit.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final primary = AppColors.primaryColor.themeColor;
-
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor.themeColor,
       body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 24.h),
-          children: [
-            const ScreenHeader(title: 'الرعاية المنزلية', subtitle: 'الفريق الطبي يصل إلى بيتك'),
-            Text('الخدمة',
-                style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w600, color: AppColors.mutedColor.themeColor)),
-            10.height,
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisSpacing: 10.w,
-              mainAxisSpacing: 10.h,
-              childAspectRatio: 1.5,
-              children: [
-                for (var i = 0; i < _services.length; i++)
-                  GestureDetector(
-                    onTap: () => setState(() => _serviceIndex = i),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 10.w),
-                      decoration: BoxDecoration(
-                        color: _serviceIndex == i ? primary : AppColors.cardColor.themeColor,
-                        borderRadius: BorderRadius.circular(16.r),
-                        border: _serviceIndex == i
-                            ? null
-                            : Border.all(color: AppColors.dividerColor.themeColor),
+        bottom: false,
+        child: BlocBuilder<HomecareCubit, HomecareState>(
+          bloc: _cubit,
+          builder: (context, state) {
+            return CustomScreenStateLayout(
+              isLoading: state is HomecareLoading || state is HomecareInitial,
+              error: state is HomecareError
+                  ? ErrorModel(code: ErrorEnum.other, errorMessage: state.message)
+                  : null,
+              builder: (context) {
+                final all = (state as HomecareSuccess).requests;
+                final pending = all.where((r) => !r.isAssigned).toList();
+                final assigned = all.where((r) => r.isAssigned).toList();
+
+                return ListView(
+                  padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 32.h),
+                  children: [
+                    AppScreenHeader(
+                      title: LocaleKeys.homecareScreen_title.tr(),
+                      eyebrow: LocaleKeys.homecareScreen_subtitle.tr(),
+                      leading: AppHeaderIconButton(
+                        svgIcon: AppSvgIcons.chevronBack,
+                        size: 38,
+                        onTap: () => Navigator.pop(context),
                       ),
-                      child: Column(
+                    ),
+                    16.height,
+                    AppCard(
+                      color: AppColors.surfaceColor.themeColor,
+                      borderColor: Colors.transparent,
+                      child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          AppText(_services[i].$1,
-                              fontSize: 12.5,
-                              fontWeight: FontWeight.w600,
-                              color: _serviceIndex == i
-                                  ? Colors.white
-                                  : AppColors.textPrimaryColor.themeColor),
-                          6.height,
-                          Text('${_services[i].$2} ريال',
-                              style: TextStyle(
-                                  fontFamily: AppFonts.headingFont,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: _serviceIndex == i ? Colors.white : primary)),
+                          AppSvgIcon(AppSvgIcons.home2,
+                              size: 17.sp, color: AppColors.primaryColor.themeColor),
+                          11.width,
+                          Expanded(
+                            child: AppText(LocaleKeys.homecareScreen_infoBanner.tr(),
+                                fontSize: 11,
+                                height: 1.7,
+                                color: AppColors.textSecondaryColor.themeColor),
+                          ),
                         ],
                       ),
                     ),
-                  ),
-              ],
-            ),
-            18.height,
-            Text('الوقت',
-                style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w600, color: AppColors.mutedColor.themeColor)),
-            10.height,
-            Row(
-              children: [
-                for (var i = 0; i < _times.length; i++)
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => setState(() => _timeIndex = i),
-                      child: Container(
-                        margin: EdgeInsets.only(left: i == _times.length - 1 ? 0 : 8.w),
-                        padding: EdgeInsets.symmetric(vertical: 12.h),
-                        decoration: BoxDecoration(
-                          color: _timeIndex == i ? primary : AppColors.surfaceColor.themeColor,
-                          borderRadius: BorderRadius.circular(12.r),
+                    16.height,
+                    Row(
+                      children: [
+                        HomecareStatTile(
+                          value: '${pending.length}',
+                          label: LocaleKeys.homecareScreen_statPending.tr(),
+                          color: AppColors.warningColor.themeColor,
                         ),
-                        child: Text(_times[i],
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 11.sp,
-                                fontWeight: FontWeight.w600,
-                                color: _timeIndex == i ? Colors.white : AppColors.textSecondaryColor.themeColor)),
-                      ),
+                        HomecareStatTile(
+                          value: '2',
+                          label: LocaleKeys.homecareScreen_statAvailable.tr(),
+                          color: AppColors.primaryColor.themeColor,
+                        ),
+                        HomecareStatTile(
+                          value: '7/12',
+                          label: LocaleKeys.homecareScreen_statCapacity.tr(),
+                        ),
+                      ],
                     ),
-                  ),
-              ],
-            ),
-            20.height,
-            CustomButton(
-              title: 'اطلب الزيارة',
-              onTap: () {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('تم طلب ${_services[_serviceIndex].$1} — ${_times[_timeIndex]}')),
+                    18.height,
+                    if (pending.isNotEmpty) ...[
+                      AppSectionTitle(LocaleKeys.homecareScreen_pendingSection.tr()),
+                      10.height,
+                      for (final r in pending)
+                        HomecareRequestCard(request: r, onAssign: () => _assign(r.id)),
+                    ],
+                    if (assigned.isNotEmpty) ...[
+                      14.height,
+                      AppSectionTitle(LocaleKeys.homecareScreen_assignedSection.tr()),
+                      10.height,
+                      for (final r in assigned) HomecareRequestCard(request: r, onAssign: () {}),
+                    ],
+                  ],
                 );
               },
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
+  }
+
+  void _assign(String id) {
+    _cubit.assign(id);
+    AppOverlay.showSuccess(LocaleKeys.homecareScreen_assignSuccess.tr());
   }
 }
