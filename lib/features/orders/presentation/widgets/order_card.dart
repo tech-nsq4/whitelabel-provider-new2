@@ -10,24 +10,32 @@ import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/app_icon_box.dart';
 import '../../../../core/widgets/app_status_chip.dart';
+import '../../../../core/widgets/booked_by_caption.dart';
 import '../../../../core/widgets/app_text.dart';
 import '../../../../core/widgets/image/custom_image.dart';
 import '../../data/models/test_request_model.dart';
+import 'order_id_badge.dart';
 
+/// One test/x-ray request row on the orders screen — tapping it (outside
+/// the upload button) opens the full request-details screen, which
+/// carries its own copy of the same upload action.
 class OrderCard extends StatelessWidget {
-  const OrderCard({super.key, required this.request, required this.onUpload});
+  const OrderCard({super.key, required this.request, required this.onTap, required this.onUpload});
 
   final TestRequestModel request;
+  final VoidCallback onTap;
   final VoidCallback onUpload;
 
   @override
   Widget build(BuildContext context) {
     return AppCard(
       margin: 10.paddingBottom,
+      onTap: onTap,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               (request.resultUrl?.isNotEmpty ?? false)
                   ? _ResultThumbnail(url: request.resultUrl!)
@@ -41,38 +49,65 @@ class OrderCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    BookedByCaption(bookedByName: request.bookedByName),
                     AppText(request.patientName ?? '',
-                        fontSize: 13,
+                        fontSize: 15,
                         fontWeight: FontWeight.w600,
                         color: AppColors.textPrimaryColor.themeColor),
-                    if (request.scheduledLabel != null)
+                    if (request.scheduledLabel != null) ...[
+                      3.height,
                       AppText(request.scheduledLabel!,
-                          fontSize: 10.5,
-                          color: AppColors.mutedColor.themeColor),
+                          fontSize: 12, color: AppColors.mutedColor.themeColor),
+                    ],
                   ],
                 ),
               ),
-              request.hasResult
-                  ? _ResultChip(rate: request.resultRate)
-                  : AppStatusChip(LocaleKeys.status_inProgress.tr(),
-                      tone: AppStatusTone.warning),
+              8.width,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  request.hasResult
+                      ? _ResultChip(rate: request.resultRate)
+                      : AppStatusChip(LocaleKeys.status_inProgress.tr(),
+                          tone: AppStatusTone.warning),
+                  6.height,
+                  OrderIdBadge(id: request.id),
+                ],
+              ),
             ],
           ),
           11.height,
-          AppText(request.testName ?? '',
-              fontSize: 12.5,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimaryColor.themeColor),
+          Row(
+            children: [
+              Expanded(
+                child: AppText(request.testName ?? '',
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimaryColor.themeColor,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
+              ),
+              8.width,
+              AppText(
+                request.type == TestRequestType.xray
+                    ? LocaleKeys.orders_typeXray.tr()
+                    : LocaleKeys.orders_typeAnalysis.tr(),
+                fontSize: 10.5,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primaryColor.themeColor,
+              ),
+            ],
+          ),
           if (request.doctorName != null) ...[
             4.height,
             AppText(
                 '${LocaleKeys.orders_requestedBy.tr()} ${request.doctorName}',
-                fontSize: 10.5, color: AppColors.mutedColor.themeColor),
+                fontSize: 11, color: AppColors.mutedColor.themeColor),
           ],
           if (request.hasResult && (request.note?.isNotEmpty ?? false)) ...[
             8.height,
             AppText(request.note!,
-                fontSize: 11, color: AppColors.textSecondaryColor.themeColor),
+                fontSize: 11.5, color: AppColors.textSecondaryColor.themeColor),
           ],
           if (!request.hasResult) ...[
             11.height,

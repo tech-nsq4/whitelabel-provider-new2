@@ -59,8 +59,8 @@ class _QueueScreenState extends State<QueueScreen> {
   Future<void> _callIn(QueuePatientModel patient) async {
     final ok = await getIt<QueueCubit>().callIn(patient);
     if (ok) {
-      AppOverlay.showSuccess(
-          LocaleKeys.queue_calledInToast.tr(namedArgs: {'name': patient.name}));
+      // AppOverlay.showSuccess(
+      //     LocaleKeys.queue_calledInToast.tr(namedArgs: {'name': patient.name}));
     }
   }
 
@@ -80,8 +80,8 @@ class _QueueScreenState extends State<QueueScreen> {
           Navigator.pop(context);
           final ok = await getIt<QueueCubit>().cancel(patient);
           if (ok) {
-            AppOverlay.showSuccess(LocaleKeys.queue_cancelSuccess
-                .tr(namedArgs: {'name': patient.name}));
+            // AppOverlay.showSuccess(LocaleKeys.queue_cancelSuccess
+            //     .tr(namedArgs: {'name': patient.name}));
           }
         },
       ),
@@ -97,6 +97,16 @@ class _QueueScreenState extends State<QueueScreen> {
         arguments: {'patient': patient});
   }
 
+  void _openDetails(QueuePatientModel patient, int tabIndex) {
+    Navigator.pushNamed(context, Routes.queueDetails, arguments: {
+      'patient': patient,
+      'tabIndex': tabIndex,
+      'onCallIn': tabIndex == 0 ? () => _callIn(patient) : null,
+      'onCancel': tabIndex == 0 ? () => _confirmCancel(patient) : null,
+      'onConsultAction': tabIndex == 1 ? () => _startConsult(patient) : null,
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,6 +117,9 @@ class _QueueScreenState extends State<QueueScreen> {
           bloc: getIt<QueueCubit>(),
           builder: (context, state) {
             return CustomScreenStateLayout(
+              onRefresh: ()async{
+                getIt<QueueCubit>().loadQueue();
+              },
               isLoading: state is QueueLoading || state is QueueInitial,
               error: state is QueueError
                   ? ErrorModel(
@@ -114,6 +127,7 @@ class _QueueScreenState extends State<QueueScreen> {
                   : null,
               onRetry: () => getIt<QueueCubit>().loadQueue(),
               builder: (context) => ListView(
+                // physics: const BouncingScrollPhysics(),
                 padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 108.h),
                 children: [
                   AppScreenHeader(
@@ -167,6 +181,7 @@ class _QueueScreenState extends State<QueueScreen> {
                 for (final p in snapshot.waiting)
                   QueueWaitingCard(
                     patient: p,
+                    onTap: () => _openDetails(p, 0),
                     onCallIn: () => _callIn(p),
                     onCancel: () => _confirmCancel(p),
                   ),
@@ -176,12 +191,19 @@ class _QueueScreenState extends State<QueueScreen> {
             ? [QueueEmptyState(text: LocaleKeys.queue_emptyRoom.tr())]
             : [
                 for (final p in snapshot.inRoom)
-                  QueueRoomCard(patient: p, onTap: () => _startConsult(p)),
+                  QueueRoomCard(
+                    patient: p,
+                    onTap: () => _openDetails(p, 1),
+                    onConsultAction: () => _startConsult(p),
+                  ),
               ];
       default:
         return snapshot.done.isEmpty
             ? [QueueEmptyState(text: LocaleKeys.queue_emptyDone.tr())]
-            : [for (final p in snapshot.done) QueueDoneTile(patient: p)];
+            : [
+                for (final p in snapshot.done)
+                  QueueDoneTile(patient: p, onTap: () => _openDetails(p, 2)),
+              ];
     }
   }
 }

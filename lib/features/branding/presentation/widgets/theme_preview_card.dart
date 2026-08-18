@@ -58,7 +58,7 @@ class ThemePreviewCard extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(child: _tab('اليوم', theme.brand, filled: true)),
-                Expanded(child: _tab('الطابور', theme.ink)),
+                Expanded(child: _tab('الحجوزات', theme.ink)),
                 Expanded(child: _tab('الطلبات', theme.ink)),
                 Expanded(child: _tab('المرضى', theme.ink)),
               ],

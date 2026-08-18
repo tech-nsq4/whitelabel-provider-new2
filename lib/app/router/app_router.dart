@@ -19,14 +19,21 @@ import '../../features/onboarding/presentation/on_boarding_screen.dart';
 import '../../features/patients/presentation/patient_file_screen.dart';
 import '../../features/policy/presentation/policy_screen.dart';
 import '../../features/profile/presentation/edit_profile_screen.dart';
+import '../../features/orders/data/models/test_request_model.dart';
+import '../../features/orders/presentation/order_details_screen.dart';
 import '../../features/queue/data/models/queue_patient_model.dart';
+import '../../features/queue/presentation/queue_details_screen.dart';
 import '../../features/schedules/data/models/work_schedule_model.dart';
 import '../../features/schedules/presentation/schedule_edit_screen.dart';
 import '../../features/schedules/presentation/schedules_screen.dart';
 import '../../features/services/presentation/services_screen.dart';
 import '../../features/setup/presentation/setup_screen.dart';
+import '../../features/specialties/data/models/specialty_model.dart';
 import '../../features/specialties/presentation/specialties_screen.dart';
+import '../../features/specialties/presentation/specialty_details_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
+import '../../features/staff/data/models/doctor_profile_model.dart';
+import '../../features/staff/presentation/doctor_details_screen.dart';
 import '../../features/staff/presentation/staff_screen.dart';
 import 'routes.dart';
 
@@ -62,6 +69,15 @@ class RouteGenerator {
           patient: arguments?['patient'] as QueuePatientModel,
         ));
 
+      case Routes.queueDetails:
+        return _pageRoute(QueueDetailsScreen(
+          patient: arguments?['patient'] as QueuePatientModel,
+          tabIndex: arguments?['tabIndex'] as int,
+          onCallIn: arguments?['onCallIn'] as VoidCallback?,
+          onCancel: arguments?['onCancel'] as VoidCallback?,
+          onConsultAction: arguments?['onConsultAction'] as VoidCallback?,
+        ));
+
       case Routes.agenda:
         return _pageRoute(const AgendaScreen());
 
@@ -70,6 +86,12 @@ class RouteGenerator {
 
       case Routes.bookings:
         return _pageRoute(const BookingsScreen());
+
+      case Routes.orderDetails:
+        return _pageRoute(OrderDetailsScreen(
+          request: arguments?['request'] as TestRequestModel,
+          onUpload: arguments?['onUpload'] as VoidCallback,
+        ));
 
       case Routes.calendar:
         return _pageRoute(const CalendarScreen());
@@ -81,6 +103,11 @@ class RouteGenerator {
 
       case Routes.staff:
         return _pageRoute(const StaffScreen());
+
+      case Routes.doctorDetails:
+        return _pageRoute(DoctorDetailsScreen(
+          doctor: arguments?['doctor'] as DoctorProfileModel,
+        ));
 
       case Routes.schedules:
         return _pageRoute(const SchedulesScreen());
@@ -111,6 +138,11 @@ class RouteGenerator {
 
       case Routes.specialties:
         return _pageRoute(const SpecialtiesScreen());
+
+      case Routes.specialtyDetails:
+        return _pageRoute(SpecialtyDetailsScreen(
+          specialty: arguments?['specialty'] as SpecialtyModel,
+        ));
 
       case Routes.branches:
         return _pageRoute(const BranchesScreen());

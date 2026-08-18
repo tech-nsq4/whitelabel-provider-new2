@@ -48,6 +48,7 @@ abstract class LocaleKeys {
   static const String common_comingSoonDesc = 'common.coming_soon_desc';
   static const String common_edit = 'common.edit';
   static const String common_delete = 'common.delete';
+  static const String common_bookedByValue = 'common.booked_by_value';
 
   // ─── Setup hub ────────────────────────────────────────────────────────────
   static const String setupScreen_title = 'setup_screen.title';
@@ -70,21 +71,17 @@ abstract class LocaleKeys {
   // ─── Services ─────────────────────────────────────────────────────────────
   static const String servicesScreen_title = 'services_screen.title';
   static const String servicesScreen_subtitle = 'services_screen.subtitle';
-  static const String servicesScreen_infoBanner = 'services_screen.info_banner';
-  static const String servicesScreen_deleteToast =
-      'services_screen.delete_toast';
-  static const String servicesScreen_minuteUnit = 'services_screen.minute_unit';
 
   // ─── Specialties ──────────────────────────────────────────────────────────
   static const String specialtiesScreen_title = 'specialties_screen.title';
   static const String specialtiesScreen_subtitle =
       'specialties_screen.subtitle';
-  static const String specialtiesScreen_infoBanner =
-      'specialties_screen.info_banner';
-  static const String specialtiesScreen_availableAt =
-      'specialties_screen.available_at';
-  static const String specialtiesScreen_noBranch =
-      'specialties_screen.no_branch';
+  static const String specialtiesScreen_detailsTitle =
+      'specialties_screen.details_title';
+  static const String specialtiesScreen_subSpecialties =
+      'specialties_screen.sub_specialties';
+  static const String specialtiesScreen_subCount =
+      'specialties_screen.sub_count';
 
   // ─── Branches ─────────────────────────────────────────────────────────────
   static const String branchesScreen_title = 'branches_screen.title';
@@ -96,45 +93,6 @@ abstract class LocaleKeys {
   static const String branchesScreen_noLocations =
       'branches_screen.no_locations';
   static const String branchesScreen_noClinics = 'branches_screen.no_clinics';
-
-  // ─── Service sheet ────────────────────────────────────────────────────────
-  static const String serviceSheet_titleAdd = 'service_sheet.title_add';
-  static const String serviceSheet_titleEdit = 'service_sheet.title_edit';
-  static const String serviceSheet_nameLabel = 'service_sheet.name_label';
-  static const String serviceSheet_nameHint = 'service_sheet.name_hint';
-  static const String serviceSheet_specialtyLabel =
-      'service_sheet.specialty_label';
-  static const String serviceSheet_modesLabel = 'service_sheet.modes_label';
-  static const String serviceSheet_modeClinic = 'service_sheet.mode_clinic';
-  static const String serviceSheet_modeClinicSub =
-      'service_sheet.mode_clinic_sub';
-  static const String serviceSheet_modeVideo = 'service_sheet.mode_video';
-  static const String serviceSheet_modeVideoSub =
-      'service_sheet.mode_video_sub';
-  static const String serviceSheet_modeHome = 'service_sheet.mode_home';
-  static const String serviceSheet_modeHomeSub = 'service_sheet.mode_home_sub';
-  static const String serviceSheet_priceLabel = 'service_sheet.price_label';
-  static const String serviceSheet_durationLabel =
-      'service_sheet.duration_label';
-  static const String serviceSheet_save = 'service_sheet.save';
-  static const String serviceSheet_successAdd = 'service_sheet.success_add';
-  static const String serviceSheet_successEdit = 'service_sheet.success_edit';
-  static const String serviceSheet_errorName = 'service_sheet.error_name';
-  static const String serviceSheet_errorMode = 'service_sheet.error_mode';
-
-  // ─── Specialty sheet ──────────────────────────────────────────────────────
-  static const String specialtySheet_titleAdd = 'specialty_sheet.title_add';
-  static const String specialtySheet_titleEdit = 'specialty_sheet.title_edit';
-  static const String specialtySheet_nameLabel = 'specialty_sheet.name_label';
-  static const String specialtySheet_nameHint = 'specialty_sheet.name_hint';
-  static const String specialtySheet_descLabel = 'specialty_sheet.desc_label';
-  static const String specialtySheet_descHint = 'specialty_sheet.desc_hint';
-  static const String specialtySheet_doctorsLabel =
-      'specialty_sheet.doctors_label';
-  static const String specialtySheet_save = 'specialty_sheet.save';
-  static const String specialtySheet_successAdd = 'specialty_sheet.success_add';
-  static const String specialtySheet_successEdit =
-      'specialty_sheet.success_edit';
 
   // ─── Branch sheet ─────────────────────────────────────────────────────────
   static const String branchSheet_titleAdd = 'branch_sheet.title_add';
@@ -284,6 +242,27 @@ abstract class LocaleKeys {
   static const String queue_cancelConfirmMessage =
       'queue.cancel_confirm_message';
   static const String queue_cancelSuccess = 'queue.cancel_success';
+  static const String queue_detailsTitle = 'queue.details_title';
+  static const String queue_detailsAppointment = 'queue.details_appointment';
+  static const String queue_detailsStatus = 'queue.details_status';
+  static const String queue_detailsShift = 'queue.details_shift';
+  static const String queue_detailsDoctor = 'queue.details_doctor';
+  static const String queue_detailsSpecialty = 'queue.details_specialty';
+  static const String queue_detailsExperience = 'queue.details_experience';
+  static const String queue_detailsExperienceValue =
+      'queue.details_experience_value';
+  static const String queue_detailsFee = 'queue.details_fee';
+  static const String queue_detailsClinic = 'queue.details_clinic';
+  static const String queue_detailsFamilyMember =
+      'queue.details_family_member';
+  static const String queue_detailsBookedBy = 'queue.details_booked_by';
+  static const String queue_detailsFamilyDob = 'queue.details_family_dob';
+  static const String queue_detailsFamilyId = 'queue.details_family_id';
+  static const String queue_detailsTimeline = 'queue.details_timeline';
+  static const String queue_detailsBookedAt = 'queue.details_booked_at';
+  static const String queue_detailsStartedAt = 'queue.details_started_at';
+  static const String queue_detailsEndedAt = 'queue.details_ended_at';
+  static const String queue_detailsCancelledAt = 'queue.details_cancelled_at';
 
   // ─── Consultation ─────────────────────────────────────────────────────────
   static const String consultation_tabConsult = 'consultation.tab_consult';
@@ -338,6 +317,9 @@ abstract class LocaleKeys {
   static const String status_onLeave = 'status.on_leave';
   static const String status_paid = 'status.paid';
   static const String status_confirmed = 'status.confirmed';
+  static const String status_pending = 'status.pending';
+  static const String status_completed = 'status.completed';
+  static const String status_cancelled = 'status.cancelled';
   static const String status_pendingPayment = 'status.pending_payment';
   static const String status_normal = 'status.normal';
   static const String status_low = 'status.low';
@@ -444,10 +426,10 @@ abstract class LocaleKeys {
   // ─── Staff ────────────────────────────────────────────────────────────────
   static const String staff_title = 'staff.title';
   static const String staff_subtitle = 'staff.subtitle';
-  static const String staff_ratingLabel = 'staff.rating_label';
-  static const String staff_occupancyLabel = 'staff.occupancy_label';
-  static const String staff_editPricing = 'staff.edit_pricing';
-  static const String staff_schedules = 'staff.schedules';
+  static const String staff_detailsTitle = 'staff.details_title';
+  static const String staff_detailsInfo = 'staff.details_info';
+  static const String staff_detailsSpecializations =
+      'staff.details_specializations';
 
   // ─── Schedules ────────────────────────────────────────────────────────────
   static const String schedules_title = 'schedules.title';
@@ -468,33 +450,6 @@ abstract class LocaleKeys {
   static const String leave_dateHint = 'leave.date_hint';
   static const String leave_submit = 'leave.submit';
   static const String leave_success = 'leave.success';
-
-  // ─── Doctor sheet ─────────────────────────────────────────────────────────
-  static const String doctorSheet_titleAdd = 'doctor_sheet.title_add';
-  static const String doctorSheet_titleEdit = 'doctor_sheet.title_edit';
-  static const String doctorSheet_nameLabel = 'doctor_sheet.name_label';
-  static const String doctorSheet_nameHint = 'doctor_sheet.name_hint';
-  static const String doctorSheet_rankLabel = 'doctor_sheet.rank_label';
-  static const String doctorSheet_rankHint = 'doctor_sheet.rank_hint';
-  static const String doctorSheet_experienceLabel =
-      'doctor_sheet.experience_label';
-  static const String doctorSheet_experienceHint =
-      'doctor_sheet.experience_hint';
-  static const String doctorSheet_specialtyLabel =
-      'doctor_sheet.specialty_label';
-  static const String doctorSheet_bioLabel = 'doctor_sheet.bio_label';
-  static const String doctorSheet_bioHint = 'doctor_sheet.bio_hint';
-  static const String doctorSheet_servicesLabel = 'doctor_sheet.services_label';
-  static const String doctorSheet_servicesAddNew =
-      'doctor_sheet.services_add_new';
-  static const String doctorSheet_newServiceHint =
-      'doctor_sheet.new_service_hint';
-  static const String doctorSheet_pricingLabel = 'doctor_sheet.pricing_label';
-  static const String doctorSheet_save = 'doctor_sheet.save';
-  static const String doctorSheet_successAdd = 'doctor_sheet.success_add';
-  static const String doctorSheet_successEdit = 'doctor_sheet.success_edit';
-  static const String doctorSheet_openSchedule = 'doctor_sheet.open_schedule';
-  static const String doctorSheet_errorName = 'doctor_sheet.error_name';
 
   // ─── New schedule sheet ───────────────────────────────────────────────────
   static const String newScheduleSheet_title = 'new_schedule_sheet.title';
@@ -602,6 +557,15 @@ abstract class LocaleKeys {
   static const String orders_uploadNote = 'orders.upload_note';
   static const String orders_uploadSubmit = 'orders.upload_submit';
   static const String orders_uploadSuccess = 'orders.upload_success';
+  static const String orders_detailsTitle = 'orders.details_title';
+  static const String orders_detailsTest = 'orders.details_test';
+  static const String orders_detailsType = 'orders.details_type';
+  static const String orders_typeAnalysis = 'orders.type_analysis';
+  static const String orders_typeXray = 'orders.type_xray';
+  static const String orders_detailsPrice = 'orders.details_price';
+  static const String orders_detailsResult = 'orders.details_result';
+  static const String orders_detailsNoResultYet =
+      'orders.details_no_result_yet';
 
   // ─── Patients (list) ──────────────────────────────────────────────────────
   static const String patientsScreen_title = 'patients_screen.title';

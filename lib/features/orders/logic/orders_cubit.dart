@@ -48,13 +48,7 @@ class OrdersCubit extends Cubit<OrdersState> {
         note: note,
         image: image,
       );
-      emit(OrdersSuccess([
-        for (final request in current.requests)
-          if ('${request.id}' == testRequestId)
-            request.copyWith(hasResult: true, resultRate: resultRate, note: note)
-          else
-            request,
-      ]));
+      await loadOrders();
       return true;
     } catch (e) {
       final msg = e is NetworkException ? e.message : e.toString();

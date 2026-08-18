@@ -75,10 +75,13 @@ class ConsultationRepo {
       final data = <String, dynamic>{
         'complaint': complaint,
         'diagnosis': diagnosis,
-        if (analysisIds.isNotEmpty)
-          'analysis_ids[]': analysisIds.map(int.parse).toList(),
-        if (xrayIds.isNotEmpty) 'xray_ids[]': xrayIds.map(int.parse).toList(),
       };
+      for (var i = 0; i < analysisIds.length; i++) {
+        data['analysis_ids[$i]'] = int.parse(analysisIds[i]);
+      }
+      for (var i = 0; i < xrayIds.length; i++) {
+        data['xray_ids[$i]'] = int.parse(xrayIds[i]);
+      }
       for (var i = 0; i < prescriptions.length; i++) {
         data['prescriptions[$i][drug_name]'] = prescriptions[i].name;
         data['prescriptions[$i][dosage]'] = prescriptions[i].dose;

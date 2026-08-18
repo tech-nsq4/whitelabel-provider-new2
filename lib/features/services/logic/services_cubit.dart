@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/network/network_exceptions.dart';
 import '../data/models/service_model.dart';
 import '../data/services_repo.dart';
 
@@ -17,27 +18,8 @@ class ServicesCubit extends Cubit<ServicesState> {
       final services = await _repo.getServices();
       emit(ServicesSuccess(services));
     } catch (e) {
-      emit(ServicesError(e.toString()));
+      final msg = e is NetworkException ? e.message : e.toString();
+      emit(ServicesError(msg));
     }
-  }
-
-  void toggle(String id) {
-    final current = state;
-    if (current is! ServicesSuccess) return;
-    emit(ServicesSuccess([
-      for (final s in current.services)
-        if (s.id == id) s.copyWith(enabled: !s.enabled) else s,
-    ]));
-  }
-
-  /// Adds a new service, or replaces an existing one that shares its id —
-  /// used by [ServiceEditSheet]'s add/edit flow.
-  void upsert(ServiceModel model) {
-    final current = state;
-    if (current is! ServicesSuccess) return;
-    final exists = current.services.any((s) => s.id == model.id);
-    emit(ServicesSuccess(exists
-        ? [for (final s in current.services) if (s.id == model.id) model else s]
-        : [...current.services, model]));
   }
 }

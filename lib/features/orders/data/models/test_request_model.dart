@@ -33,6 +33,7 @@ class TestRequestModel extends Equatable {
     this.time,
     this.patientName,
     this.doctorName,
+    this.bookedByName,
   });
 
   final int id;
@@ -47,6 +48,11 @@ class TestRequestModel extends Equatable {
   final String? time;
   final String? patientName;
   final String? doctorName;
+
+  /// Set only when [patientName] is a family member — the account holder
+  /// who made the booking, so the UI can make clear [patientName] isn't
+  /// who booked the test.
+  final String? bookedByName;
 
   String get initial =>
       (patientName?.isNotEmpty ?? false) ? patientName![0] : '؟';
@@ -63,7 +69,17 @@ class TestRequestModel extends Equatable {
     final appointment = json['appointment'] as Map<String, dynamic>?;
     final user = appointment?['user'] as Map<String, dynamic>?;
     final doctor = appointment?['doctor'] as Map<String, dynamic>?;
-    final name = (user?['name'] as String?)?.trim();
+    final familyMember = appointment?['family_member'] as Map<String, dynamic>?;
+
+    final bookerName = (user?['name'] as String?)?.trim();
+    final familyMemberName = (familyMember?['name'] as String?)?.trim();
+    final isFamilyBooking = familyMemberName?.isNotEmpty ?? false;
+    final displayName = isFamilyBooking
+        ? familyMemberName!
+        : ((bookerName?.isNotEmpty ?? false)
+            ? bookerName!
+            : user?['phone'] as String?);
+
     return TestRequestModel(
       id: json['id'] as int,
       type: json['type'] == 'xray'
@@ -77,9 +93,9 @@ class TestRequestModel extends Equatable {
       testPrice: double.tryParse('${test?['price']}'),
       date: appointment?['date'] as String?,
       time: appointment?['times'] as String?,
-      patientName:
-          (name?.isNotEmpty ?? false) ? name : user?['phone'] as String?,
+      patientName: displayName,
       doctorName: doctor?['name'] as String?,
+      bookedByName: isFamilyBooking ? bookerName : null,
     );
   }
 
@@ -98,6 +114,7 @@ class TestRequestModel extends Equatable {
         time: time,
         patientName: patientName,
         doctorName: doctorName,
+        bookedByName: bookedByName,
       );
 
   @override
@@ -114,5 +131,6 @@ class TestRequestModel extends Equatable {
         time,
         patientName,
         doctorName,
+        bookedByName,
       ];
 }

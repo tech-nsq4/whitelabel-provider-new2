@@ -3,17 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../app/router/routes.dart';
 import '../../../core/di/injection.dart';
 import '../../../core/extensions/extensions.dart';
 import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/app_overlay.dart';
-import '../../../core/utils/app_svg_icons.dart';
 import '../../../core/utils/locale_keys.dart';
-import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/app_screen_header.dart';
 import '../../../core/widgets/app_segmented_tabs.dart';
-import '../../../core/widgets/app_svg_icon.dart';
-import '../../../core/widgets/app_text.dart';
 import '../../../core/widgets/screen_state_layout.dart';
 import '../data/models/test_request_model.dart';
 import '../logic/orders_cubit.dart';
@@ -63,6 +60,13 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 
+  void _openDetails(TestRequestModel request) {
+    Navigator.pushNamed(context, Routes.orderDetails, arguments: {
+      'request': request,
+      'onUpload': () => _openUploadSheet(request),
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,6 +77,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
           bloc: getIt<OrdersCubit>(),
           builder: (context, state) {
             return CustomScreenStateLayout(
+              onRefresh: () async => getIt<OrdersCubit>().loadOrders(),
               isLoading: state is OrdersLoading || state is OrdersInitial,
               error: state is OrdersError
                   ? ErrorModel(code: ErrorEnum.other, errorMessage: state.message)
@@ -93,27 +98,27 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       eyebrow: LocaleKeys.ordersScreen_subtitle.tr(),
                       title: LocaleKeys.ordersScreen_title.tr(),
                     ),
-                    16.height,
-                    AppCard(
-                      color: AppColors.surfaceColor.themeColor,
-                      borderColor: Colors.transparent,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AppSvgIcon(AppSvgIcons.clock,
-                              size: 17.sp, color: AppColors.primaryColor.themeColor),
-                          11.width,
-                          Expanded(
-                            child: AppText(
-                              LocaleKeys.orders_infoBanner.tr(),
-                              fontSize: 11,
-                              height: 1.7,
-                              color: AppColors.textSecondaryColor.themeColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // 16.height,
+                    // AppCard(
+                    //   color: AppColors.surfaceColor.themeColor,
+                    //   borderColor: Colors.transparent,
+                    //   child: Row(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: [
+                    //       AppSvgIcon(AppSvgIcons.clock,
+                    //           size: 17.sp, color: AppColors.primaryColor.themeColor),
+                    //       11.width,
+                    //       Expanded(
+                    //         child: AppText(
+                    //           LocaleKeys.orders_infoBanner.tr(),
+                    //           fontSize: 11,
+                    //           height: 1.7,
+                    //           color: AppColors.textSecondaryColor.themeColor,
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                     16.height,
                     AppSegmentedTabs(
                       labels: [
@@ -127,7 +132,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     16.height,
                     for (final request in filtered)
                       OrderCard(
-                          request: request, onUpload: () => _openUploadSheet(request)),
+                        request: request,
+                        onTap: () => _openDetails(request),
+                        onUpload: () => _openUploadSheet(request),
+                      ),
                   ],
                 );
               },

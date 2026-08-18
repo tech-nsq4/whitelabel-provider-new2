@@ -13,7 +13,7 @@
     "get_started": "Get Started",
     "slide1_title": "Run Your Clinic From One Place",
     "slide1_subtitle": "A single dashboard for bookings, consultations and your whole medical team — built for clinic staff.",
-    "slide2_title": "Follow the Queue, Live",
+    "slide2_title": "Follow Your Bookings, Live",
     "slide2_subtitle": "Call in patients, start the consultation, and log results and prescriptions in a few simple steps.",
     "slide3_title": "Manage Your Medical Team",
     "slide3_subtitle": "Add doctors, set their pricing, and organize work schedules by specialty and branch.",
@@ -22,7 +22,7 @@
   },
   "nav": {
     "today": "Today",
-    "queue": "Queue",
+    "queue": "Bookings",
     "orders": "Orders",
     "patients": "Patients"
   },
@@ -41,7 +41,8 @@
     "coming_soon_title": "Coming soon",
     "coming_soon_desc": "This part is still being wired up — it'll be ready in the next update.",
     "edit": "Edit",
-    "delete": "Delete"
+    "delete": "Delete",
+    "booked_by_value": "Booked by {name}"
   },
   "setup_screen": {
     "title": "Clinic Setup",
@@ -60,17 +61,14 @@
   },
   "services_screen": {
     "title": "Services",
-    "subtitle": "Base prices — each doctor can override",
-    "info_banner": "One service can be offered in more than one mode at a different price. Disabling it hides it from the patient app.",
-    "delete_toast": "Deleted {name}",
-    "minute_unit": "m"
+    "subtitle": "All services available at your clinic"
   },
   "specialties_screen": {
     "title": "Specialties",
     "subtitle": "Shared across every branch",
-    "info_banner": "Branches below come from doctors' schedules — they can't be edited directly.",
-    "available_at": "Available at (from doctors' schedules)",
-    "no_branch": "No branch — add a schedule for a doctor"
+    "details_title": "Specialty Details",
+    "sub_specialties": "Sub-specialties",
+    "sub_count": "{count} sub"
   },
   "branches_screen": {
     "title": "Branches",
@@ -79,39 +77,6 @@
     "clinics_title": "Clinics",
     "no_locations": "No locations available",
     "no_clinics": "No clinics in this location"
-  },
-  "service_sheet": {
-    "title_add": "Add Service",
-    "title_edit": "Edit Service",
-    "name_label": "Service name",
-    "name_hint": "e.g. General Consultation",
-    "specialty_label": "Specialty",
-    "modes_label": "Available modes",
-    "mode_clinic": "In Clinic",
-    "mode_clinic_sub": "Visit at a branch",
-    "mode_video": "Video Call",
-    "mode_video_sub": "Remote consultation",
-    "mode_home": "Home Visit",
-    "mode_home_sub": "Doctor visits the patient",
-    "price_label": "Price (SAR)",
-    "duration_label": "Duration (min)",
-    "save": "Save Service",
-    "success_add": "Added {name}",
-    "success_edit": "Updated {name}",
-    "error_name": "Enter a service name",
-    "error_mode": "Enable at least one mode"
-  },
-  "specialty_sheet": {
-    "title_add": "Add Specialty",
-    "title_edit": "Edit Specialty",
-    "name_label": "Specialty name",
-    "name_hint": "e.g. Dermatology",
-    "desc_label": "Description",
-    "desc_hint": "A short line patients see",
-    "doctors_label": "Doctors",
-    "save": "Save Specialty",
-    "success_add": "Added {name}",
-    "success_edit": "Updated {name}"
   },
   "branch_sheet": {
     "title_add": "Add Branch",
@@ -205,11 +170,11 @@
   },
   "queue": {
     "eyebrow": "Reception",
-    "title": "Queue",
+    "title": "Bookings",
     "tab_waiting": "Waiting",
     "tab_in_room": "In Room",
     "tab_done": "Done",
-    "call_in": "Call to Room",
+    "call_in": "Call Patient",
     "start_consult": "Start Consultation",
     "finish_consult": "Finish Consultation",
     "empty_room": "No one in the room",
@@ -220,15 +185,34 @@
     "walkin_mrn_hint": "1XXXXXXXXX or MRN",
     "walkin_name_label": "Name",
     "walkin_name_hint": "Patient's name",
-    "walkin_submit": "Register & Add to Queue",
-    "walkin_success": "Registered {name} and added them to the end of the queue",
+    "walkin_submit": "Register & Add to Bookings",
+    "walkin_success": "Registered {name} and added them to today's bookings",
     "called_in_toast": "Calling {name} in — showing on the waiting screen",
     "no_appointment": "Walk-in",
     "no_mrn": "—",
     "cancel_action": "Cancel",
     "cancel_confirm_title": "Cancel appointment?",
-    "cancel_confirm_message": "This removes {name} from today's queue.",
-    "cancel_success": "Cancelled {name}'s appointment"
+    "cancel_confirm_message": "This removes {name} from today's bookings.",
+    "cancel_success": "Cancelled {name}'s appointment",
+    "details_title": "Booking Details",
+    "details_appointment": "Appointment",
+    "details_status": "Status",
+    "details_shift": "Shift",
+    "details_doctor": "Doctor",
+    "details_specialty": "Specialty",
+    "details_experience": "Experience",
+    "details_experience_value": "{years} years of experience",
+    "details_fee": "Consultation Fee",
+    "details_clinic": "Clinic",
+    "details_family_member": "Family Member",
+    "details_booked_by": "Booked By",
+    "details_family_dob": "Date of Birth",
+    "details_family_id": "ID Number",
+    "details_timeline": "Booking Timeline",
+    "details_booked_at": "Booked At",
+    "details_started_at": "Consultation Started",
+    "details_ended_at": "Consultation Ended",
+    "details_cancelled_at": "Cancelled At"
   },
   "consultation": {
     "tab_consult": "Consultation",
@@ -242,7 +226,7 @@
     "add_medication": "Medication",
     "no_medications": "No medications added yet",
     "medication_name_hint": "Medication name & strength",
-    "medication_dose_hint": "Dose",
+    "medication_dose_hint": "Dose (e.g. 500mg)",
     "medication_duration_hint": "Duration (e.g. 7 days)",
     "orders_label": "Order Tests",
     "orders_hint": "Sent to the lab & imaging department right when the visit ends",
@@ -266,6 +250,9 @@
     "on_leave": "On Leave",
     "paid": "Paid",
     "confirmed": "Confirmed",
+    "pending": "Pending",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
     "pending_payment": "Awaiting Payment",
     "normal": "Normal",
     "low": "Low",
@@ -369,10 +356,9 @@
   "staff": {
     "title": "Doctors",
     "subtitle": "Pricing by visit type",
-    "rating_label": "Rating",
-    "occupancy_label": "Occupancy",
-    "edit_pricing": "Edit Pricing",
-    "schedules": "Schedules"
+    "details_title": "Doctor Details",
+    "details_info": "Doctor Info",
+    "details_specializations": "Specializations"
   },
   "schedules": {
     "title": "Work Schedules",
@@ -393,28 +379,6 @@
     "date_hint": "YYYY-MM-DD",
     "submit": "Register Leave",
     "success": "Registered leave for {name}"
-  },
-  "doctor_sheet": {
-    "title_add": "Add Doctor",
-    "title_edit": "Edit Pricing",
-    "name_label": "Doctor name",
-    "name_hint": "e.g. Dr. Khaled Al-Otaibi",
-    "rank_label": "Title",
-    "rank_hint": "e.g. Consultant",
-    "experience_label": "Years of experience",
-    "experience_hint": "e.g. 8",
-    "specialty_label": "Specialty",
-    "bio_label": "Short bio",
-    "bio_hint": "Shown on the doctor's profile",
-    "services_label": "Linked services",
-    "services_add_new": "+ Add a new service",
-    "new_service_hint": "New service name",
-    "pricing_label": "Pricing by mode",
-    "save": "Save Doctor",
-    "success_add": "Added {name}",
-    "success_edit": "Updated {name}'s pricing",
-    "open_schedule": "Set up work schedule",
-    "error_name": "Enter the doctor's name"
   },
   "new_schedule_sheet": {
     "title": "New Schedule",
@@ -506,7 +470,15 @@
     "upload_file_hint": "Tap to attach the result image",
     "upload_note": "Uploading shows the result instantly in the patient's app with a notification, and syncs it to the requesting doctor's file.",
     "upload_submit": "Upload & Send to Patient",
-    "upload_success": "Uploaded {test}'s result for {name}"
+    "upload_success": "Uploaded {test}'s result for {name}",
+    "details_title": "Request Details",
+    "details_test": "Test",
+    "details_type": "Type",
+    "type_analysis": "Lab Test",
+    "type_xray": "X-ray",
+    "details_price": "Price",
+    "details_result": "Result",
+    "details_no_result_yet": "No result uploaded yet"
   },
   "patients_screen": {
     "title": "Patient Files",

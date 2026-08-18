@@ -32,8 +32,8 @@ class AppStatusChip extends StatelessWidget {
           AppColors.errorColor.themeColor,
         ),
       AppStatusTone.muted => (
-          AppColors.backgroundColor.themeColor,
-          AppColors.mutedColor.themeColor,
+          AppColors.primaryColor.themeColor.withOpacity(0.8),
+          Colors.white
         ),
     };
 

@@ -69,13 +69,13 @@ Future<void> setupDi() async {
   getIt.registerLazySingleton(() => InboxRepo());
   getIt.registerLazySingleton(() => BookingsRepo());
   getIt.registerLazySingleton(() => CalendarRepo());
-  getIt.registerLazySingleton(() => StaffRepo());
+  getIt.registerLazySingleton(() => StaffRepo(dio: getIt()));
   getIt.registerLazySingleton(() => SchedulesRepo());
   getIt.registerLazySingleton(() => HomecareRepo());
   getIt.registerLazySingleton(() => BillingRepo());
   getIt.registerLazySingleton(() => DocsRepo());
-  getIt.registerLazySingleton(() => ServicesRepo());
-  getIt.registerLazySingleton(() => SpecialtiesRepo());
+  getIt.registerLazySingleton(() => ServicesRepo(dio: getIt()));
+  getIt.registerLazySingleton(() => SpecialtiesRepo(dio: getIt()));
   getIt.registerLazySingleton(() => BranchesRepo(dio: getIt()));
   getIt.registerLazySingleton(() => PolicyRepo());
   getIt.registerLazySingleton(() => BrandingRepo());

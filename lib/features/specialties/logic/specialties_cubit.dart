@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/network/network_exceptions.dart';
 import '../data/models/specialty_model.dart';
 import '../data/specialties_repo.dart';
 
@@ -17,18 +18,8 @@ class SpecialtiesCubit extends Cubit<SpecialtiesState> {
       final specialties = await _repo.getSpecialties();
       emit(SpecialtiesSuccess(specialties));
     } catch (e) {
-      emit(SpecialtiesError(e.toString()));
+      final msg = e is NetworkException ? e.message : e.toString();
+      emit(SpecialtiesError(msg));
     }
-  }
-
-  /// Adds a new specialty, or replaces an existing one that shares its id —
-  /// used by [SpecialtyEditSheet]'s add/edit flow.
-  void upsert(SpecialtyModel model) {
-    final current = state;
-    if (current is! SpecialtiesSuccess) return;
-    final exists = current.specialties.any((s) => s.id == model.id);
-    emit(SpecialtiesSuccess(exists
-        ? [for (final s in current.specialties) if (s.id == model.id) model else s]
-        : [...current.specialties, model]));
   }
 }

@@ -31,7 +31,7 @@ class AppInitialsAvatar extends StatelessWidget {
         borderRadius: BorderRadius.circular((size * 0.31).r),
       ),
       child: AppText(
-        initial,
+        "$initial",
         isHeading: true,
         fontSize: size * 0.36,
         fontWeight: FontWeight.w600,

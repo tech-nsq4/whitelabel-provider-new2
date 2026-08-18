@@ -64,7 +64,7 @@ class ConvertHelper {
 
     for (final value in candidates) {
       final parsed = DateTime.tryParse(value);
-      if (parsed != null) return parsed;
+      if (parsed != null) return parsed.toLocal();
     }
 
     return null;

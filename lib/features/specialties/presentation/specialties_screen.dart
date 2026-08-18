@@ -3,24 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../app/router/routes.dart';
 import '../../../core/di/injection.dart';
 import '../../../core/extensions/extensions.dart';
 import '../../../core/utils/app_colors.dart';
-import '../../../core/utils/app_overlay.dart';
 import '../../../core/utils/app_svg_icons.dart';
 import '../../../core/utils/locale_keys.dart';
-import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/app_header_icon_button.dart';
 import '../../../core/widgets/app_screen_header.dart';
-import '../../../core/widgets/app_svg_icon.dart';
-import '../../../core/widgets/app_text.dart';
 import '../../../core/widgets/screen_state_layout.dart';
 import '../data/models/specialty_model.dart';
 import '../logic/specialties_cubit.dart';
-import 'widgets/specialty_edit_sheet.dart';
 import 'widgets/specialty_tile.dart';
 
-/// "التخصصات" — one specialty per row, shared across every branch.
+/// "التخصصات" — a read-only directory of the clinic's specialties.
 class SpecialtiesScreen extends StatefulWidget {
   const SpecialtiesScreen({super.key});
 
@@ -37,22 +33,9 @@ class _SpecialtiesScreenState extends State<SpecialtiesScreen> {
     super.dispose();
   }
 
-  void _openEdit([SpecialtyModel? existing]) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => SpecialtyEditSheet(
-        existing: existing,
-        onSubmit: (model) {
-          _cubit.upsert(model);
-          AppOverlay.showSuccess((existing == null
-                  ? LocaleKeys.specialtySheet_successAdd
-                  : LocaleKeys.specialtySheet_successEdit)
-              .tr(namedArgs: {'name': model.name}));
-        },
-      ),
-    );
+  void _openDetails(SpecialtyModel specialty) {
+    Navigator.pushNamed(context, Routes.specialtyDetails,
+        arguments: {'specialty': specialty});
   }
 
   @override
@@ -65,10 +48,12 @@ class _SpecialtiesScreenState extends State<SpecialtiesScreen> {
           bloc: _cubit,
           builder: (context, state) {
             return CustomScreenStateLayout(
+              onRefresh: () async => _cubit.loadSpecialties(),
               isLoading: state is SpecialtiesLoading || state is SpecialtiesInitial,
               error: state is SpecialtiesError
                   ? ErrorModel(code: ErrorEnum.other, errorMessage: state.message)
                   : null,
+              onRetry: () => _cubit.loadSpecialties(),
               builder: (context) {
                 final specialties = (state as SpecialtiesSuccess).specialties;
                 return ListView(
@@ -82,34 +67,13 @@ class _SpecialtiesScreenState extends State<SpecialtiesScreen> {
                         size: 38,
                         onTap: () => Navigator.pop(context),
                       ),
-                      trailing: AppHeaderIconButton(
-                        svgIcon: AppSvgIcons.plus,
-                        color: AppColors.primaryColor.themeColor,
-                        onTap: () => _openEdit(),
-                      ),
-                    ),
-                    16.height,
-                    AppCard(
-                      color: AppColors.surfaceColor.themeColor,
-                      borderColor: Colors.transparent,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AppSvgIcon(AppSvgIcons.info,
-                              size: 17.sp, color: AppColors.primaryColor.themeColor),
-                          11.width,
-                          Expanded(
-                            child: AppText(LocaleKeys.specialtiesScreen_infoBanner.tr(),
-                                fontSize: 11,
-                                height: 1.7,
-                                color: AppColors.textSecondaryColor.themeColor),
-                          ),
-                        ],
-                      ),
                     ),
                     16.height,
                     for (final specialty in specialties)
-                      SpecialtyTile(specialty: specialty, onEdit: () => _openEdit(specialty)),
+                      SpecialtyTile(
+                        specialty: specialty,
+                        onTap: () => _openDetails(specialty),
+                      ),
                   ],
                 );
               },

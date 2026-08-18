@@ -1,46 +1,34 @@
+import 'package:dio/dio.dart';
+
+import '../../../core/network/api_endpoints.dart';
+import '../../../core/network/dio_client.dart';
+import '../../../core/network/network_exceptions.dart';
 import 'models/doctor_profile_model.dart';
 
-/// TODO(api): mock data until `ApiEndpoints.staff` exists.
 class StaffRepo {
+  StaffRepo({required DioClient dio}) : _dio = dio;
+
+  final DioClient _dio;
+
   Future<List<DoctorProfileModel>> getDoctors() async {
-    await Future.delayed(const Duration(milliseconds: 250));
-    return const [
-      DoctorProfileModel(
-        name: 'د. خالد العتيبي',
-        initial: 'خ',
-        specialty: 'استشاري باطنة',
-        availability: StaffAvailability.available,
-        pricing: {'عيادة': 180, 'فيديو': 100},
-        rating: 4.9,
-        occupancyPercent: 92,
-      ),
-      DoctorProfileModel(
-        name: 'د. رهف الدسري',
-        initial: 'ر',
-        specialty: 'استشارية جراحة',
-        availability: StaffAvailability.available,
-        pricing: {'عيادة': 180, 'فيديو': 80, 'منزلية': 250},
-        rating: 4.9,
-        occupancyPercent: 78,
-      ),
-      DoctorProfileModel(
-        name: 'د. سارة المحطاني',
-        initial: 'س',
-        specialty: 'أخصائية أسنان',
-        availability: StaffAvailability.available,
-        pricing: {'عيادة': 200},
-        rating: 4.8,
-        occupancyPercent: 71,
-      ),
-      DoctorProfileModel(
-        name: 'د. وليد الشهري',
-        initial: 'و',
-        specialty: 'استشاري أطفال',
-        availability: StaffAvailability.onLeave,
-        pricing: {'عيادة': 160, 'فيديو': 90},
-        rating: 4.8,
-        occupancyPercent: null,
-      ),
-    ];
+    try {
+      final response = await _dio.get(ApiEndpoints.doctors);
+      return [
+        for (final row in response.data['data'] as List)
+          DoctorProfileModel.fromJson(row as Map<String, dynamic>),
+      ];
+    } on DioException catch (e) {
+      throw NetworkException.fromDioException(e);
+    }
+  }
+
+  Future<DoctorProfileModel> getDoctorDetails(String id) async {
+    try {
+      final response = await _dio.get(ApiEndpoints.doctorDetails(id));
+      return DoctorProfileModel.fromJson(
+          response.data['data'] as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw NetworkException.fromDioException(e);
+    }
   }
 }

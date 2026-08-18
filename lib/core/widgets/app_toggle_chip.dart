@@ -25,15 +25,16 @@ class AppToggleChip extends StatelessWidget {
     return CustomTapEffect(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 9.h),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
         decoration: BoxDecoration(
           color: selected ? AppColors.primaryColor.themeColor : AppColors.cardColor.themeColor,
           borderRadius: BorderRadius.circular(99.r),
           border: selected ? null : Border.all(color: AppColors.dividerColor.themeColor),
         ),
         child: AppText(
+
           label,
-          fontSize: 11.5,
+          fontSize:9.5,
           fontWeight: FontWeight.w600,
           color: selected ? Colors.white : AppColors.textSecondaryColor.themeColor,
         ),

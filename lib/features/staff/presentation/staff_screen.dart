@@ -7,19 +7,16 @@ import '../../../app/router/routes.dart';
 import '../../../core/di/injection.dart';
 import '../../../core/extensions/extensions.dart';
 import '../../../core/utils/app_colors.dart';
-import '../../../core/utils/app_overlay.dart';
 import '../../../core/utils/app_svg_icons.dart';
 import '../../../core/utils/locale_keys.dart';
 import '../../../core/widgets/app_header_icon_button.dart';
 import '../../../core/widgets/app_screen_header.dart';
 import '../../../core/widgets/screen_state_layout.dart';
-import '../../schedules/data/models/work_schedule_model.dart';
 import '../data/models/doctor_profile_model.dart';
 import '../logic/staff_cubit.dart';
-import 'widgets/doctor_edit_sheet.dart';
 import 'widgets/doctor_profile_card.dart';
 
-/// "الأطباء" — per-doctor pricing across in-clinic/video/home-visit modes.
+/// "الأطباء" — a read-only directory of the clinic's doctors.
 class StaffScreen extends StatefulWidget {
   const StaffScreen({super.key});
 
@@ -36,33 +33,9 @@ class _StaffScreenState extends State<StaffScreen> {
     super.dispose();
   }
 
-  void _openEdit([DoctorProfileModel? existing]) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => DoctorEditSheet(
-        existing: existing,
-        onSubmit: (model, {previousName}) {
-          _cubit.upsert(model, previousName: previousName);
-          AppOverlay.showSuccess((existing == null
-                  ? LocaleKeys.doctorSheet_successAdd
-                  : LocaleKeys.doctorSheet_successEdit)
-              .tr(namedArgs: {'name': model.name}));
-        },
-        onOpenSchedule: (doctorName) {
-          final stripped = doctorName.replaceFirst('د. ', '').trim();
-          Navigator.pushNamed(context, Routes.scheduleEditor, arguments: {
-            'doctorName': doctorName,
-            'doctorInitial': (stripped.isNotEmpty ? stripped : doctorName).substring(0, 1),
-            'mode': WorkScheduleMode.clinic,
-            'existing': null,
-            'onSave': (WorkScheduleModel model) => AppOverlay.showSuccess(
-                LocaleKeys.scheduleEditor_success.tr(namedArgs: {'name': doctorName})),
-          });
-        },
-      ),
-    );
+  void _openDetails(DoctorProfileModel doctor) {
+    Navigator.pushNamed(context, Routes.doctorDetails,
+        arguments: {'doctor': doctor});
   }
 
   @override
@@ -75,10 +48,12 @@ class _StaffScreenState extends State<StaffScreen> {
           bloc: _cubit,
           builder: (context, state) {
             return CustomScreenStateLayout(
+              onRefresh: () async => _cubit.loadDoctors(),
               isLoading: state is StaffLoading || state is StaffInitial,
               error: state is StaffError
                   ? ErrorModel(code: ErrorEnum.other, errorMessage: state.message)
                   : null,
+              onRetry: () => _cubit.loadDoctors(),
               builder: (context) {
                 final doctors = (state as StaffSuccess).doctors;
                 return ListView(
@@ -92,18 +67,12 @@ class _StaffScreenState extends State<StaffScreen> {
                         size: 38,
                         onTap: () => Navigator.pop(context),
                       ),
-                      trailing: AppHeaderIconButton(
-                        svgIcon: AppSvgIcons.plus,
-                        color: AppColors.primaryColor.themeColor,
-                        onTap: () => _openEdit(),
-                      ),
                     ),
                     16.height,
                     for (final doctor in doctors)
                       DoctorProfileCard(
                         doctor: doctor,
-                        onEditPricing: () => _openEdit(doctor),
-                        onSchedules: () => Navigator.pushNamed(context, Routes.schedules),
+                        onTap: () => _openDetails(doctor),
                       ),
                   ],
                 );
