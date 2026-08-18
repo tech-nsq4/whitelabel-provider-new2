@@ -345,6 +345,7 @@ abstract class LocaleKeys {
   static const String status_critical = 'status.critical';
   static const String status_newOrder = 'status.new_order';
   static const String status_abnormal = 'status.abnormal';
+  static const String status_caution = 'status.caution';
   static const String status_expired = 'status.expired';
   static const String status_active = 'status.active';
   static const String status_issued = 'status.issued';
@@ -589,19 +590,18 @@ abstract class LocaleKeys {
   static const String ordersScreen_subtitle = 'orders_screen.subtitle';
   static const String orders_infoBanner = 'orders.info_banner';
   static const String orders_tabAll = 'orders.tab_all';
-  static const String orders_tabNew = 'orders.tab_new';
-  static const String orders_tabInProgress = 'orders.tab_in_progress';
-  static const String orders_start = 'orders.start';
+  static const String orders_tabPending = 'orders.tab_pending';
+  static const String orders_tabCompleted = 'orders.tab_completed';
   static const String orders_upload = 'orders.upload';
   static const String orders_requestedBy = 'orders.requested_by';
   static const String orders_uploadTitle = 'orders.upload_title';
-  static const String orders_uploadReadingLabel = 'orders.upload_reading_label';
-  static const String orders_uploadReadingHint = 'orders.upload_reading_hint';
+  static const String orders_resultRateLabel = 'orders.result_rate_label';
+  static const String orders_noteLabel = 'orders.note_label';
+  static const String orders_noteHint = 'orders.note_hint';
   static const String orders_uploadFileHint = 'orders.upload_file_hint';
   static const String orders_uploadNote = 'orders.upload_note';
   static const String orders_uploadSubmit = 'orders.upload_submit';
   static const String orders_uploadSuccess = 'orders.upload_success';
-  static const String orders_startSuccess = 'orders.start_success';
 
   // ─── Patients (list) ──────────────────────────────────────────────────────
   static const String patientsScreen_title = 'patients_screen.title';

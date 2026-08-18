@@ -147,8 +147,9 @@ class _LayoutScreenState extends State<LayoutScreen> {
                 return BlocBuilder<OrdersCubit, OrdersState>(
                   bloc: getIt<OrdersCubit>(),
                   builder: (context, ordersState) {
-                    final ordersCount =
-                        ordersState is OrdersSuccess ? ordersState.orders.length : 0;
+                    final ordersCount = ordersState is OrdersSuccess
+                        ? ordersState.requests.where((r) => !r.hasResult).length
+                        : 0;
                     return CustomNavBar(
                       currentIndex: _currentIndex,
                       items: _navItems,

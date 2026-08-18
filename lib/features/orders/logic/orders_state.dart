@@ -16,11 +16,11 @@ final class OrdersLoading extends OrdersState {
 }
 
 final class OrdersSuccess extends OrdersState {
-  final List<LabOrderModel> orders;
-  const OrdersSuccess(this.orders);
+  final List<TestRequestModel> requests;
+  const OrdersSuccess(this.requests);
 
   @override
-  List<Object?> get props => [orders];
+  List<Object?> get props => [requests];
 }
 
 final class OrdersError extends OrdersState {

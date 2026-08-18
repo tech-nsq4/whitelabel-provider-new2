@@ -281,7 +281,8 @@
     "waiting_minutes": "منتظر {minutes} دقائق",
     "waiting_one_minute": "منتظر دقيقة",
     "doc_sick_leave": "إجازة مرضية",
-    "doc_medical_report": "تقرير طبي"
+    "doc_medical_report": "تقرير طبي",
+    "caution": "تنبيه"
   },
   "agenda": {
     "title": "جدول اليوم",
@@ -322,11 +323,25 @@
     "legend_busy": "مزدحم",
     "day_count": "{count} موعدًا · {available} متاحة",
     "add_appointment": "إضافة موعد",
-    "month_1": "يناير", "month_2": "فبراير", "month_3": "مارس", "month_4": "أبريل",
-    "month_5": "مايو", "month_6": "يونيو", "month_7": "يوليو", "month_8": "أغسطس",
-    "month_9": "سبتمبر", "month_10": "أكتوبر", "month_11": "نوفمبر", "month_12": "ديسمبر",
-    "wd_sun": "أحد", "wd_mon": "اثنين", "wd_tue": "ثلاثاء", "wd_wed": "أربعاء",
-    "wd_thu": "خميس", "wd_fri": "جمعة", "wd_sat": "سبت"
+    "month_1": "يناير",
+    "month_2": "فبراير",
+    "month_3": "مارس",
+    "month_4": "أبريل",
+    "month_5": "مايو",
+    "month_6": "يونيو",
+    "month_7": "يوليو",
+    "month_8": "أغسطس",
+    "month_9": "سبتمبر",
+    "month_10": "أكتوبر",
+    "month_11": "نوفمبر",
+    "month_12": "ديسمبر",
+    "wd_sun": "أحد",
+    "wd_mon": "اثنين",
+    "wd_tue": "ثلاثاء",
+    "wd_wed": "أربعاء",
+    "wd_thu": "خميس",
+    "wd_fri": "جمعة",
+    "wd_sat": "سبت"
   },
   "quick_action": {
     "title": "إجراء سريع",
@@ -480,19 +495,18 @@
   "orders": {
     "info_banner": "الطلبات تصل هنا تلقائيًا من شاشة الكشف. برفع النتيجة تظهر فورًا في تطبيق المريض ويوصله إشعار.",
     "tab_all": "الكل",
-    "tab_new": "جديدة",
-    "tab_in_progress": "قيد التنفيذ",
-    "start": "ابدأ التنفيذ",
+    "tab_pending": "بانتظار النتيجة",
+    "tab_completed": "مكتملة",
     "upload": "ارفع النتيجة",
     "requested_by": "طلبه",
     "upload_title": "رفع نتيجة الفحص",
-    "upload_reading_label": "القراءة",
-    "upload_reading_hint": "مثال: 2.4 mIU/L",
-    "upload_file_hint": "اضغط لإرفاق ملف النتيجة PDF",
+    "result_rate_label": "نتيجة الفحص",
+    "note_label": "ملاحظة",
+    "note_hint": "ملاحظات اختيارية عن النتيجة",
+    "upload_file_hint": "اضغط لإرفاق صورة النتيجة",
     "upload_note": "بالرفع تظهر النتيجة فورًا في تطبيق المريض ويصله إشعار، وتتحفظ في ملف الطبيب الطالب.",
     "upload_submit": "ارفع وأرسل للمريض",
-    "upload_success": "رُفعت نتيجة {test} لـ {name}",
-    "start_success": "بدأ تنفيذ {test} لـ {name}"
+    "upload_success": "رُفعت نتيجة {test} لـ {name}"
   },
   "patients_screen": {
     "title": "ملفات المرضى",

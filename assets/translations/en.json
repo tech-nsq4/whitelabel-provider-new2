@@ -281,7 +281,8 @@
     "waiting_minutes": "Waiting {minutes} min",
     "waiting_one_minute": "Waiting a minute",
     "doc_sick_leave": "Sick Leave",
-    "doc_medical_report": "Medical Report"
+    "doc_medical_report": "Medical Report",
+    "caution": "Caution"
   },
   "agenda": {
     "title": "Today's Schedule",
@@ -322,11 +323,25 @@
     "legend_busy": "Busy",
     "day_count": "{count} appointments · {available} open",
     "add_appointment": "Add Appointment",
-    "month_1": "January", "month_2": "February", "month_3": "March", "month_4": "April",
-    "month_5": "May", "month_6": "June", "month_7": "July", "month_8": "August",
-    "month_9": "September", "month_10": "October", "month_11": "November", "month_12": "December",
-    "wd_sun": "Sun", "wd_mon": "Mon", "wd_tue": "Tue", "wd_wed": "Wed",
-    "wd_thu": "Thu", "wd_fri": "Fri", "wd_sat": "Sat"
+    "month_1": "January",
+    "month_2": "February",
+    "month_3": "March",
+    "month_4": "April",
+    "month_5": "May",
+    "month_6": "June",
+    "month_7": "July",
+    "month_8": "August",
+    "month_9": "September",
+    "month_10": "October",
+    "month_11": "November",
+    "month_12": "December",
+    "wd_sun": "Sun",
+    "wd_mon": "Mon",
+    "wd_tue": "Tue",
+    "wd_wed": "Wed",
+    "wd_thu": "Thu",
+    "wd_fri": "Fri",
+    "wd_sat": "Sat"
   },
   "quick_action": {
     "title": "Quick Action",
@@ -480,19 +495,18 @@
   "orders": {
     "info_banner": "Orders land here automatically from the consultation screen. Uploading a result shows it instantly in the patient's app with a notification.",
     "tab_all": "All",
-    "tab_new": "New",
-    "tab_in_progress": "In Progress",
-    "start": "Start",
+    "tab_pending": "Pending",
+    "tab_completed": "Completed",
     "upload": "Upload Result",
     "requested_by": "Requested by",
     "upload_title": "Upload Test Result",
-    "upload_reading_label": "Reading",
-    "upload_reading_hint": "e.g. 2.4 mIU/L",
-    "upload_file_hint": "Tap to attach the result as a PDF",
+    "result_rate_label": "Result",
+    "note_label": "Note",
+    "note_hint": "Optional notes about the result",
+    "upload_file_hint": "Tap to attach the result image",
     "upload_note": "Uploading shows the result instantly in the patient's app with a notification, and syncs it to the requesting doctor's file.",
     "upload_submit": "Upload & Send to Patient",
-    "upload_success": "Uploaded {test}'s result for {name}",
-    "start_success": "Started {test} for {name}"
+    "upload_success": "Uploaded {test}'s result for {name}"
   },
   "patients_screen": {
     "title": "Patient Files",

@@ -1,56 +1,47 @@
-import 'models/lab_order_model.dart';
+import 'dart:io';
 
-/// Reads and mutates the lab/imaging order queue.
-///
-/// TODO(api): mock data until `ApiEndpoints.orders` exists — swap
-/// [getOrders] for a real `DioClient.get` call and keep the return shape so
-/// [OrdersCubit] doesn't need to change.
+import 'package:dio/dio.dart';
+
+import '../../../core/network/api_endpoints.dart';
+import '../../../core/network/dio_client.dart';
+import '../../../core/network/network_exceptions.dart';
+import 'models/test_request_model.dart';
+
 class OrdersRepo {
-  final _orders = <LabOrderModel>[
-    const LabOrderModel(
-      id: 'ord-1',
-      patientName: 'سعد المطيري',
-      patientInitial: 'س',
-      mrn: '29881',
-      requestedAtLabel: 'اليوم 09:20',
-      testName: 'سكر تراكمي HbA1c',
-      requestingDoctor: 'د. خالد العتيبي',
-      status: LabOrderStatus.newOrder,
-    ),
-    const LabOrderModel(
-      id: 'ord-2',
-      patientName: 'منيرة العتيبي',
-      patientInitial: 'م',
-      mrn: '30412',
-      requestedAtLabel: '8 يونيو 11:40',
-      testName: 'وظائف الغدة TSH',
-      requestingDoctor: 'د. خالد العتيبي',
-      status: LabOrderStatus.inProgress,
-    ),
-    const LabOrderModel(
-      id: 'ord-3',
-      patientName: 'منيرة العتيبي',
-      patientInitial: 'م',
-      mrn: '30412',
-      requestedAtLabel: '8 يونيو 11:42',
-      testName: 'أشعة سينية — الناحية اليسرى',
-      requestingDoctor: 'د. خالد العتيبي',
-      status: LabOrderStatus.inProgress,
-    ),
-    const LabOrderModel(
-      id: 'ord-4',
-      patientName: 'وليد الشمري',
-      patientInitial: 'و',
-      mrn: '28110',
-      requestedAtLabel: 'اليوم 08:55',
-      testName: 'صورة دم كاملة CBC',
-      requestingDoctor: 'د. رهف الدسري',
-      status: LabOrderStatus.newOrder,
-    ),
-  ];
+  OrdersRepo({required DioClient dio}) : _dio = dio;
 
-  Future<List<LabOrderModel>> getOrders() async {
-    await Future.delayed(const Duration(milliseconds: 250));
-    return List.unmodifiable(_orders);
+  final DioClient _dio;
+
+  Future<List<TestRequestModel>> getTestRequests() async {
+    try {
+      final response = await _dio.get(ApiEndpoints.testRequests);
+      return [
+        for (final row in response.data['data'] as List)
+          TestRequestModel.fromJson(row as Map<String, dynamic>),
+      ];
+    } on DioException catch (e) {
+      throw NetworkException.fromDioException(e);
+    }
+  }
+
+  Future<void> uploadResult({
+    required String testRequestId,
+    required ResultRate resultRate,
+    String? note,
+    File? image,
+  }) async {
+    try {
+      final data = <String, dynamic>{
+        'result_rate': resultRateToJson(resultRate),
+        if (note != null && note.isNotEmpty) 'note': note,
+        if (image != null)
+          'image': await MultipartFile.fromFile(image.path,
+              filename: image.path.split('/').last),
+      };
+      await _dio.postForm(
+          ApiEndpoints.testRequestResult(testRequestId), FormData.fromMap(data));
+    } on DioException catch (e) {
+      throw NetworkException.fromDioException(e);
+    }
   }
 }

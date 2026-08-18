@@ -15,13 +15,11 @@ import '../../../core/widgets/app_segmented_tabs.dart';
 import '../../../core/widgets/app_svg_icon.dart';
 import '../../../core/widgets/app_text.dart';
 import '../../../core/widgets/screen_state_layout.dart';
-import '../data/models/lab_order_model.dart';
+import '../data/models/test_request_model.dart';
 import '../logic/orders_cubit.dart';
 import 'widgets/order_card.dart';
 import 'widgets/order_upload_sheet.dart';
 
-/// Bottom nav's "Orders" destination — lab/imaging requests raised from
-/// consultations.
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
 
@@ -39,24 +37,27 @@ class _OrdersScreenState extends State<OrdersScreen> {
     if (cubit.state is OrdersInitial) cubit.loadOrders();
   }
 
-  void _onAction(LabOrderModel order) {
-    if (order.status == LabOrderStatus.newOrder) {
-      getIt<OrdersCubit>().startOrder(order.id);
-      AppOverlay.showSuccess(LocaleKeys.orders_startSuccess
-          .tr(namedArgs: {'test': order.testName, 'name': order.patientName}));
-      return;
-    }
-
+  void _openUploadSheet(TestRequestModel request) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => OrderUploadSheet(
-        order: order,
-        onSubmit: (reading, flag) {
-          getIt<OrdersCubit>().markUploaded(order.id);
-          AppOverlay.showSuccess(LocaleKeys.orders_uploadSuccess
-              .tr(namedArgs: {'test': order.testName, 'name': order.patientName}));
+        request: request,
+        onSubmit: ({required resultRate, note, image}) async {
+          final success = await getIt<OrdersCubit>().uploadResult(
+            testRequestId: '${request.id}',
+            resultRate: resultRate,
+            note: note,
+            image: image,
+          );
+          if (success) {
+            AppOverlay.showSuccess(LocaleKeys.orders_uploadSuccess.tr(namedArgs: {
+              'test': request.testName ?? '',
+              'name': request.patientName ?? '',
+            }));
+          }
+          return success;
         },
       ),
     );
@@ -78,11 +79,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   : null,
               onRetry: () => getIt<OrdersCubit>().loadOrders(),
               builder: (context) {
-                final orders = (state as OrdersSuccess).orders;
+                final requests = (state as OrdersSuccess).requests;
                 final filtered = switch (_tabIndex) {
-                  1 => orders.where((o) => o.status == LabOrderStatus.newOrder).toList(),
-                  2 => orders.where((o) => o.status == LabOrderStatus.inProgress).toList(),
-                  _ => orders,
+                  1 => requests.where((r) => !r.hasResult).toList(),
+                  2 => requests.where((r) => r.hasResult).toList(),
+                  _ => requests,
                 };
 
                 return ListView(
@@ -117,15 +118,16 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     AppSegmentedTabs(
                       labels: [
                         LocaleKeys.orders_tabAll.tr(),
-                        LocaleKeys.orders_tabNew.tr(),
-                        LocaleKeys.orders_tabInProgress.tr(),
+                        LocaleKeys.orders_tabPending.tr(),
+                        LocaleKeys.orders_tabCompleted.tr(),
                       ],
                       selectedIndex: _tabIndex,
                       onChanged: (i) => setState(() => _tabIndex = i),
                     ),
                     16.height,
-                    for (final order in filtered)
-                      OrderCard(order: order, onAction: () => _onAction(order)),
+                    for (final request in filtered)
+                      OrderCard(
+                          request: request, onUpload: () => _openUploadSheet(request)),
                   ],
                 );
               },

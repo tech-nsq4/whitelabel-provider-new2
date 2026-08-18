@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart' as tr;
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-
 import 'app/app.dart';
 import 'core/di/injection.dart';
 

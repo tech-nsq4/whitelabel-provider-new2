@@ -22,6 +22,10 @@ class ApiEndpoints {
   static const String locations = 'locations';
   static const String clinics = 'clinics';
 
+  // ─── Test requests ──────────────────────────────────────────────────────
+  static const String testRequests = 'test-requests';
+  static String testRequestResult(String id) => 'test-requests/$id/result';
+
   // ─── Device ───────────────────────────────────────────────────────────────
   /// Registers/refreshes this device's push-notification token.
   static const String fcmToken = 'fcm-token';

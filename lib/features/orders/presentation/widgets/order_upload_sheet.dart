@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/extensions/extensions.dart';
 import '../../../../core/utils/app_colors.dart';
@@ -11,38 +14,53 @@ import '../../../../core/widgets/app_svg_icon.dart';
 import '../../../../core/widgets/app_text.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/app_toggle_chip.dart';
-import '../../data/models/lab_order_model.dart';
+import '../../data/models/test_request_model.dart';
 
-enum OrderResultFlag { normal, abnormal, critical }
-
-/// The reference design's `#sh-upload` sheet — records a test's reading,
-/// clinical flag and (mock) attached file, then hands them back via
-/// [onSubmit].
 class OrderUploadSheet extends StatefulWidget {
-  const OrderUploadSheet({super.key, required this.order, required this.onSubmit});
+  const OrderUploadSheet({super.key, required this.request, required this.onSubmit});
 
-  final LabOrderModel order;
-  final void Function(String reading, OrderResultFlag flag) onSubmit;
+  final TestRequestModel request;
+  final Future<bool> Function(
+      {required ResultRate resultRate, String? note, File? image}) onSubmit;
 
   @override
   State<OrderUploadSheet> createState() => _OrderUploadSheetState();
 }
 
 class _OrderUploadSheetState extends State<OrderUploadSheet> {
-  final _readingController = TextEditingController();
-  OrderResultFlag _flag = OrderResultFlag.normal;
-  bool _attached = false;
+  final _noteController = TextEditingController();
+  ResultRate _rate = ResultRate.normal;
+  File? _image;
+  bool _submitting = false;
 
   @override
   void dispose() {
-    _readingController.dispose();
+    _noteController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (picked != null) setState(() => _image = File(picked.path));
+  }
+
+  Future<void> _submit() async {
+    setState(() => _submitting = true);
+    final success = await widget.onSubmit(
+      resultRate: _rate,
+      note: _noteController.text.trim(),
+      image: _image,
+    );
+    if (!mounted) return;
+    setState(() => _submitting = false);
+    if (success) Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 26.h),
+      padding: EdgeInsets.fromLTRB(
+          20.w, 14.h, 20.w, 26.h + MediaQuery.viewInsetsOf(context).bottom),
       decoration: BoxDecoration(
         color: AppColors.cardColor.themeColor,
         borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
@@ -68,67 +86,67 @@ class _OrderUploadSheetState extends State<OrderUploadSheet> {
                 fontSize: 17,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimaryColor.themeColor),
-            AppText('${widget.order.patientName} — ${widget.order.testName}',
+            AppText(
+                '${widget.request.patientName ?? ''} — ${widget.request.testName ?? ''}',
                 fontSize: 12, color: AppColors.mutedColor.themeColor),
             18.height,
-            AppText(LocaleKeys.orders_uploadReadingLabel.tr(),
+            AppText(LocaleKeys.orders_resultRateLabel.tr(),
                 fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.mutedColor.themeColor),
             8.height,
-            CustomTextField(
-              controller: _readingController,
-              hint: LocaleKeys.orders_uploadReadingHint.tr(),
-            ),
-            14.height,
             Wrap(
               spacing: 8.w,
               children: [
                 AppToggleChip(
                   label: LocaleKeys.status_normal.tr(),
-                  selected: _flag == OrderResultFlag.normal,
-                  onTap: () => setState(() => _flag = OrderResultFlag.normal),
+                  selected: _rate == ResultRate.normal,
+                  onTap: () => setState(() => _rate = ResultRate.normal),
                 ),
                 AppToggleChip(
                   label: LocaleKeys.status_abnormal.tr(),
-                  selected: _flag == OrderResultFlag.abnormal,
-                  onTap: () => setState(() => _flag = OrderResultFlag.abnormal),
+                  selected: _rate == ResultRate.notNormal,
+                  onTap: () => setState(() => _rate = ResultRate.notNormal),
                 ),
                 AppToggleChip(
-                  label: LocaleKeys.status_critical.tr(),
-                  selected: _flag == OrderResultFlag.critical,
-                  onTap: () => setState(() => _flag = OrderResultFlag.critical),
+                  label: LocaleKeys.status_caution.tr(),
+                  selected: _rate == ResultRate.caution,
+                  onTap: () => setState(() => _rate = ResultRate.caution),
                 ),
               ],
             ),
+            14.height,
+            AppText(LocaleKeys.orders_noteLabel.tr(),
+                fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.mutedColor.themeColor),
+            8.height,
+            CustomTextField(
+              controller: _noteController,
+              hint: LocaleKeys.orders_noteHint.tr(),
+              maxLines: 3,
+            ),
             16.height,
             InkWell(
-              onTap: () => setState(() => _attached = true),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(22.r),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14.r),
-                  border: Border.all(
-                    color: _attached
-                        ? AppColors.primaryColor.themeColor
-                        : AppColors.hintColor.themeColor,
-                    width: 1.5,
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    AppSvgIcon(
-                      _attached ? AppSvgIcons.checkCircle : AppSvgIcons.document,
-                      size: 26.sp,
-                      color: _attached
-                          ? AppColors.primaryColor.themeColor
-                          : AppColors.mutedColor.themeColor,
+              onTap: _pickImage,
+              child: _image != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(14.r),
+                      child: Image.file(_image!, height: 140.h, width: double.infinity, fit: BoxFit.cover),
+                    )
+                  : Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(22.r),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14.r),
+                        border: Border.all(color: AppColors.hintColor.themeColor, width: 1.5),
+                      ),
+                      child: Column(
+                        children: [
+                          AppSvgIcon(AppSvgIcons.document,
+                              size: 26.sp, color: AppColors.mutedColor.themeColor),
+                          7.height,
+                          AppText(LocaleKeys.orders_uploadFileHint.tr(),
+                              fontSize: 11.5, color: AppColors.mutedColor.themeColor),
+                        ],
+                      ),
                     ),
-                    7.height,
-                    AppText(LocaleKeys.orders_uploadFileHint.tr(),
-                        fontSize: 11.5, color: AppColors.mutedColor.themeColor),
-                  ],
-                ),
-              ),
             ),
             16.height,
             Container(
@@ -143,11 +161,9 @@ class _OrderUploadSheetState extends State<OrderUploadSheet> {
             ),
             16.height,
             CustomButton(
-              onTap: () {
-                Navigator.pop(context);
-                widget.onSubmit(_readingController.text.trim(), _flag);
-              },
+              onTap: _submit,
               title: LocaleKeys.orders_uploadSubmit.tr(),
+              loading: _submitting,
             ),
           ],
         ),
