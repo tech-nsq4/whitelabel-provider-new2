@@ -184,8 +184,6 @@ abstract class LocaleKeys {
   // ─── Dashboard (Today) ──────────────────────────────────────────────────
   static const String dashboard_eyebrowToday = 'dashboard.eyebrow_today';
   static const String dashboard_title = 'dashboard.title';
-  static const String dashboard_notificationsToast =
-      'dashboard.notifications_toast';
   static const String dashboard_statAppointments =
       'dashboard.stat_appointments';
   static const String dashboard_statAppointmentsSub =
@@ -657,4 +655,12 @@ abstract class LocaleKeys {
   static const String error_unauthorized = 'error.unauthorized';
   static const String error_notFound = 'error.not_found';
   static const String error_generic = 'error.generic';
+
+  // ─── Notifications ──────────────────────────────────────────────────────
+  // `notifications.booking.<type>.manager.title`/`.body` aren't listed here
+  // — the backend sends those dot-paths directly on each notification, and
+  // the UI calls `.tr()` on the raw string instead of a LocaleKeys constant.
+  static const String notifications_title = 'notifications.title';
+  static const String notifications_subtitle = 'notifications.subtitle';
+  static const String notifications_empty = 'notifications.empty';
 }

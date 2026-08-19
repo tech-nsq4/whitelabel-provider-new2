@@ -145,7 +145,6 @@
   "dashboard": {
     "eyebrow_today": "Today",
     "title": "Today's Overview",
-    "notifications_toast": "{count} new notifications",
     "stat_appointments": "Today's Appointments",
     "stat_appointments_sub": "Online {online} · In-clinic {clinic}",
     "stat_new_bookings": "New Bookings",
@@ -567,5 +566,36 @@
     "unauthorized": "Session expired, please login again",
     "not_found": "Resource not found",
     "generic": "Something went wrong, please try again"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Latest booking updates",
+    "empty": "No notifications yet",
+    "booking": {
+      "booked": {
+        "manager": {
+          "title": "New Booking",
+          "body": "A new booking was received and is awaiting review."
+        }
+      },
+      "accepted": {
+        "manager": {
+          "title": "Booking Accepted",
+          "body": "The booking has been accepted and confirmed."
+        }
+      },
+      "started": {
+        "manager": {
+          "title": "Consultation Started",
+          "body": "The doctor has started the patient's consultation."
+        }
+      },
+      "completed": {
+        "manager": {
+          "title": "Consultation Completed",
+          "body": "The consultation has ended and its results were saved."
+        }
+      }
+    }
   }
 }

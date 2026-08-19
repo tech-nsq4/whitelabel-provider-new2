@@ -13,6 +13,7 @@ import '../../features/consultation/presentation/consultation_screen.dart';
 import '../../features/docs/presentation/docs_screen.dart';
 import '../../features/homecare/presentation/homecare_screen.dart';
 import '../../features/inbox/presentation/inbox_screen.dart';
+import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/layout/presentation/layout_screen.dart';
 import '../../features/more/presentation/more_screen.dart';
 import '../../features/onboarding/presentation/on_boarding_screen.dart';
@@ -83,6 +84,9 @@ class RouteGenerator {
 
       case Routes.inbox:
         return _pageRoute(const InboxScreen());
+
+      case Routes.notifications:
+        return _pageRoute(const NotificationsScreen());
 
       case Routes.bookings:
         return _pageRoute(const BookingsScreen());

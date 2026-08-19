@@ -12,6 +12,7 @@ class Routes {
   static const String queueDetails = '/queue-details';
   static const String agenda = '/agenda';
   static const String inbox = '/inbox';
+  static const String notifications = '/notifications';
   static const String bookings = '/bookings';
   static const String orderDetails = '/order-details';
   static const String calendar = '/calendar';

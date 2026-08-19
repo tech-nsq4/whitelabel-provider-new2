@@ -145,7 +145,6 @@
   "dashboard": {
     "eyebrow_today": "اليوم",
     "title": "لوحة اليوم",
-    "notifications_toast": "{count} تنبيهات جديدة",
     "stat_appointments": "مواعيد اليوم",
     "stat_appointments_sub": "أونلاين {online} · بالعيادة {clinic}",
     "stat_new_bookings": "حجوزات جديدة",
@@ -567,5 +566,36 @@
     "unauthorized": "انتهت الجلسة، يرجى تسجيل الدخول مجدداً",
     "not_found": "المورد غير موجود",
     "generic": "حدث خطأ ما، حاول مرة أخرى"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "subtitle": "آخر تحديثات الحجوزات",
+    "empty": "لا توجد إشعارات حتى الآن",
+    "booking": {
+      "booked": {
+        "manager": {
+          "title": "حجز جديد",
+          "body": "تم استلام حجز جديد وينتظر المراجعة."
+        }
+      },
+      "accepted": {
+        "manager": {
+          "title": "تم قبول الموعد",
+          "body": "تم قبول الحجز وتأكيده."
+        }
+      },
+      "started": {
+        "manager": {
+          "title": "بدأ الكشف",
+          "body": "بدأ الطبيب الكشف على المريض."
+        }
+      },
+      "completed": {
+        "manager": {
+          "title": "اكتمل الكشف",
+          "body": "تم إنهاء الكشف وتسجيل نتائجه."
+        }
+      }
+    }
   }
 }

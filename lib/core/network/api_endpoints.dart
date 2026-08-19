@@ -34,6 +34,9 @@ class ApiEndpoints {
   static const String specializations = 'specializations';
   static const String subSpecializations = 'sub-specializations';
 
+  // ─── Notifications ──────────────────────────────────────────────────────
+  static const String notifications = 'notifications';
+
   // ─── Device ───────────────────────────────────────────────────────────────
   /// Registers/refreshes this device's push-notification token.
   static const String fcmToken = 'fcm-token';

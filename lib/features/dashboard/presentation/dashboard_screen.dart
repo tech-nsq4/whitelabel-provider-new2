@@ -7,7 +7,6 @@ import '../../../app/router/routes.dart';
 import '../../../core/di/injection.dart';
 import '../../../core/extensions/extensions.dart';
 import '../../../core/utils/app_colors.dart';
-import '../../../core/utils/app_overlay.dart';
 import '../../../core/utils/app_svg_icons.dart';
 import '../../../core/utils/locale_keys.dart';
 import '../../../core/widgets/app_button.dart';
@@ -17,6 +16,7 @@ import '../../../core/widgets/app_initials_avatar.dart';
 import '../../../core/widgets/app_screen_header.dart';
 import '../../../core/widgets/app_section_title.dart';
 import '../../../core/widgets/screen_state_layout.dart';
+import '../../notifications/logic/notifications_cubit.dart';
 import '../../profile/logic/profile_cubit.dart';
 import '../logic/dashboard_cubit.dart';
 import 'widgets/dashboard_booking_tile.dart';
@@ -38,6 +38,15 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   late final _cubit = getIt<DashboardCubit>()..loadOverview();
+
+  @override
+  void initState() {
+    super.initState();
+    final notifications = getIt<NotificationsCubit>();
+    if (notifications.state is NotificationsInitial) {
+      notifications.loadNotifications();
+    }
+  }
 
   @override
   void dispose() {
@@ -71,13 +80,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       title: LocaleKeys.dashboard_title.tr(),
                       trailing: Row(
                         children: [
-                          AppHeaderIconButton(
-                            svgIcon: AppSvgIcons.bell,
-                            badgeCount: 3,
-                            onTap: () => AppOverlay.showSuccess(
-                              LocaleKeys.dashboard_notificationsToast
-                                  .tr(namedArgs: {'count': '3'}),
-                            ),
+                          BlocBuilder<NotificationsCubit, NotificationsState>(
+                            bloc: getIt<NotificationsCubit>(),
+                            builder: (context, notificationsState) {
+                              final unreadCount =
+                                  getIt<NotificationsCubit>().unreadCount;
+                              return AppHeaderIconButton(
+                                svgIcon: AppSvgIcons.bell,
+                                badgeCount: unreadCount,
+                                onTap: () => Navigator.pushNamed(
+                                    context, Routes.notifications),
+                              );
+                            },
                           ),
                           9.width,
                           Builder(builder: (context) {
