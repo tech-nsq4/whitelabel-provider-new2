@@ -16,7 +16,7 @@ import '../../../core/widgets/app_initials_avatar.dart';
 import '../../../core/widgets/app_screen_header.dart';
 import '../../../core/widgets/app_section_title.dart';
 import '../../../core/widgets/screen_state_layout.dart';
-import '../../notifications/logic/notifications_cubit.dart';
+import '../../notifications/logic/notifications_badge_cubit.dart';
 import '../../profile/logic/profile_cubit.dart';
 import '../logic/dashboard_cubit.dart';
 import 'widgets/dashboard_booking_tile.dart';
@@ -38,15 +38,6 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   late final _cubit = getIt<DashboardCubit>()..loadOverview();
-
-  @override
-  void initState() {
-    super.initState();
-    final notifications = getIt<NotificationsCubit>();
-    if (notifications.state is NotificationsInitial) {
-      notifications.loadNotifications();
-    }
-  }
 
   @override
   void dispose() {
@@ -80,11 +71,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       title: LocaleKeys.dashboard_title.tr(),
                       trailing: Row(
                         children: [
-                          BlocBuilder<NotificationsCubit, NotificationsState>(
-                            bloc: getIt<NotificationsCubit>(),
-                            builder: (context, notificationsState) {
-                              final unreadCount =
-                                  getIt<NotificationsCubit>().unreadCount;
+                          BlocBuilder<NotificationsBadgeCubit, int>(
+                            bloc: getIt<NotificationsBadgeCubit>(),
+                            builder: (context, unreadCount) {
                               return AppHeaderIconButton(
                                 svgIcon: AppSvgIcons.bell,
                                 badgeCount: unreadCount,

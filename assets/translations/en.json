@@ -571,6 +571,7 @@
     "title": "Notifications",
     "subtitle": "Latest booking updates",
     "empty": "No notifications yet",
+    "mark_all_read": "Mark All Read",
     "booking": {
       "booked": {
         "manager": {

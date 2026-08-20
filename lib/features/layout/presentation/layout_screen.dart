@@ -12,6 +12,7 @@ import '../../../core/utils/locale_keys.dart';
 import '../../calendar/presentation/widgets/add_appointment_sheet.dart';
 import '../../dashboard/presentation/dashboard_screen.dart';
 import '../../docs/presentation/widgets/issue_document_sheet.dart';
+import '../../notifications/logic/notifications_badge_cubit.dart';
 import '../../orders/logic/orders_cubit.dart';
 import '../../orders/presentation/orders_screen.dart';
 import '../../patients/presentation/patients_screen.dart';
@@ -46,6 +47,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
     super.initState();
     _currentIndex = widget.currentPage;
     _syncDeviceOnLogin();
+    getIt<NotificationsBadgeCubit>().refresh();
   }
 
   /// Fires the two device-housekeeping calls once, right when the

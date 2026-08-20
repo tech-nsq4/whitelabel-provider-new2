@@ -28,6 +28,7 @@ import '../../features/homecare/logic/homecare_cubit.dart';
 import '../../features/inbox/data/inbox_repo.dart';
 import '../../features/inbox/logic/inbox_cubit.dart';
 import '../../features/notifications/data/notifications_repo.dart';
+import '../../features/notifications/logic/notifications_badge_cubit.dart';
 import '../../features/notifications/logic/notifications_cubit.dart';
 import '../../features/orders/data/orders_repo.dart';
 import '../../features/orders/logic/orders_cubit.dart';
@@ -107,16 +108,17 @@ Future<void> setupDi() async {
   getIt.registerFactory(() => BrandingCubit(getIt()));
   getIt.registerFactory(() => AnalyticsCubit(getIt()));
 
-  // `QueueCubit`, `OrdersCubit`, and `NotificationsCubit` are singletons
-  // (not the usual per-screen factory): the bottom nav's queue/orders
-  // badges, the dashboard's notifications bell badge, their own screens,
-  // and the consultation screen (finishing a visit moves the patient to
-  // "done") all need to react to the exact same lists — never call
-  // `.close()` on any of them from a screen's `dispose()`; they live for
-  // the app's session.
+  // `QueueCubit`, `OrdersCubit`, `NotificationsBadgeCubit`, and
+  // `NotificationsCubit` are singletons (not the usual per-screen
+  // factory): the bottom nav's queue/orders badges, the dashboard's
+  // notifications bell badge, their own screens, and the consultation
+  // screen (finishing a visit moves the patient to "done") all need to
+  // react to the exact same lists — never call `.close()` on any of them
+  // from a screen's `dispose()`; they live for the app's session.
   getIt.registerLazySingleton(() => QueueCubit(getIt()));
   getIt.registerLazySingleton(() => OrdersCubit(getIt()));
-  getIt.registerLazySingleton(() => NotificationsCubit(getIt()));
+  getIt.registerLazySingleton(() => NotificationsBadgeCubit(getIt()));
+  getIt.registerLazySingleton(() => NotificationsCubit(getIt(), getIt()));
 
   // `ConsultationCubit` stays a per-screen factory — it takes the shared
   // `QueueCubit` singleton as a dependency so finishing a visit can call

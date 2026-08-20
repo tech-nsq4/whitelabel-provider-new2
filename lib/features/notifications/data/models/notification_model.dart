@@ -38,20 +38,6 @@ class NotificationModel extends Equatable {
 
   bool get isRead => readAt != null;
 
-  /// The backend never persists a read state (`read_at` always comes back
-  /// `null`) — [NotificationsCubit.markAllAsRead] uses this to fake one
-  /// locally for the rest of the session.
-  NotificationModel copyWith({String? readAt}) => NotificationModel(
-        id: id,
-        type: type,
-        titleKey: titleKey,
-        bodyKey: bodyKey,
-        createdAt: createdAt,
-        appointmentId: appointmentId,
-        date: date,
-        readAt: readAt ?? this.readAt,
-      );
-
   factory NotificationModel.fromJson(Map<String, dynamic> json) =>
       NotificationModel(
         id: json['id'] as String,

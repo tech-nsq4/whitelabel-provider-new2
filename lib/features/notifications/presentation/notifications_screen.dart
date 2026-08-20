@@ -8,6 +8,7 @@ import '../../../core/extensions/extensions.dart';
 import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/app_svg_icons.dart';
 import '../../../core/utils/locale_keys.dart';
+import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_header_icon_button.dart';
 import '../../../core/widgets/app_screen_header.dart';
 import '../../../core/widgets/app_text.dart';
@@ -16,7 +17,7 @@ import '../logic/notifications_cubit.dart';
 import 'widgets/notification_tile.dart';
 
 /// "الإشعارات" — booking-lifecycle events (booked/accepted/started/
-/// completed), read-only.
+/// completed).
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
 
@@ -25,15 +26,19 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
+  bool _markingAllRead = false;
+
   @override
   void initState() {
     super.initState();
     final cubit = getIt<NotificationsCubit>();
-    if (cubit.state is NotificationsInitial) {
-      cubit.loadNotifications().then((_) => cubit.markAllAsRead());
-    } else {
-      cubit.markAllAsRead();
-    }
+    if (cubit.state is NotificationsInitial) cubit.loadNotifications();
+  }
+
+  Future<void> _markAllRead() async {
+    setState(() => _markingAllRead = true);
+    await getIt<NotificationsCubit>().markAllAsRead();
+    if (mounted) setState(() => _markingAllRead = false);
   }
 
   @override
@@ -46,11 +51,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           bloc: getIt<NotificationsCubit>(),
           builder: (context, state) {
             return CustomScreenStateLayout(
-              onRefresh: () async {
-                final cubit = getIt<NotificationsCubit>();
-                await cubit.loadNotifications();
-                cubit.markAllAsRead();
-              },
+              onRefresh: () async => getIt<NotificationsCubit>().loadNotifications(),
               isLoading:
                   state is NotificationsLoading || state is NotificationsInitial,
               error: state is NotificationsError
@@ -65,6 +66,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               ),
               builder: (context) {
                 final notifications = (state as NotificationsSuccess).notifications;
+                final hasUnread = notifications.any((n) => !n.isRead);
                 return ListView(
                   padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 32.h),
                   children: [
@@ -76,10 +78,27 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         size: 38,
                         onTap: () => Navigator.pop(context),
                       ),
+                      trailing: hasUnread
+                          ? CustomButton(
+                              onTap: _markAllRead,
+                              title: LocaleKeys.notifications_markAllRead.tr(),
+                              loading: _markingAllRead,
+                              width: 108.w,
+                              height: 34.h,
+                              radius: 10,
+                              fontSize: 10.5,
+                              color: AppColors.surfaceColor.themeColor,
+                              textColor: AppColors.primaryColor.themeColor,
+                            )
+                          : null,
                     ),
                     16.height,
                     for (final notification in notifications)
-                      NotificationTile(notification: notification),
+                      NotificationTile(
+                        notification: notification,
+                        onTap: () => getIt<NotificationsCubit>()
+                            .markAsRead(notification.id),
+                      ),
                   ],
                 );
               },

@@ -663,4 +663,5 @@ abstract class LocaleKeys {
   static const String notifications_title = 'notifications.title';
   static const String notifications_subtitle = 'notifications.subtitle';
   static const String notifications_empty = 'notifications.empty';
+  static const String notifications_markAllRead = 'notifications.mark_all_read';
 }

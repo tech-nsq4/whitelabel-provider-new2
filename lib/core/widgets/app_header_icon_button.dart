@@ -50,11 +50,11 @@ class AppHeaderIconButton extends StatelessWidget {
               children: [
                 button,
                 Positioned(
-                  top: -3.h,
-                  left: -3.w,
+                  top: -5.h,
+                  left: -8.w,
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 4.w),
-                    constraints: BoxConstraints(minWidth: 17.r, minHeight: 17.r),
+                    constraints: BoxConstraints(minWidth: 22.r, minHeight: 22.r),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: AppColors.errorColor.themeColor,

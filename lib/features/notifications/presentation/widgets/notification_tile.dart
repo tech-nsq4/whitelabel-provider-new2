@@ -11,11 +11,13 @@ import '../../../../core/widgets/app_icon_box.dart';
 import '../../../../core/widgets/app_text.dart';
 import '../../data/models/notification_model.dart';
 
-/// One booking-lifecycle event on the "الإشعارات" screen.
+/// One booking-lifecycle event on the "الإشعارات" screen. Tapping an
+/// unread one marks it read.
 class NotificationTile extends StatelessWidget {
-  const NotificationTile({super.key, required this.notification});
+  const NotificationTile({super.key, required this.notification, required this.onTap});
 
   final NotificationModel notification;
+  final VoidCallback onTap;
 
   (String, Color) get _iconAndColor => switch (notification.type) {
         NotificationType.booked => (AppSvgIcons.calendar, AppColors.secondaryColor.themeColor),
@@ -31,10 +33,10 @@ class NotificationTile extends StatelessWidget {
 
     return AppCard(
       margin: 10.paddingBottom,
-      color:  Colors.white,
-      // notification.isRead
-      //     ? AppColors.cardColor.themeColor
-      //     : AppColors.surfaceColor.themeColor,
+      onTap: notification.isRead ? null : onTap,
+      color: notification.isRead
+          ? AppColors.cardColor.themeColor
+          : AppColors.surfaceColor.themeColor,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
