@@ -7,6 +7,7 @@ import '../../queue/data/models/queue_patient_model.dart';
 import '../../queue/logic/queue_cubit.dart';
 import '../data/consultation_repo.dart';
 import '../data/models/consultation_draft_model.dart';
+import '../data/models/patient_history_model.dart';
 import '../data/models/prescription_entry_model.dart';
 import 'consultation_data.dart';
 
@@ -25,7 +26,9 @@ class ConsultationCubit extends Cubit<ConsultationState> {
   Future<void> load(QueuePatientModel patient) async {
     emit(const ConsultationLoading());
     try {
-      final historyFuture = _repo.getHistory(patient.id);
+      final historyFuture = patient.userId != null
+          ? _repo.getHistory('${patient.userId}')
+          : Future.value(const PatientHistoryModel());
       final analysesFuture = _repo.getAnalyses();
       final xraysFuture = _repo.getXrays();
       final draft = _repo.getDraft(patient.id);
@@ -117,6 +120,33 @@ class ConsultationCubit extends Cubit<ConsultationState> {
       final label =
           '${now.hour > 12 ? now.hour - 12 : now.hour}:${now.minute.toString().padLeft(2, '0')}';
       _queueCubit.markDone(data.patient.id, doneAtLabel: label);
+      return true;
+    } catch (e) {
+      final msg = e is NetworkException ? e.message : e.toString();
+      AppOverlay.showError(msg);
+      return false;
+    }
+  }
+
+  Future<bool> saveVitalSigns({
+    required String bloodPressure,
+    required int pulse,
+    required double temperature,
+    required int oxygen,
+  }) async {
+    final current = state;
+    if (current is! ConsultationSuccess) return false;
+    final userId = current.data.patient.userId;
+    if (userId == null) return false;
+    try {
+      final updated = await _repo.saveVitalSigns(
+        '$userId',
+        bloodPressure: bloodPressure,
+        pulse: pulse,
+        temperature: temperature,
+        oxygen: oxygen,
+      );
+      _update((d) => d.copyWith(history: d.history.copyWith(vitals: updated)));
       return true;
     } catch (e) {
       final msg = e is NetworkException ? e.message : e.toString();

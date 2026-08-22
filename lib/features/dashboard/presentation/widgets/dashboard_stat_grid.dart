@@ -11,7 +11,7 @@ import '../../data/models/dashboard_stats_model.dart';
 
 /// The dashboard's 2×2 stat tiles — appointments, new bookings, waiting
 /// count and pending results, matching the reference design's `.tile`
-/// grid with a big Readex-Pro number and a colored sub-line.
+/// grid with a big Readex-Pro number.
 class DashboardStatGrid extends StatelessWidget {
   const DashboardStatGrid({
     super.key,
@@ -36,43 +36,30 @@ class DashboardStatGrid extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       mainAxisSpacing: 10.h,
       crossAxisSpacing: 10.w,
-      childAspectRatio: 1.55,
+      childAspectRatio: 1.85,
       children: [
         _StatTile(
           label: LocaleKeys.dashboard_statAppointments.tr(),
-          value: '${stats.appointmentsTotal}',
+          value: '${stats.todayAppointments}',
           valueColor: AppColors.textPrimaryColor.themeColor,
-          subLabel: LocaleKeys.dashboard_statAppointmentsSub.tr(namedArgs: {
-            'online': '${stats.appointmentsOnline}',
-            'clinic': '${stats.appointmentsClinic}',
-          }),
-          subColor: AppColors.primaryColor.themeColor,
           onTap: onTapAppointments,
         ),
         _StatTile(
           label: LocaleKeys.dashboard_statNewBookings.tr(),
           value: '${stats.newBookings}',
           valueColor: AppColors.primaryColor.themeColor,
-          subLabel: LocaleKeys.dashboard_statNewBookingsSub.tr(),
-          subColor: AppColors.mutedColor.themeColor,
           onTap: onTapBookings,
         ),
         _StatTile(
           label: LocaleKeys.dashboard_statWaiting.tr(),
-          value: '${stats.waitingCount}',
+          value: '${stats.waiting}',
           valueColor: AppColors.warningColor.themeColor,
-          subLabel: LocaleKeys.dashboard_statWaitingSub
-              .tr(namedArgs: {'minutes': '${stats.waitingAvgMinutes}'}),
-          subColor: AppColors.mutedColor.themeColor,
           onTap: onTapWaiting,
         ),
         _StatTile(
           label: LocaleKeys.dashboard_statPendingResults.tr(),
           value: '${stats.pendingResults}',
           valueColor: AppColors.errorColor.themeColor,
-          subLabel: LocaleKeys.dashboard_statPendingResultsSub
-              .tr(namedArgs: {'critical': '${stats.pendingResultsCritical}'}),
-          subColor: AppColors.errorColor.themeColor,
           onTap: onTapResults,
         ),
       ],
@@ -85,16 +72,12 @@ class _StatTile extends StatelessWidget {
     required this.label,
     required this.value,
     required this.valueColor,
-    required this.subLabel,
-    required this.subColor,
     required this.onTap,
   });
 
   final String label;
   final String value;
   final Color valueColor;
-  final String subLabel;
-  final Color subColor;
   final VoidCallback onTap;
 
   @override
@@ -108,9 +91,6 @@ class _StatTile extends StatelessWidget {
           AppText(label, fontSize: 10.5, color: AppColors.mutedColor.themeColor),
           4.height,
           AppText(value, isHeading: true, fontSize: 24, fontWeight: FontWeight.w600, color: valueColor),
-          3.height,
-          AppText(subLabel,
-              fontSize: 10, fontWeight: FontWeight.w600, color: subColor, maxLines: 1),
         ],
       ),
     );

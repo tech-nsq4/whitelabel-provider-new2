@@ -7,18 +7,15 @@ import '../../../app/router/routes.dart';
 import '../../../core/di/injection.dart';
 import '../../../core/extensions/extensions.dart';
 import '../../../core/utils/app_colors.dart';
-import '../../../core/utils/app_overlay.dart';
-import '../../../core/utils/app_svg_icons.dart';
 import '../../../core/utils/locale_keys.dart';
-import '../../../core/widgets/app_header_icon_button.dart';
 import '../../../core/widgets/app_screen_header.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/screen_state_layout.dart';
+import '../data/models/patient_list_item_model.dart';
 import '../logic/patients_cubit.dart';
 import 'widgets/patient_list_tile.dart';
 
-/// Bottom nav's "Patients" destination — the searchable patient-file
-/// directory.
+/// Bottom nav's "Patients" destination — the searchable patient directory.
 class PatientsScreen extends StatefulWidget {
   const PatientsScreen({super.key});
 
@@ -35,8 +32,8 @@ class _PatientsScreenState extends State<PatientsScreen> {
     super.dispose();
   }
 
-  void _openFile(String patientId) {
-    Navigator.pushNamed(context, Routes.patientFile, arguments: {'patientId': patientId});
+  void _openFile(PatientListItemModel patient) {
+    Navigator.pushNamed(context, Routes.patientFile, arguments: {'patient': patient});
   }
 
   @override
@@ -49,6 +46,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
           bloc: _cubit,
           builder: (context, state) {
             return CustomScreenStateLayout(
+              onRefresh: () async => _cubit.loadPatients(),
               isLoading: state is PatientsLoading || state is PatientsInitial,
               error: state is PatientsError
                   ? ErrorModel(code: ErrorEnum.other, errorMessage: state.message)
@@ -63,11 +61,6 @@ class _PatientsScreenState extends State<PatientsScreen> {
                     AppScreenHeader(
                       eyebrow: LocaleKeys.patientsScreen_subtitle.tr(),
                       title: LocaleKeys.patientsScreen_title.tr(),
-                      trailing: AppHeaderIconButton(
-                        svgIcon: AppSvgIcons.plus,
-                        color: AppColors.primaryColor.themeColor,
-                        onTap: () => AppOverlay.showSuccess(LocaleKeys.patients_addNew.tr()),
-                      ),
                     ),
                     16.height,
                     CustomTextField(
@@ -77,7 +70,7 @@ class _PatientsScreenState extends State<PatientsScreen> {
                     ),
                     16.height,
                     for (final patient in patients)
-                      PatientListTile(patient: patient, onTap: () => _openFile(patient.id)),
+                      PatientListTile(patient: patient, onTap: () => _openFile(patient)),
                   ],
                 );
               },

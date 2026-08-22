@@ -175,4 +175,21 @@ $paths
     '<path d="M5 12h14M13 6l6 6-6 6"/>',
     strokeWidth: 2,
   );
+
+  static final String heart = _icon(
+    '<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23'
+    'l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>',
+  );
+
+  static final String thermometer = _icon(
+    '<path d="M14 14.76V3.5a2.5 2.5 0 00-5 0v11.26a4.5 4.5 0 105 0z"/>',
+  );
+
+  static final String droplet = _icon(
+    '<path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>',
+  );
+
+  static final String edit = _icon(
+    '<path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5z"/>',
+  );
 }

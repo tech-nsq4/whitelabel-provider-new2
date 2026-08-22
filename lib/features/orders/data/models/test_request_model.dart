@@ -34,6 +34,9 @@ class TestRequestModel extends Equatable {
     this.patientName,
     this.doctorName,
     this.bookedByName,
+    this.resultedAt,
+    this.appointmentId,
+    this.appointmentStatus,
   });
 
   final int id;
@@ -48,6 +51,14 @@ class TestRequestModel extends Equatable {
   final String? time;
   final String? patientName;
   final String? doctorName;
+
+  /// The booking this test was ordered under — lets the details screen
+  /// jump to it (read-only) since we already have its id.
+  final int? appointmentId;
+  final String? appointmentStatus;
+
+  /// When the result was uploaded — `null` until [hasResult] is true.
+  final String? resultedAt;
 
   /// Set only when [patientName] is a family member — the account holder
   /// who made the booking, so the UI can make clear [patientName] isn't
@@ -96,6 +107,9 @@ class TestRequestModel extends Equatable {
       patientName: displayName,
       doctorName: doctor?['name'] as String?,
       bookedByName: isFamilyBooking ? bookerName : null,
+      resultedAt: json['resulted_at'] as String?,
+      appointmentId: appointment?['id'] as int?,
+      appointmentStatus: appointment?['status'] as String?,
     );
   }
 
@@ -115,6 +129,9 @@ class TestRequestModel extends Equatable {
         patientName: patientName,
         doctorName: doctorName,
         bookedByName: bookedByName,
+        resultedAt: resultedAt,
+        appointmentId: appointmentId,
+        appointmentStatus: appointmentStatus,
       );
 
   @override
@@ -132,5 +149,8 @@ class TestRequestModel extends Equatable {
         patientName,
         doctorName,
         bookedByName,
+        resultedAt,
+        appointmentId,
+        appointmentStatus,
       ];
 }

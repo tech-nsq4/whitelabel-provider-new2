@@ -7,7 +7,6 @@ import '../../../app/router/routes.dart';
 import '../../../core/di/injection.dart';
 import '../../../core/extensions/extensions.dart';
 import '../../../core/utils/app_colors.dart';
-import '../../../core/utils/app_overlay.dart';
 import '../../../core/utils/app_svg_icons.dart';
 import '../../../core/utils/locale_keys.dart';
 import '../../../core/widgets/app_button.dart';
@@ -16,27 +15,31 @@ import '../../../core/widgets/app_segmented_tabs.dart';
 import '../../../core/widgets/app_svg_icon.dart';
 import '../../../core/widgets/app_text.dart';
 import '../../../core/widgets/screen_state_layout.dart';
+import '../../orders/data/models/test_request_model.dart';
 import '../../queue/data/models/queue_patient_model.dart';
+import '../data/models/patient_list_item_model.dart';
 import '../logic/patient_file_cubit.dart';
 import '../logic/patient_file_data.dart';
 import 'widgets/patient_file_header.dart';
 import 'widgets/patient_file_stats_row.dart';
+import 'widgets/patient_prescription_row.dart';
+import 'widgets/patient_test_history_row.dart';
 import 'widgets/patient_visit_card.dart';
-import 'widgets/patient_visit_item_row.dart';
 
-/// A single patient's full record — visits, results, medications and
-/// documents, reached from the patients directory list.
+/// A single patient's full record — visits (once an endpoint exists),
+/// results, x-rays, and medications — reached from the patients
+/// directory list.
 class PatientFileScreen extends StatefulWidget {
-  const PatientFileScreen({super.key, required this.patientId});
+  const PatientFileScreen({super.key, required this.patient});
 
-  final String patientId;
+  final PatientListItemModel patient;
 
   @override
   State<PatientFileScreen> createState() => _PatientFileScreenState();
 }
 
 class _PatientFileScreenState extends State<PatientFileScreen> {
-  late final _cubit = getIt<PatientFileCubit>()..load(widget.patientId);
+  late final _cubit = getIt<PatientFileCubit>()..load(widget.patient);
 
   @override
   void dispose() {
@@ -44,17 +47,19 @@ class _PatientFileScreenState extends State<PatientFileScreen> {
     super.dispose();
   }
 
-  void _startConsult(PatientFileData data) {
+  void _openTestDetails(TestRequestModel request) {
+    Navigator.pushNamed(context, Routes.orderDetails, arguments: {'request': request});
+  }
+
+  void _startConsult() {
     Navigator.pushNamed(context, Routes.consultation, arguments: {
       'patient': QueuePatientModel(
-        id: widget.patientId,
-        name: data.file.name,
-        initial: data.file.initial,
-        mrn: data.file.mrn,
-        age: data.file.age,
-        bloodType: data.file.bloodType,
-        allergy: data.file.allergy,
+        id: '${widget.patient.id}',
+        name: widget.patient.displayName,
+        initial: widget.patient.initial,
+        age: widget.patient.age,
         justArrived: true,
+        userId: widget.patient.id,
       ),
     });
   }
@@ -69,10 +74,12 @@ class _PatientFileScreenState extends State<PatientFileScreen> {
           bloc: _cubit,
           builder: (context, state) {
             return CustomScreenStateLayout(
+              onRefresh: () async => _cubit.load(widget.patient),
               isLoading: state is PatientFileLoading || state is PatientFileInitial,
               error: state is PatientFileError
                   ? ErrorModel(code: ErrorEnum.other, errorMessage: state.message)
                   : null,
+              onRetry: () => _cubit.load(widget.patient),
               builder: (context) {
                 final data = (state as PatientFileSuccess).data;
                 final file = data.file;
@@ -80,36 +87,13 @@ class _PatientFileScreenState extends State<PatientFileScreen> {
                 return ListView(
                   padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 32.h),
                   children: [
-                    PatientFileHeader(file: file),
+                    PatientFileHeader(patient: file.patient),
                     14.height,
-                    PatientFileStatsRow(file: file),
+                    PatientFileStatsRow(patient: file.patient),
                     16.height,
-                    Row(
-                      children: [
-                        Expanded(
-                          child: CustomButton(
-                            onTap: () => _startConsult(data),
-                            title: LocaleKeys.pfile_startConsult.tr(),
-                          ),
-                        ),
-                        10.width,
-                        InkWell(
-                          onTap: () =>
-                              AppOverlay.showSuccess(LocaleKeys.pfile_shareRecordToast.tr()),
-                          child: Container(
-                            width: 46.r,
-                            height: 46.r,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: AppColors.cardColor.themeColor,
-                              borderRadius: BorderRadius.circular(14.r),
-                              border: Border.all(color: AppColors.dividerColor.themeColor),
-                            ),
-                            child: Icon(Icons.ios_share_rounded,
-                                size: 19.sp, color: AppColors.primaryColor.themeColor),
-                          ),
-                        ),
-                      ],
+                    CustomButton(
+                      onTap: _startConsult,
+                      title: LocaleKeys.pfile_startConsult.tr(),
                     ),
                     14.height,
                     AppCard(
@@ -135,8 +119,8 @@ class _PatientFileScreenState extends State<PatientFileScreen> {
                       labels: [
                         LocaleKeys.pfile_tabVisits.tr(),
                         LocaleKeys.pfile_tabResults.tr(),
+                        LocaleKeys.pfile_tabXrays.tr(),
                         LocaleKeys.pfile_tabMedications.tr(),
-                        LocaleKeys.pfile_tabDocuments.tr(),
                       ],
                       selectedIndex: data.tabIndex,
                       onChanged: _cubit.setTab,
@@ -166,18 +150,24 @@ class _PatientFileScreenState extends State<PatientFileScreen> {
         ];
       case 1:
         return [
-          for (final linked in data.file.results)
-            PatientVisitItemRow(item: linked.item, visitCode: linked.visitCode),
+          for (final request in data.file.analysesHistory)
+            PatientTestHistoryRow(
+              request: request,
+              onTap: request.hasResult ? () => _openTestDetails(request) : null,
+            ),
         ];
       case 2:
         return [
-          for (final linked in data.file.medications)
-            PatientVisitItemRow(item: linked.item, visitCode: linked.visitCode),
+          for (final request in data.file.xraysHistory)
+            PatientTestHistoryRow(
+              request: request,
+              onTap: request.hasResult ? () => _openTestDetails(request) : null,
+            ),
         ];
       default:
         return [
-          for (final linked in data.file.documents)
-            PatientVisitItemRow(item: linked.item, visitCode: linked.visitCode),
+          for (final prescription in data.file.prescriptionHistory)
+            PatientPrescriptionRow(prescription: prescription),
         ];
     }
   }

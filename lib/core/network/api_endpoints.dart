@@ -6,6 +6,7 @@ class ApiEndpoints {
   static const String login = 'auth/login';
   static const String logout = 'auth/logout';
   static const String profile = 'profile';
+  static const String home = 'home';
 
   // ─── Appointments ─────────────────────────────────────────────────────────
   static const String appointments = 'appointments';
@@ -33,6 +34,15 @@ class ApiEndpoints {
   // ─── Specializations ────────────────────────────────────────────────────
   static const String specializations = 'specializations';
   static const String subSpecializations = 'sub-specializations';
+
+  // ─── Patients (app users) ─────────────────────────────────────────────
+  static const String users = 'users';
+  static String userAnalysesHistory(String id) => 'users/$id/analyses/history';
+  static String userXraysHistory(String id) => 'users/$id/xrays/history';
+  static String userPrescriptionsHistory(String id) =>
+      'users/$id/prescriptions/history';
+  static String userHealthSummary(String id) => 'users/$id/health-summary';
+  static String userVitalSigns(String id) => 'users/$id/vital-signs';
 
   // ─── Notifications ──────────────────────────────────────────────────────
   static const String notifications = 'notifications';

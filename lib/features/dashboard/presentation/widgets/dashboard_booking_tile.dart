@@ -1,58 +1,57 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/extensions/extensions.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_svg_icons.dart';
-import '../../../../core/utils/locale_keys.dart';
 import '../../../../core/widgets/app_icon_box.dart';
-import '../../../../core/widgets/app_status_chip.dart';
 import '../../../../core/widgets/app_text.dart';
-import '../../data/models/recent_booking_model.dart';
+import '../../../../core/widgets/booked_by_caption.dart';
+import '../../../queue/data/models/appointment_model.dart';
+import '../../../queue/data/models/queue_patient_model.dart';
+import '../../../queue/presentation/widgets/queue_status_chip.dart';
 
 /// One row in the dashboard's "آخر الحجوزات" list — no card chrome of its
 /// own, meant to sit inside a shared [AppCard] as a plain row like the
 /// reference design's `.row`.
 class DashboardBookingTile extends StatelessWidget {
-  const DashboardBookingTile({super.key, required this.booking, this.onTap});
+  const DashboardBookingTile({super.key, required this.appointment, this.onTap});
 
-  final RecentBookingModel booking;
+  final AppointmentModel appointment;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final (chipLabel, tone) = switch (booking.status) {
-      BookingStatus.paid => (LocaleKeys.status_paid.tr(), AppStatusTone.positive),
-      BookingStatus.confirmed => (LocaleKeys.status_confirmed.tr(), AppStatusTone.positive),
-      BookingStatus.pendingPayment => (
-          LocaleKeys.status_pendingPayment.tr(),
-          AppStatusTone.warning,
-        ),
-    };
+    final patient = QueuePatientModel.fromAppointment(appointment);
+    final subtitle = [
+      if (patient.doctorName != null) patient.doctorName!,
+      if (patient.scheduledLabel != null) patient.scheduledLabel!,
+    ].join(' · ');
 
     return InkWell(
       onTap: onTap,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 14.h),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppIconBox(svgIcon: booking.isVideo ? AppSvgIcons.videoCam : AppSvgIcons.calendar),
+            AppIconBox(svgIcon: AppSvgIcons.calendar),
             12.width,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppText(booking.patientName,
+                  BookedByCaption(bookedByName: patient.bookedByName),
+                  AppText(patient.name,
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimaryColor.themeColor),
-                  AppText('${booking.serviceLabel} · ${booking.subLabel}',
-                      fontSize: 10.5, color: AppColors.mutedColor.themeColor),
+                  if (subtitle.isNotEmpty)
+                    AppText(subtitle, fontSize: 10.5, color: AppColors.mutedColor.themeColor),
                 ],
               ),
             ),
-            AppStatusChip(chipLabel, tone: tone),
+            QueueStatusChip(status: appointment.status),
           ],
         ),
       ),

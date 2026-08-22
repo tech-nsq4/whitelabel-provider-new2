@@ -6,24 +6,22 @@ import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/locale_keys.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/app_initials_avatar.dart';
-import '../../../../core/widgets/app_status_chip.dart';
 import '../../../../core/widgets/app_text.dart';
-import '../../data/models/doctor_status_model.dart';
+import '../../../staff/data/models/doctor_profile_model.dart';
 
-/// One row in the "الأطباء الآن" live-status list.
+/// One row in the "الأطباء اليوم" list.
 class DashboardDoctorTile extends StatelessWidget {
   const DashboardDoctorTile({super.key, required this.doctor, this.onTap});
 
-  final DoctorStatusModel doctor;
+  final DoctorProfileModel doctor;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final (chipLabel, tone) = switch (doctor.availability) {
-      DoctorAvailability.available => (LocaleKeys.status_available.tr(), AppStatusTone.positive),
-      DoctorAvailability.inExam => (LocaleKeys.status_inExam.tr(), AppStatusTone.warning),
-      DoctorAvailability.onLeave => (LocaleKeys.status_onLeave.tr(), AppStatusTone.muted),
-    };
+    final subtitle = [
+      if (doctor.specializations.isNotEmpty) doctor.specializations.join('، '),
+      if (doctor.clinicName != null) doctor.clinicName!,
+    ].join(' · ');
 
     return AppCard(
       onTap: onTap,
@@ -41,29 +39,24 @@ class DashboardDoctorTile extends StatelessWidget {
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimaryColor.themeColor),
-                2.height,
-                AppText(
-                  '${doctor.specialty} · ${doctor.branch} · إشغال ${doctor.occupancyPercent}٪',
-                  fontSize: 10,
-                  color: AppColors.mutedColor.themeColor,
-                ),
-                3.height,
-                Row(
-                  children: [
-                    AppText('${LocaleKeys.dashboard_nextLabel.tr()}: ',
-                        fontSize: 10, color: AppColors.mutedColor.themeColor),
-                    AppText(
-                      doctor.nextSlot ?? '—',
+                if (subtitle.isNotEmpty) ...[
+                  2.height,
+                  AppText(subtitle,
                       fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondaryColor.themeColor,
-                    ),
-                  ],
-                ),
+                      color: AppColors.mutedColor.themeColor,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                ],
               ],
             ),
           ),
-          AppStatusChip(chipLabel, tone: tone),
+          if (doctor.price != null) ...[
+            8.width,
+            AppText('${doctor.price} ${LocaleKeys.common_currency.tr()}',
+                fontSize: 12.5,
+                fontWeight: FontWeight.w700,
+                color: AppColors.primaryColor.themeColor),
+          ],
         ],
       ),
     );

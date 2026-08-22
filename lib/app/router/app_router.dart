@@ -17,6 +17,7 @@ import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/layout/presentation/layout_screen.dart';
 import '../../features/more/presentation/more_screen.dart';
 import '../../features/onboarding/presentation/on_boarding_screen.dart';
+import '../../features/patients/data/models/patient_list_item_model.dart';
 import '../../features/patients/presentation/patient_file_screen.dart';
 import '../../features/policy/presentation/policy_screen.dart';
 import '../../features/profile/presentation/edit_profile_screen.dart';
@@ -94,7 +95,7 @@ class RouteGenerator {
       case Routes.orderDetails:
         return _pageRoute(OrderDetailsScreen(
           request: arguments?['request'] as TestRequestModel,
-          onUpload: arguments?['onUpload'] as VoidCallback,
+          onUpload: arguments?['onUpload'] as VoidCallback?,
         ));
 
       case Routes.calendar:
@@ -102,7 +103,7 @@ class RouteGenerator {
 
       case Routes.patientFile:
         return _pageRoute(PatientFileScreen(
-          patientId: arguments?['patientId'] as String,
+          patient: arguments?['patient'] as PatientListItemModel,
         ));
 
       case Routes.staff:

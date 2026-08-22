@@ -1,8 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/extensions.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_svg_icons.dart';
+import '../../../../core/utils/locale_keys.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/app_initials_avatar.dart';
 import '../../../../core/widgets/app_status_chip.dart';
@@ -19,6 +21,11 @@ class PatientListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final subtitle = [
+      if (patient.phone != null) patient.phone!,
+      if (patient.age != null) '${patient.age}',
+    ].join(' · ');
+
     return AppCard(
       onTap: onTap,
       margin: 10.paddingBottom,
@@ -30,22 +37,22 @@ class PatientListTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppText(patient.name,
+                AppText(patient.displayName,
                     fontSize: 13.5,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimaryColor.themeColor),
-                2.height,
-                AppText('${patient.mrn} · ${patient.age} · ${patient.lastVisitLabel}',
-                    fontSize: 10.5, color: AppColors.mutedColor.themeColor),
+                if (subtitle.isNotEmpty) ...[
+                  2.height,
+                  AppText(subtitle, fontSize: 10.5, color: AppColors.mutedColor.themeColor),
+                ],
               ],
             ),
           ),
-          if (patient.badgeLabel != null)
+          if (patient.statistics.waitingBookingsCount > 0)
             AppStatusChip(
-              patient.badgeLabel!,
-              tone: patient.badgeTone == PatientBadgeTone.critical
-                  ? AppStatusTone.critical
-                  : AppStatusTone.warning,
+              LocaleKeys.patients_waitingBadge
+                  .tr(namedArgs: {'count': '${patient.statistics.waitingBookingsCount}'}),
+              tone: AppStatusTone.warning,
             )
           else
             AppSvgIcon(AppSvgIcons.chevronRow, size: 15, color: AppColors.hintColor.themeColor),

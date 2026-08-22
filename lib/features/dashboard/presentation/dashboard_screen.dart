@@ -8,6 +8,7 @@ import '../../../core/di/injection.dart';
 import '../../../core/extensions/extensions.dart';
 import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/app_svg_icons.dart';
+import '../../../core/utils/convert_helper.dart';
 import '../../../core/utils/locale_keys.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_card.dart';
@@ -15,9 +16,11 @@ import '../../../core/widgets/app_header_icon_button.dart';
 import '../../../core/widgets/app_initials_avatar.dart';
 import '../../../core/widgets/app_screen_header.dart';
 import '../../../core/widgets/app_section_title.dart';
+import '../../../core/widgets/app_text.dart';
 import '../../../core/widgets/screen_state_layout.dart';
 import '../../notifications/logic/notifications_badge_cubit.dart';
 import '../../profile/logic/profile_cubit.dart';
+import '../../queue/data/models/queue_patient_model.dart';
 import '../logic/dashboard_cubit.dart';
 import 'widgets/dashboard_booking_tile.dart';
 import 'widgets/dashboard_doctor_tile.dart';
@@ -67,7 +70,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 108.h),
                   children: [
                     AppScreenHeader(
-                      eyebrow: LocaleKeys.dashboard_eyebrowToday.tr(),
+                      eyebrow: overview.date != null
+                          ? '${LocaleKeys.dashboard_eyebrowToday.tr()} · '
+                              '${ConvertHelper.formatDateTime(overview.date!, includeDate: true)}'
+                          : LocaleKeys.dashboard_eyebrowToday.tr(),
                       title: LocaleKeys.dashboard_title.tr(),
                       trailing: Row(
                         children: [
@@ -177,11 +183,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Navigator.pushNamed(context, Routes.staff),
                     ),
                     12.height,
-                    for (final doctor in overview.doctors)
-                      DashboardDoctorTile(
-                        doctor: doctor,
-                        onTap: () => Navigator.pushNamed(context, Routes.staff),
-                      ),
+                    if (overview.doctors.isEmpty)
+                      AppText(LocaleKeys.dashboard_noDoctorsToday.tr(),
+                          fontSize: 12, color: AppColors.mutedColor.themeColor)
+                    else
+                      for (final doctor in overview.doctors)
+                        DashboardDoctorTile(
+                          doctor: doctor,
+                          onTap: () => Navigator.pushNamed(
+                              context, Routes.doctorDetails,
+                              arguments: {'doctor': doctor}),
+                        ),
                     14.height,
                     AppSectionTitle(
                       LocaleKeys.dashboard_recentBookingsTitle.tr(),
@@ -190,26 +202,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Navigator.pushNamed(context, Routes.bookings),
                     ),
                     12.height,
-                    AppCard(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: Column(
-                        children: [
-                          for (var i = 0;
-                              i < overview.recentBookings.length;
-                              i++) ...[
-                            if (i > 0)
-                              Divider(
-                                  height: 1,
-                                  color: AppColors.dividerColor.themeColor),
-                            DashboardBookingTile(
-                              booking: overview.recentBookings[i],
-                              onTap: () =>
-                                  Navigator.pushNamed(context, Routes.bookings),
-                            ),
+                    if (overview.recentAppointments.isEmpty)
+                      AppText(LocaleKeys.dashboard_noRecentBookings.tr(),
+                          fontSize: 12, color: AppColors.mutedColor.themeColor)
+                    else
+                      AppCard(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: Column(
+                          children: [
+                            for (var i = 0;
+                                i < overview.recentAppointments.length;
+                                i++) ...[
+                              if (i > 0)
+                                Divider(
+                                    height: 1,
+                                    color: AppColors.dividerColor.themeColor),
+                              DashboardBookingTile(
+                                appointment: overview.recentAppointments[i],
+                                onTap: () => Navigator.pushNamed(
+                                    context, Routes.queueDetails,
+                                    arguments: {
+                                      'patient': QueuePatientModel.fromAppointment(
+                                          overview.recentAppointments[i]),
+                                      'tabIndex': 2,
+                                    }),
+                              ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
-                    ),
                   ],
                 );
               },

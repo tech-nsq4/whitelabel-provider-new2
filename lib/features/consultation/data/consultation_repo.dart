@@ -20,27 +20,56 @@ class ConsultationRepo {
   final DioClient _dio;
   final LocalStorage _storage;
 
-  /// TODO(api): no endpoint for this yet — mock data until one exists.
-  Future<PatientHistoryModel> getHistory(String patientId) async {
-    await Future.delayed(const Duration(milliseconds: 250));
-    return const PatientHistoryModel(
-      vitals: VitalSignsModel(
-          pressure: '118/79', pulse: '76', temperature: '37.1', oxygen: '98٪'),
-      lastVisitLabel: '8 يونيو',
-      lastVisitSummary: 'التهاب لوزتين حاد · وصف أموكسيسيلين 500 لمدة 7 أيام',
-      recentResults: [
-        LabResultModel(
-            name: 'فيتامين د', value: '22 ng/mL', flag: LabResultFlag.low),
-        LabResultModel(
-            name: 'وظائف الغدة TSH', value: '', flag: LabResultFlag.inProgress),
-      ],
-      activeMedications: [
-        ActiveMedicationModel(
-            name: 'أموكسيسيلين 500', schedule: '3× يوميًا · باقي 4 أيام'),
-        ActiveMedicationModel(
-            name: 'فيتامين د 5000', schedule: 'أسبوعيًا · 10 أسابيع'),
-      ],
-    );
+  /// The "السجل" tab — last visit, recent results and active medications
+  /// from `GET /users/{id}/health-summary`, plus a `GET .../vital-signs`
+  /// (`null` `data` there just means none has been recorded yet).
+  Future<PatientHistoryModel> getHistory(String userId) async {
+    try {
+      final summaryFuture = _dio.get(ApiEndpoints.userHealthSummary(userId));
+      final vitalsFuture = _dio.get(ApiEndpoints.userVitalSigns(userId));
+      final summary =
+          (await summaryFuture).data['data'] as Map<String, dynamic>? ?? const {};
+      final vitalsData = (await vitalsFuture).data['data'];
+      final lastVisit = summary['last_visit'] as Map<String, dynamic>?;
+
+      return PatientHistoryModel(
+        vitals: vitalsData == null
+            ? null
+            : VitalSignsModel.fromJson(vitalsData as Map<String, dynamic>),
+        lastVisitDate: lastVisit?['date'] as String?,
+        lastVisitSummary: lastVisit?['summary'] as String? ?? '',
+        recentResults: [
+          for (final row in (summary['recent_results'] as List? ?? []))
+            LabResultModel.fromJson(row as Map<String, dynamic>),
+        ],
+        activeMedications: [
+          for (final row in (summary['active_medications'] as List? ?? []))
+            ActiveMedicationModel.fromJson(row as Map<String, dynamic>),
+        ],
+      );
+    } on DioException catch (e) {
+      throw NetworkException.fromDioException(e);
+    }
+  }
+
+  Future<VitalSignsModel> saveVitalSigns(
+    String userId, {
+    required String bloodPressure,
+    required int pulse,
+    required double temperature,
+    required int oxygen,
+  }) async {
+    try {
+      final response = await _dio.post(ApiEndpoints.userVitalSigns(userId), data: {
+        'blood_pressure': bloodPressure,
+        'pulse': pulse,
+        'temperature': temperature,
+        'oxygen': oxygen,
+      });
+      return VitalSignsModel.fromJson(response.data['data'] as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw NetworkException.fromDioException(e);
+    }
   }
 
   Future<List<ConsultationOption>> getAnalyses() =>

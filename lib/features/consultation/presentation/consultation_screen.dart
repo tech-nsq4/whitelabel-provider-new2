@@ -14,11 +14,13 @@ import '../../../core/widgets/app_text.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/screen_state_layout.dart';
 import '../../queue/data/models/queue_patient_model.dart';
+import '../data/models/vital_signs_model.dart';
 import '../logic/consultation_cubit.dart';
 import 'widgets/consultation_history_tab.dart';
 import 'widgets/consultation_options_section.dart';
 import 'widgets/consultation_patient_header.dart';
 import 'widgets/consultation_prescription_section.dart';
+import 'widgets/vital_signs_sheet.dart';
 
 class ConsultationScreen extends StatefulWidget {
   const ConsultationScreen({super.key, required this.patient});
@@ -50,6 +52,34 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
   String? _validateRequired(String? v) => (v == null || v.trim().isEmpty)
       ? LocaleKeys.validation_required.tr()
       : null;
+
+  void _openVitalSignsSheet(VitalSignsModel? initial) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => VitalSignsSheet(
+        initial: initial,
+        onSubmit: ({
+          required bloodPressure,
+          required pulse,
+          required temperature,
+          required oxygen,
+        }) async {
+          final success = await _cubit.saveVitalSigns(
+            bloodPressure: bloodPressure,
+            pulse: pulse,
+            temperature: temperature,
+            oxygen: oxygen,
+          );
+          if (success) {
+            AppOverlay.showSuccess(LocaleKeys.consultation_vitalSaveSuccess.tr());
+          }
+          return success;
+        },
+      ),
+    );
+  }
 
   Future<void> _finish({required bool isDraft}) async {
     final state = _cubit.state;
@@ -187,7 +217,10 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
                           loading: _savingDraft,
                         ),
                       ] else
-                        ConsultationHistoryTab(history: data.history),
+                        ConsultationHistoryTab(
+                          history: data.history,
+                          onEditVitals: () => _openVitalSignsSheet(data.history.vitals),
+                        ),
                     ],
                   ),
                 );

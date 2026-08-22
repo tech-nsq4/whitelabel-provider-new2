@@ -186,17 +186,10 @@ abstract class LocaleKeys {
   static const String dashboard_title = 'dashboard.title';
   static const String dashboard_statAppointments =
       'dashboard.stat_appointments';
-  static const String dashboard_statAppointmentsSub =
-      'dashboard.stat_appointments_sub';
   static const String dashboard_statNewBookings = 'dashboard.stat_new_bookings';
-  static const String dashboard_statNewBookingsSub =
-      'dashboard.stat_new_bookings_sub';
   static const String dashboard_statWaiting = 'dashboard.stat_waiting';
-  static const String dashboard_statWaitingSub = 'dashboard.stat_waiting_sub';
   static const String dashboard_statPendingResults =
       'dashboard.stat_pending_results';
-  static const String dashboard_statPendingResultsSub =
-      'dashboard.stat_pending_results_sub';
   static const String dashboard_startShift = 'dashboard.start_shift';
   static const String dashboard_setupTitle = 'dashboard.setup_title';
   static const String dashboard_setupServices = 'dashboard.setup_services';
@@ -208,10 +201,12 @@ abstract class LocaleKeys {
   static const String dashboard_setupPolicy = 'dashboard.setup_policy';
   static const String dashboard_doctorsNowTitle = 'dashboard.doctors_now_title';
   static const String dashboard_manage = 'dashboard.manage';
-  static const String dashboard_nextLabel = 'dashboard.next_label';
+  static const String dashboard_noDoctorsToday = 'dashboard.no_doctors_today';
   static const String dashboard_recentBookingsTitle =
       'dashboard.recent_bookings_title';
   static const String dashboard_seeAll = 'dashboard.see_all';
+  static const String dashboard_noRecentBookings =
+      'dashboard.no_recent_bookings';
 
   // ─── Queue ────────────────────────────────────────────────────────────────
   static const String queue_eyebrow = 'queue.eyebrow';
@@ -308,11 +303,40 @@ abstract class LocaleKeys {
       'consultation.recent_results_title';
   static const String consultation_activeMedicationsTitle =
       'consultation.active_medications_title';
+  static const String consultation_historyEmpty = 'consultation.history_empty';
+  static const String consultation_medRemainingDays =
+      'consultation.med_remaining_days';
+  static const String consultation_vitalSignsEmpty =
+      'consultation.vital_signs_empty';
+  static const String consultation_vitalSignsAdd = 'consultation.vital_signs_add';
+  static const String consultation_vitalSignsEdit = 'consultation.vital_signs_edit';
+  static const String consultation_vitalPulseUnit = 'consultation.vital_pulse_unit';
+  static const String consultation_vitalUpdatedAt = 'consultation.vital_updated_at';
+  static const String consultation_vitalSheetTitleAdd =
+      'consultation.vital_sheet_title_add';
+  static const String consultation_vitalSheetTitleEdit =
+      'consultation.vital_sheet_title_edit';
+  static const String consultation_vitalBpHint = 'consultation.vital_bp_hint';
+  static const String consultation_vitalBpDesc = 'consultation.vital_bp_desc';
+  static const String consultation_vitalBpError = 'consultation.vital_bp_error';
+  static const String consultation_vitalPulseHint = 'consultation.vital_pulse_hint';
+  static const String consultation_vitalPulseDesc = 'consultation.vital_pulse_desc';
+  static const String consultation_vitalPulseError =
+      'consultation.vital_pulse_error';
+  static const String consultation_vitalTempHint = 'consultation.vital_temp_hint';
+  static const String consultation_vitalTempDesc = 'consultation.vital_temp_desc';
+  static const String consultation_vitalTempError = 'consultation.vital_temp_error';
+  static const String consultation_vitalOxygenHint =
+      'consultation.vital_oxygen_hint';
+  static const String consultation_vitalOxygenDesc =
+      'consultation.vital_oxygen_desc';
+  static const String consultation_vitalOxygenError =
+      'consultation.vital_oxygen_error';
+  static const String consultation_vitalSubmit = 'consultation.vital_submit';
+  static const String consultation_vitalSaveSuccess =
+      'consultation.vital_save_success';
 
   // ─── Status ───────────────────────────────────────────────────────────────
-  static const String status_available = 'status.available';
-  static const String status_inExam = 'status.in_exam';
-  static const String status_onLeave = 'status.on_leave';
   static const String status_paid = 'status.paid';
   static const String status_confirmed = 'status.confirmed';
   static const String status_pending = 'status.pending';
@@ -564,36 +588,36 @@ abstract class LocaleKeys {
   static const String orders_detailsResult = 'orders.details_result';
   static const String orders_detailsNoResultYet =
       'orders.details_no_result_yet';
+  static const String orders_detailsResultedAt = 'orders.details_resulted_at';
+  static const String orders_detailsNoNote = 'orders.details_no_note';
+  static const String orders_detailsViewBooking = 'orders.details_view_booking';
 
   // ─── Patients (list) ──────────────────────────────────────────────────────
   static const String patientsScreen_title = 'patients_screen.title';
   static const String patientsScreen_subtitle = 'patients_screen.subtitle';
   static const String patients_searchHint = 'patients.search_hint';
-  static const String patients_addNew = 'patients.add_new';
-  static const String patients_lastVisitLabel = 'patients.last_visit_label';
-  static const String patients_badgeAllergy = 'patients.badge_allergy';
-  static const String patients_badgeCriticalResult =
-      'patients.badge_critical_result';
-  static const String patients_badgeVaccination = 'patients.badge_vaccination';
+  static const String patients_waitingBadge = 'patients.waiting_badge';
 
   // ─── Patient file ─────────────────────────────────────────────────────────
-  static const String pfile_statVisits = 'pfile.stat_visits';
-  static const String pfile_statInProgress = 'pfile.stat_in_progress';
-  static const String pfile_statActiveMeds = 'pfile.stat_active_meds';
+  static const String pfile_statBookings = 'pfile.stat_bookings';
+  static const String pfile_statWaiting = 'pfile.stat_waiting';
+  static const String pfile_statPrescriptions = 'pfile.stat_prescriptions';
+  static const String pfile_statAnalyses = 'pfile.stat_analyses';
+  static const String pfile_statXrays = 'pfile.stat_xrays';
   static const String pfile_statLastVisit = 'pfile.stat_last_visit';
   static const String pfile_startConsult = 'pfile.start_consult';
-  static const String pfile_shareRecord = 'pfile.share_record';
-  static const String pfile_shareRecordToast = 'pfile.share_record_toast';
   static const String pfile_infoBanner = 'pfile.info_banner';
   static const String pfile_tabVisits = 'pfile.tab_visits';
   static const String pfile_tabResults = 'pfile.tab_results';
+  static const String pfile_tabXrays = 'pfile.tab_xrays';
   static const String pfile_tabMedications = 'pfile.tab_medications';
-  static const String pfile_tabDocuments = 'pfile.tab_documents';
   static const String pfile_visitSummary = 'pfile.visit_summary';
   static const String pfile_print = 'pfile.print';
   static const String pfile_linkedToVisit = 'pfile.linked_to_visit';
   static const String pfile_download = 'pfile.download';
   static const String pfile_noVisitContent = 'pfile.no_visit_content';
+  static const String pfile_medDose = 'pfile.med_dose';
+  static const String pfile_medDuration = 'pfile.med_duration';
 
   // ─── More ─────────────────────────────────────────────────────────────────
   static const String more_title = 'more.title';

@@ -1,54 +1,39 @@
 import 'package:equatable/equatable.dart';
 
-import 'patient_visit_item_model.dart';
+import '../../../orders/data/models/test_request_model.dart';
+import 'patient_list_item_model.dart';
+import 'patient_prescription_model.dart';
 import 'patient_visit_model.dart';
 
-/// One entry in a flattened results/medications/documents tab — an item
-/// plus which visit it branched off.
-typedef PatientLinkedItem = ({PatientVisitItemModel item, String visitCode});
-
-/// The full "ملف مريض" screen's content for one patient.
+/// The full "ملف مريض" screen's content for one patient — the directory
+/// row itself (passed straight through, not re-fetched) plus their
+/// analysis/x-ray/prescription history.
 class PatientFileModel extends Equatable {
   const PatientFileModel({
-    required this.name,
-    required this.initial,
-    required this.mrn,
-    required this.age,
-    required this.bloodType,
-    required this.allergy,
-    required this.visits,
+    required this.patient,
+    this.analysesHistory = const [],
+    this.xraysHistory = const [],
+    this.prescriptionHistory = const [],
+    this.visits = const [],
   });
 
-  final String name;
-  final String initial;
-  final String mrn;
-  final int age;
-  final String bloodType;
-  final String? allergy;
+  final PatientListItemModel patient;
+
+  /// The "النتائج" tab.
+  final List<TestRequestModel> analysesHistory;
+
+  /// The "الأشعة" tab.
+  final List<TestRequestModel> xraysHistory;
+
+  /// The "الأدوية" tab.
+  final List<PatientPrescriptionModel> prescriptionHistory;
+
+  /// No endpoint for a visits timeline yet — always empty, kept only so
+  /// the "الزيارات" tab keeps its existing design ready to wire up once
+  /// one exists.
   final List<PatientVisitModel> visits;
 
-  int get activeMedicationsCount => medications
-      .where((linked) => linked.item.status == PatientItemStatus.active)
-      .length;
-
-  int get inProgressCount =>
-      results.where((linked) => linked.item.status == PatientItemStatus.inProgress).length;
-
-  String get lastVisitLabel => visits.isEmpty ? '—' : visits.first.dateLabel;
-
-  List<PatientLinkedItem> get results => _flatten(
-      {PatientVisitItemKind.labTest, PatientVisitItemKind.imaging});
-
-  List<PatientLinkedItem> get medications => _flatten({PatientVisitItemKind.prescription});
-
-  List<PatientLinkedItem> get documents => _flatten({PatientVisitItemKind.document});
-
-  List<PatientLinkedItem> _flatten(Set<PatientVisitItemKind> kinds) => [
-        for (final visit in visits)
-          for (final item in visit.items)
-            if (kinds.contains(item.kind)) (item: item, visitCode: visit.code),
-      ];
-
   @override
-  List<Object?> get props => [name, initial, mrn, age, bloodType, allergy, visits];
+  List<Object?> get props =>
+      [patient, analysesHistory, xraysHistory, prescriptionHistory, visits];
 }

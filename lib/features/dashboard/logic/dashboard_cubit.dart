@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/network/network_exceptions.dart';
 import '../data/dashboard_repo.dart';
 import '../data/models/dashboard_overview_model.dart';
 
@@ -17,7 +18,8 @@ class DashboardCubit extends Cubit<DashboardState> {
       final overview = await _repo.getOverview();
       emit(DashboardSuccess(overview));
     } catch (e) {
-      emit(DashboardError(e.toString()));
+      final msg = e is NetworkException ? e.message : e.toString();
+      emit(DashboardError(msg));
     }
   }
 }

@@ -12,6 +12,7 @@ class AppointmentModel extends Equatable {
     this.time,
     this.complaint,
     this.diagnosis,
+    this.userId,
     this.patientName,
     this.patientPhone,
     this.doctorName,
@@ -43,6 +44,10 @@ class AppointmentModel extends Equatable {
   final String? time;
   final String? complaint;
   final String? diagnosis;
+
+  /// The booking account holder's id — `GET /users/{id}/...` calls (health
+  /// summary, vital signs) use this, never [id] (the appointment's own).
+  final int? userId;
   final String? patientName;
   final String? patientPhone;
   final String? doctorName;
@@ -91,6 +96,7 @@ class AppointmentModel extends Equatable {
       time: json['times'] as String?,
       complaint: json['complaint'] as String?,
       diagnosis: json['diagnosis'] as String?,
+      userId: user?['id'] as int?,
       patientName: user?['name'] as String?,
       patientPhone: user?['phone'] as String?,
       doctorName: doctor?['name'] as String?,
@@ -137,6 +143,7 @@ class AppointmentModel extends Equatable {
         time,
         complaint,
         diagnosis,
+        userId,
         patientName,
         patientPhone,
         doctorName,

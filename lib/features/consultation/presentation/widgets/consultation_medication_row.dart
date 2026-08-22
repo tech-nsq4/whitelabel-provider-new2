@@ -1,9 +1,12 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/extensions.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_svg_icons.dart';
+import '../../../../core/utils/locale_keys.dart';
 import '../../../../core/widgets/app_icon_box.dart';
+import '../../../../core/widgets/app_status_chip.dart';
 import '../../../../core/widgets/app_text.dart';
 import '../../data/models/active_medication_model.dart';
 
@@ -34,6 +37,14 @@ class ConsultationMedicationRow extends StatelessWidget {
               ],
             ),
           ),
+          if (medication.isActive == true && medication.remainingDays != null) ...[
+            8.width,
+            AppStatusChip(
+              LocaleKeys.consultation_medRemainingDays
+                  .tr(namedArgs: {'days': '${medication.remainingDays}'}),
+              tone: AppStatusTone.warning,
+            ),
+          ],
         ],
       ),
     );

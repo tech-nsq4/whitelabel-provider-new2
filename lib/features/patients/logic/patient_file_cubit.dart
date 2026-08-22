@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/network/network_exceptions.dart';
+import '../data/models/patient_file_model.dart';
+import '../data/models/patient_list_item_model.dart';
 import '../data/patients_repo.dart';
 import 'patient_file_data.dart';
 
@@ -11,13 +14,26 @@ class PatientFileCubit extends Cubit<PatientFileState> {
 
   final PatientsRepo _repo;
 
-  Future<void> load(String patientId) async {
+  /// [patient] is the directory row the screen was opened from — reused
+  /// as-is for the header/stats, no separate "get one user" endpoint.
+  Future<void> load(PatientListItemModel patient) async {
     emit(const PatientFileLoading());
     try {
-      final file = await _repo.getFile(patientId);
-      emit(PatientFileSuccess(PatientFileData(file: file)));
+      final analysesFuture = _repo.getAnalysesHistory('${patient.id}');
+      final xraysFuture = _repo.getXraysHistory('${patient.id}');
+      final prescriptionHistoryFuture =
+          _repo.getPrescriptionHistory('${patient.id}');
+      emit(PatientFileSuccess(PatientFileData(
+        file: PatientFileModel(
+          patient: patient,
+          analysesHistory: await analysesFuture,
+          xraysHistory: await xraysFuture,
+          prescriptionHistory: await prescriptionHistoryFuture,
+        ),
+      )));
     } catch (e) {
-      emit(PatientFileError(e.toString()));
+      final msg = e is NetworkException ? e.message : e.toString();
+      emit(PatientFileError(msg));
     }
   }
 

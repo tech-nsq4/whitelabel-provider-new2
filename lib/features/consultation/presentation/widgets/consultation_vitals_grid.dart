@@ -15,6 +15,9 @@ class ConsultationVitalsGrid extends StatelessWidget {
 
   final VitalSignsModel vitals;
 
+  String _formatTemperature(double value) =>
+      value % 1 == 0 ? value.toStringAsFixed(0) : value.toStringAsFixed(1);
+
   @override
   Widget build(BuildContext context) {
     return GridView.count(
@@ -25,10 +28,12 @@ class ConsultationVitalsGrid extends StatelessWidget {
       crossAxisSpacing: 9.w,
       childAspectRatio: 2.4,
       children: [
-        _Vital(LocaleKeys.consultation_vitalPressure.tr(), vitals.pressure),
-        _Vital(LocaleKeys.consultation_vitalPulse.tr(), vitals.pulse),
-        _Vital(LocaleKeys.consultation_vitalTemp.tr(), vitals.temperature),
-        _Vital(LocaleKeys.consultation_vitalO2.tr(), vitals.oxygen),
+        _Vital(LocaleKeys.consultation_vitalPressure.tr(), vitals.bloodPressure),
+        _Vital(LocaleKeys.consultation_vitalPulse.tr(),
+            '${vitals.pulse} ${LocaleKeys.consultation_vitalPulseUnit.tr()}'),
+        _Vital(LocaleKeys.consultation_vitalTemp.tr(),
+            '${_formatTemperature(vitals.temperature)}°C'),
+        _Vital(LocaleKeys.consultation_vitalO2.tr(), '${vitals.oxygen}%'),
       ],
     );
   }

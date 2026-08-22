@@ -43,6 +43,7 @@ class QueuePatientModel extends Equatable {
     this.endedAt,
     this.cancelledAt,
     this.createdAt,
+    this.userId,
   });
 
   final String id;
@@ -121,6 +122,11 @@ class QueuePatientModel extends Equatable {
   final String? cancelledAt;
   final String? createdAt;
 
+  /// The booking account holder's id — `GET /users/{id}/...` calls
+  /// (health summary, vital signs) use this, never [id] (the appointment's
+  /// own). `null` when this patient wasn't built from a real appointment.
+  final int? userId;
+
   /// What the avatar circle shows — the booking id when there is a real
   /// one, so two cards for the same family member (or same name) on the
   /// same day are still easy to tell apart at a glance. Falls back to
@@ -179,6 +185,7 @@ class QueuePatientModel extends Equatable {
       endedAt: appointment.endedAt,
       cancelledAt: appointment.cancelledAt,
       createdAt: appointment.createdAt,
+      userId: appointment.userId,
     );
   }
 
@@ -220,6 +227,7 @@ class QueuePatientModel extends Equatable {
         endedAt: endedAt,
         cancelledAt: cancelledAt,
         createdAt: createdAt,
+        userId: userId,
       );
 
   @override
@@ -260,5 +268,6 @@ class QueuePatientModel extends Equatable {
         endedAt,
         cancelledAt,
         createdAt,
+        userId,
       ];
 }

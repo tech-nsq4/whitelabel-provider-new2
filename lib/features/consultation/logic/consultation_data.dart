@@ -39,6 +39,7 @@ class ConsultationData extends Equatable {
   final String diagnosis;
 
   ConsultationData copyWith({
+    PatientHistoryModel? history,
     int? tabIndex,
     List<PrescriptionEntryModel>? prescriptions,
     Set<String>? selectedAnalysisIds,
@@ -46,7 +47,7 @@ class ConsultationData extends Equatable {
   }) =>
       ConsultationData(
         patient: patient,
-        history: history,
+        history: history ?? this.history,
         analysisOptions: analysisOptions,
         xrayOptions: xrayOptions,
         tabIndex: tabIndex ?? this.tabIndex,
