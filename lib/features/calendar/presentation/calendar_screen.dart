@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/di/injection.dart';
 import '../../../core/extensions/extensions.dart';
 import '../../../core/utils/app_colors.dart';
+import '../../../core/utils/app_constants.dart';
 import '../../../core/utils/app_overlay.dart';
 import '../../../core/utils/app_svg_icons.dart';
 import '../../../core/utils/locale_keys.dart';
@@ -260,7 +261,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           7.width,
                           Text(LocaleKeys.calendarScreen_addAppointment.tr(),
                               style: TextStyle(
-                                  fontFamily: 'Readex Pro',
+                                  fontFamily: AppFonts.bodyFont,
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white)),

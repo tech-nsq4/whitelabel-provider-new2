@@ -7,6 +7,7 @@ import '../../../app/router/routes.dart';
 import '../../../core/di/injection.dart';
 import '../../../core/extensions/extensions.dart';
 import '../../../core/utils/app_colors.dart';
+import '../../../core/utils/app_constants.dart';
 import '../../../core/utils/app_svg_icons.dart';
 import '../../../core/utils/convert_helper.dart';
 import '../../../core/utils/locale_keys.dart';
@@ -125,7 +126,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         children: [
                           Text(LocaleKeys.dashboard_startShift.tr(),
                               style: TextStyle(
-                                  fontFamily: 'Readex Pro',
+                                  fontFamily: AppFonts.bodyFont,
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white)),

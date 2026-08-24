@@ -123,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         CustomTextFieldPhoneCode(
                           hint: LocaleKeys.auth_phone.tr(),
                           controller: _phoneCtrl,
-                          egyptIsInitial: true,
+                          // egyptIsInitial: true,
                           onChanged: (p) => _phoneNumber = p,
                         ),
                         14.height,

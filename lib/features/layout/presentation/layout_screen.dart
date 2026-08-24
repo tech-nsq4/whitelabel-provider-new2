@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -59,11 +60,13 @@ class _LayoutScreenState extends State<LayoutScreen> {
     if (kIsGuest) return;
     final profileCubit = context.read<ProfileCubit>();
 
-    // TODO(fcm): wire up `firebase_messaging` (add the package + platform
-    // config) and pass the real device token here — left as a no-op until
-    // then so this call doesn't fire with a bogus value.
-    const fcmToken = '';
-    if (fcmToken.isNotEmpty) profileCubit.registerFcmToken(fcmToken);
+    FirebaseMessaging.instance.getToken().then((token) {
+      if (token != null && token.isNotEmpty) {
+        print("FCM Token: $token");
+        profileCubit.registerFcmToken(token);
+      
+      }
+});
 
     profileCubit.syncAppLang(getIt<LocalStorage>().getLang());
   }

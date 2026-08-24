@@ -1,7 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Flutter's template only declares this for debug/profile; release needs it too. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Used to power the "nearest doctor" filter on the doctors list. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- Required on API 33+ for the runtime notification-permission prompt to work at all. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <application
         android:label="White Label Provider"
         android:name="${applicationName}"
@@ -33,6 +37,16 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Without these, FCM posts background/killed-state notifications on
+             its own default channel (low importance — sound + status-bar icon
+             only, no heads-up banner) instead of the high-importance channel
+             NotificationService creates. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="white_lable_default" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
