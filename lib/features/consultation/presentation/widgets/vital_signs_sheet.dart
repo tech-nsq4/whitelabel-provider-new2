@@ -128,7 +128,6 @@ class _VitalSignsSheetState extends State<VitalSignsSheet> {
               18.height,
               _field(
                 label: LocaleKeys.consultation_vitalPressure.tr(),
-                description: LocaleKeys.consultation_vitalBpDesc.tr(),
                 hint: LocaleKeys.consultation_vitalBpHint.tr(),
                 controller: _bpController,
                 validator: _validateBp,
@@ -136,7 +135,6 @@ class _VitalSignsSheetState extends State<VitalSignsSheet> {
               14.height,
               _field(
                 label: LocaleKeys.consultation_vitalPulse.tr(),
-                description: LocaleKeys.consultation_vitalPulseDesc.tr(),
                 hint: LocaleKeys.consultation_vitalPulseHint.tr(),
                 controller: _pulseController,
                 validator: _validatePulse,
@@ -145,7 +143,6 @@ class _VitalSignsSheetState extends State<VitalSignsSheet> {
               14.height,
               _field(
                 label: LocaleKeys.consultation_vitalTemp.tr(),
-                description: LocaleKeys.consultation_vitalTempDesc.tr(),
                 hint: LocaleKeys.consultation_vitalTempHint.tr(),
                 controller: _tempController,
                 validator: _validateTemperature,
@@ -154,7 +151,6 @@ class _VitalSignsSheetState extends State<VitalSignsSheet> {
               14.height,
               _field(
                 label: LocaleKeys.consultation_vitalO2.tr(),
-                description: LocaleKeys.consultation_vitalOxygenDesc.tr(),
                 hint: LocaleKeys.consultation_vitalOxygenHint.tr(),
                 controller: _oxygenController,
                 validator: _validateOxygen,
@@ -175,7 +171,6 @@ class _VitalSignsSheetState extends State<VitalSignsSheet> {
 
   Widget _field({
     required String label,
-    required String description,
     required String hint,
     required TextEditingController controller,
     required String? Function(String?) validator,
@@ -185,10 +180,9 @@ class _VitalSignsSheetState extends State<VitalSignsSheet> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText(label,
-            fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.mutedColor.themeColor),
-        4.height,
-        AppText(description,
-            fontSize: 10, height: 1.5, color: AppColors.textSecondaryColor.themeColor),
+            fontSize: 10,
+            fontWeight: FontWeight.w600,
+            color: AppColors.mutedColor.themeColor),
         8.height,
         CustomTextField(
           controller: controller,

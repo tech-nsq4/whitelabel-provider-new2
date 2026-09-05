@@ -43,6 +43,9 @@ class ConsultationCubit extends Cubit<ConsultationState> {
         selectedXrayIds: draft != null ? draft.xrayIds.toSet() : const {},
         complaint: draft?.complaint ?? '',
         diagnosis: draft?.diagnosis ?? '',
+        note: draft?.note ?? '',
+        testsDescription: draft?.testsDescription ?? '',
+        medicationsNote: draft?.medicationsNote ?? '',
       )));
     } catch (e) {
       final msg = e is NetworkException ? e.message : e.toString();
@@ -88,6 +91,9 @@ class ConsultationCubit extends Cubit<ConsultationState> {
   Future<bool> finish({
     required String complaint,
     required String diagnosis,
+    required String note,
+    required String testsDescription,
+    required String medicationsNote,
     required bool isDraft,
   }) async {
     final current = state;
@@ -99,6 +105,9 @@ class ConsultationCubit extends Cubit<ConsultationState> {
         appointmentId: data.patient.id,
         complaint: complaint,
         diagnosis: diagnosis,
+        note: note,
+        testsDescription: testsDescription,
+        medicationsNote: medicationsNote,
         prescriptions: data.prescriptions,
         analysisIds: data.selectedAnalysisIds.toList(),
         xrayIds: data.selectedXrayIds.toList(),
@@ -111,6 +120,9 @@ class ConsultationCubit extends Cubit<ConsultationState> {
         appointmentId: data.patient.id,
         complaint: complaint,
         diagnosis: diagnosis,
+        note: note,
+        testsDescription: testsDescription,
+        medicationsNote: medicationsNote,
         prescriptions: data.prescriptions,
         analysisIds: data.selectedAnalysisIds.toList(),
         xrayIds: data.selectedXrayIds.toList(),

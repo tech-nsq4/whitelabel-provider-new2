@@ -1,4 +1,4 @@
-import 'package:white_label_provider/features/auth/data/models/manager_model.dart';
+import 'package:white_label_provider/features/auth/data/models/profile_model.dart';
 
 class AppConstants {
   AppConstants._();
@@ -31,10 +31,11 @@ class AppFonts {
   static const String headingFont = 'Cairo';
 }
 
-/// The currently authenticated clinic manager. `null` before login (or once
-/// a session goes stale) — every screen behind [Routes.layoutScreen] expects
-/// this to be set, since there's no guest mode for a staff-only app.
-ManagerModel? kUserModel;
+/// The currently authenticated account (manager or doctor). `null` before
+/// login (or once a session goes stale) — every screen behind
+/// [Routes.layoutScreen] expects this to be set, since there's no guest
+/// mode for a staff-only app.
+ProfileModel? kUserModel;
 
-/// Returns `true` when no manager is signed in.
+/// Returns `true` when no account is signed in.
 bool get kIsGuest => kUserModel == null;

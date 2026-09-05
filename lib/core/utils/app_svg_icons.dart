@@ -112,6 +112,24 @@ $paths
     '<path d="M12 21s7-5.5 7-11a7 7 0 10-14 0c0 5.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
   );
 
+  static final String send = _icon(
+    '<path d="M4 12l16-7.5-6 16-2.5-6.5L4 12z"/><path d="M20 4.5l-8.5 8.5"/>',
+  );
+
+  static final String camera = _icon(
+    '<path d="M4 8.5h3l1.6-2.5h6.8L17 8.5h3a1.5 1.5 0 011.5 1.5v8a1.5 1.5 0 01-1.5 1.5H4A1.5 1.5 0 012.5 18v-8A1.5 1.5 0 014 8.5z"/>'
+    '<circle cx="12" cy="14" r="3.3"/>',
+  );
+
+  static final String galleryImage = _icon(
+    '<rect x="3" y="4.5" width="18" height="15" rx="2"/><circle cx="8.5" cy="9.5" r="1.7"/>'
+    '<path d="M4 16.5l5-5 4 4 3-3 4 4"/>',
+  );
+
+  static final String attach = _icon(
+    '<path d="M16.5 6.5l-7.8 7.8a3 3 0 004.2 4.2l8.1-8.1a5 5 0 00-7.1-7.1l-8.3 8.3a7 7 0 009.9 9.9"/>',
+  );
+
   static final String settingsGear = _icon(
     '<circle cx="12" cy="12" r="3"/><path d="M12 2.5v2.2M12 19.3v2.2M21.5 12h-2.2M4.7 12H2.5'
     'M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9L5.3 5.3"/>',
@@ -144,6 +162,10 @@ $paths
 
   static final String checkCircle = _icon(
     '<path d="M5 12.5l4.5 4.5L19 7"/>',
+  );
+
+  static final String checkDouble = _icon(
+    '<path d="M1 12.5l4.5 4.5L14 8"/><path d="M8 12.5l4.5 4.5L21 8"/>',
   );
 
   static final String search = _icon(

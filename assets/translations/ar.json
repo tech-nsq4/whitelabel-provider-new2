@@ -42,7 +42,9 @@
         "coming_soon_desc": "هذا الجزء ما زال قيد التطوير — سيكون متاحًا في التحديث القادم",
         "edit": "تعديل",
         "delete": "حذف",
-        "booked_by_value": "حجزه {name}"
+        "booked_by_value": "حجزه {name}",
+        "no_data_title": "لا توجد بيانات",
+        "no_data_desc": "لا يوجد شيء لعرضه هنا"
     },
     "setup_screen": {
         "title": "إعداد العيادة",
@@ -209,6 +211,20 @@
         "details_started_at": "بدأ الكشف",
         "details_ended_at": "انتهى الكشف",
         "details_cancelled_at": "تم الإلغاء"
+    },
+    "chat": {
+        "online": "متصل الآن",
+        "last_seen_today": "آخر ظهور اليوم {time}",
+        "last_seen_date": "آخر ظهور {date} {time}",
+        "offline": "غير متصل",
+        "input_hint": "اكتب رسالة...",
+        "attach_camera": "الكاميرا",
+        "attach_gallery": "المعرض",
+        "attach_location": "الموقع",
+        "location_message_label": "موقع تمت مشاركته",
+        "location_unavailable": "تعذر الوصول لموقعك الحالي",
+        "empty_title": "ابدأ المحادثة",
+        "empty_description": "أرسل رسالة للتواصل مباشرة مع المريض"
     },
     "consultation": {
         "tab_consult": "الكشف",

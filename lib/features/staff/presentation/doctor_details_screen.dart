@@ -9,11 +9,13 @@ import '../../../core/utils/locale_keys.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/app_header_icon_button.dart';
 import '../../../core/widgets/app_icon_box.dart';
-import '../../../core/widgets/app_initials_avatar.dart';
 import '../../../core/widgets/app_section_title.dart';
-import '../../../core/widgets/app_status_chip.dart';
 import '../../../core/widgets/app_text.dart';
 import '../data/models/doctor_profile_model.dart';
+import 'widgets/doctor_avatar.dart';
+import 'widgets/doctor_clinic_card.dart';
+import 'widgets/doctor_rating_stars.dart';
+import 'widgets/doctor_specialization_tile.dart';
 
 /// The doctors directory's read-only details screen — everything
 /// `GET /doctors/{id}` returns for one doctor.
@@ -46,83 +48,133 @@ class DoctorDetailsScreen extends StatelessWidget {
               ],
             ),
             20.height,
-            Row(
-              children: [
-                AppInitialsAvatar(doctor.initial, filled: true, size: 52),
-                14.width,
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AppText(doctor.name,
-                          isHeading: true,
-                          fontSize: 16.5,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimaryColor.themeColor),
-                      if (doctor.description != null) ...[
-                        2.height,
-                        AppText(doctor.description!,
-                            fontSize: 11.5, color: AppColors.mutedColor.themeColor),
-                      ],
-                    ],
-                  ),
-                ),
-              ],
+            _doctorHeader(),
+            ..._infoSection(),
+            ..._specializationsSection(
+              LocaleKeys.staff_detailsSpecializations.tr(),
+              doctor.specializations,
             ),
-            if (doctor.specializations.isNotEmpty) ...[
-              18.height,
-              AppSectionTitle(LocaleKeys.staff_detailsSpecializations.tr()),
-              10.height,
-              Wrap(
-                spacing: 7.w,
-                runSpacing: 7.h,
-                children: [
-                  for (final title in doctor.specializations)
-                    AppStatusChip(title, tone: AppStatusTone.positive),
-                ],
-              ),
-            ],
-            22.height,
-            AppSectionTitle(LocaleKeys.staff_detailsInfo.tr()),
-            10.height,
-            _sectionCard([
-              if (doctor.experience != null)
-                _detailRow(
-                  icon: AppSvgIcons.star,
-                  label: LocaleKeys.queue_detailsExperience.tr(),
-                  value: LocaleKeys.queue_detailsExperienceValue
-                      .tr(namedArgs: {'years': '${doctor.experience}'}),
-                ),
-              if (doctor.price != null)
-                _detailRow(
-                  icon: AppSvgIcons.wallet,
-                  label: LocaleKeys.queue_detailsFee.tr(),
-                  value: '${doctor.price} ${LocaleKeys.common_currency.tr()}',
-                ),
-            ]),
-            if (doctor.clinicName != null) ...[
-              18.height,
-              AppSectionTitle(LocaleKeys.queue_detailsClinic.tr()),
-              10.height,
-              _sectionCard([
-                _detailRow(
-                  icon: AppSvgIcons.mapPin,
-                  label: LocaleKeys.queue_detailsClinic.tr(),
-                  value: [
-                    doctor.clinicName,
-                    doctor.clinicAddress,
-                    if (doctor.clinicArea != null || doctor.clinicCity != null)
-                      [doctor.clinicArea, doctor.clinicCity]
-                          .whereType<String>()
-                          .join('، '),
-                  ].whereType<String>().join(' · '),
-                ),
-              ]),
-            ],
+            ..._specializationsSection(
+              LocaleKeys.staff_detailsSubSpecializations.tr(),
+              doctor.subSpecializations,
+            ),
+            ..._clinicsSection(),
+            ..._locationSection(),
           ],
         ),
       ),
     );
+  }
+
+  Widget _doctorHeader() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DoctorAvatar(doctor, filled: true, size: 52),
+        14.width,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: AppText(doctor.name,
+                        isHeading: true,
+                        fontSize: 16.5,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimaryColor.themeColor),
+                  ),
+                  if (doctor.avgRate != null) ...[
+                    8.width,
+                    DoctorRatingStars(rating: doctor.avgRate!, size: 12),
+                  ],
+                ],
+              ),
+              if (doctor.description != null &&
+                  doctor.description!.isNotEmpty) ...[
+                4.height,
+                AppText(doctor.description!,
+                    fontSize: 12,
+                    height: 1.6,
+                    color: AppColors.textSecondaryColor.themeColor),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _infoSection() {
+    final rows = [
+      if (doctor.experience != null)
+        _detailRow(
+          icon: AppSvgIcons.star,
+          label: LocaleKeys.queue_detailsExperience.tr(),
+          value: LocaleKeys.queue_detailsExperienceValue
+              .tr(namedArgs: {'years': '${doctor.experience}'}),
+        ),
+      if (doctor.price != null)
+        _detailRow(
+          icon: AppSvgIcons.wallet,
+          label: LocaleKeys.queue_detailsFee.tr(),
+          value: '${doctor.price} ${LocaleKeys.common_currency.tr()}',
+        ),
+      if (doctor.avgRate != null)
+        _detailRow(
+          icon: AppSvgIcons.sparkle,
+          label: LocaleKeys.staff_detailsRating.tr(),
+          value: doctor.avgRate!.toStringAsFixed(1),
+        ),
+    ];
+    if (rows.isEmpty) return const [];
+    return [
+      22.height,
+      AppSectionTitle(LocaleKeys.staff_detailsInfo.tr()),
+      10.height,
+      _sectionCard(rows),
+    ];
+  }
+
+  List<Widget> _specializationsSection(
+      String title, List<DoctorSpecialization> items) {
+    if (items.isEmpty) return const [];
+    return [
+      18.height,
+      AppSectionTitle(title),
+      10.height,
+      for (final item in items) DoctorSpecializationTile(specialization: item),
+    ];
+  }
+
+  List<Widget> _clinicsSection() {
+    if (doctor.clinics.isEmpty) return const [];
+    return [
+      18.height,
+      AppSectionTitle(LocaleKeys.staff_detailsClinics.tr()),
+      10.height,
+      for (final clinic in doctor.clinics) DoctorClinicCard(clinic: clinic),
+    ];
+  }
+
+  List<Widget> _locationSection() {
+    final location = doctor.location;
+    if (location == null || doctor.clinics.isNotEmpty) return const [];
+    return [
+      18.height,
+      AppSectionTitle(LocaleKeys.staff_detailsLocation.tr()),
+      10.height,
+      _sectionCard([
+        _detailRow(
+          icon: AppSvgIcons.mapPin,
+          label: LocaleKeys.staff_detailsLocation.tr(),
+          value: [location.name, location.areaCityLabel]
+              .where((s) => s.isNotEmpty)
+              .join(' · '),
+        ),
+      ]),
+    ];
   }
 
   Widget _sectionCard(List<Widget> rows) {

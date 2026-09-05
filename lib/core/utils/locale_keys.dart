@@ -49,6 +49,8 @@ abstract class LocaleKeys {
   static const String common_edit = 'common.edit';
   static const String common_delete = 'common.delete';
   static const String common_bookedByValue = 'common.booked_by_value';
+  static const String common_noDataTitle = 'common.no_data_title';
+  static const String common_noDataDesc = 'common.no_data_desc';
 
   // ─── Setup hub ────────────────────────────────────────────────────────────
   static const String setupScreen_title = 'setup_screen.title';
@@ -257,33 +259,50 @@ abstract class LocaleKeys {
   static const String queue_detailsEndedAt = 'queue.details_ended_at';
   static const String queue_detailsCancelledAt = 'queue.details_cancelled_at';
 
+  // ─── Chat ─────────────────────────────────────────────────────────────────
+  static const String chat_online = 'chat.online';
+  static const String chat_lastSeenToday = 'chat.last_seen_today';
+  static const String chat_lastSeenDate = 'chat.last_seen_date';
+  static const String chat_offline = 'chat.offline';
+  static const String chat_inputHint = 'chat.input_hint';
+  static const String chat_attachCamera = 'chat.attach_camera';
+  static const String chat_attachGallery = 'chat.attach_gallery';
+  static const String chat_attachLocation = 'chat.attach_location';
+  static const String chat_locationMessageLabel = 'chat.location_message_label';
+  static const String chat_locationUnavailable = 'chat.location_unavailable';
+  static const String chat_emptyTitle = 'chat.empty_title';
+  static const String chat_emptyDescription = 'chat.empty_description';
+
   // ─── Consultation ─────────────────────────────────────────────────────────
   static const String consultation_tabConsult = 'consultation.tab_consult';
   static const String consultation_tabHistory = 'consultation.tab_history';
   static const String consultation_allergyPrefix =
       'consultation.allergy_prefix';
+  static const String consultation_assessmentTitle =
+      'consultation.assessment_title';
+  static const String consultation_testsTitle = 'consultation.tests_title';
   static const String consultation_complaintLabel =
       'consultation.complaint_label';
-  static const String consultation_complaintHint =
-      'consultation.complaint_hint';
   static const String consultation_diagnosisLabel =
       'consultation.diagnosis_label';
-  static const String consultation_diagnosisHint =
-      'consultation.diagnosis_hint';
+  static const String consultation_noteLabel = 'consultation.note_label';
+  static const String consultation_medicationsNoteLabel =
+      'consultation.medications_note_label';
+  static const String consultation_testsDescriptionLabel =
+      'consultation.tests_description_label';
   static const String consultation_prescriptionLabel =
       'consultation.prescription_label';
   static const String consultation_addMedication =
       'consultation.add_medication';
   static const String consultation_noMedications =
       'consultation.no_medications';
-  static const String consultation_medicationNameHint =
-      'consultation.medication_name_hint';
-  static const String consultation_medicationDoseHint =
-      'consultation.medication_dose_hint';
-  static const String consultation_medicationDurationHint =
-      'consultation.medication_duration_hint';
+  static const String consultation_medicationNameLabel =
+      'consultation.medication_name_label';
+  static const String consultation_medicationDoseLabel =
+      'consultation.medication_dose_label';
+  static const String consultation_medicationDurationLabel =
+      'consultation.medication_duration_label';
   static const String consultation_ordersLabel = 'consultation.orders_label';
-  static const String consultation_ordersHint = 'consultation.orders_hint';
   static const String consultation_xraysLabel = 'consultation.xrays_label';
   static const String consultation_finishConsult =
       'consultation.finish_consult';
@@ -317,19 +336,14 @@ abstract class LocaleKeys {
   static const String consultation_vitalSheetTitleEdit =
       'consultation.vital_sheet_title_edit';
   static const String consultation_vitalBpHint = 'consultation.vital_bp_hint';
-  static const String consultation_vitalBpDesc = 'consultation.vital_bp_desc';
   static const String consultation_vitalBpError = 'consultation.vital_bp_error';
   static const String consultation_vitalPulseHint = 'consultation.vital_pulse_hint';
-  static const String consultation_vitalPulseDesc = 'consultation.vital_pulse_desc';
   static const String consultation_vitalPulseError =
       'consultation.vital_pulse_error';
   static const String consultation_vitalTempHint = 'consultation.vital_temp_hint';
-  static const String consultation_vitalTempDesc = 'consultation.vital_temp_desc';
   static const String consultation_vitalTempError = 'consultation.vital_temp_error';
   static const String consultation_vitalOxygenHint =
       'consultation.vital_oxygen_hint';
-  static const String consultation_vitalOxygenDesc =
-      'consultation.vital_oxygen_desc';
   static const String consultation_vitalOxygenError =
       'consultation.vital_oxygen_error';
   static const String consultation_vitalSubmit = 'consultation.vital_submit';
@@ -452,6 +466,11 @@ abstract class LocaleKeys {
   static const String staff_detailsInfo = 'staff.details_info';
   static const String staff_detailsSpecializations =
       'staff.details_specializations';
+  static const String staff_detailsSubSpecializations =
+      'staff.details_sub_specializations';
+  static const String staff_detailsRating = 'staff.details_rating';
+  static const String staff_detailsClinics = 'staff.details_clinics';
+  static const String staff_detailsLocation = 'staff.details_location';
 
   // ─── Schedules ────────────────────────────────────────────────────────────
   static const String schedules_title = 'schedules.title';

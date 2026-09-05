@@ -9,14 +9,14 @@ import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/app_overlay.dart';
 import '../../../core/utils/locale_keys.dart';
 import '../../../core/widgets/app_button.dart';
+import '../../../core/widgets/app_section_title.dart';
 import '../../../core/widgets/app_segmented_tabs.dart';
-import '../../../core/widgets/app_text.dart';
-import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/screen_state_layout.dart';
 import '../../queue/data/models/queue_patient_model.dart';
 import '../data/models/vital_signs_model.dart';
 import '../logic/consultation_cubit.dart';
 import 'widgets/consultation_history_tab.dart';
+import 'widgets/consultation_note_field.dart';
 import 'widgets/consultation_options_section.dart';
 import 'widgets/consultation_patient_header.dart';
 import 'widgets/consultation_prescription_section.dart';
@@ -37,6 +37,9 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
   final _formKey = GlobalKey<FormState>();
   final _complaintController = TextEditingController();
   final _diagnosisController = TextEditingController();
+  final _noteController = TextEditingController();
+  final _testsDescriptionController = TextEditingController();
+  final _medicationsNoteController = TextEditingController();
   bool _finishing = false;
   bool _savingDraft = false;
   bool _hydratedDraftFields = false;
@@ -45,6 +48,9 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
   void dispose() {
     _complaintController.dispose();
     _diagnosisController.dispose();
+    _noteController.dispose();
+    _testsDescriptionController.dispose();
+    _medicationsNoteController.dispose();
     _cubit.close();
     super.dispose();
   }
@@ -93,6 +99,9 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
     final ok = await _cubit.finish(
       complaint: _complaintController.text.trim(),
       diagnosis: _diagnosisController.text.trim(),
+      note: _noteController.text.trim(),
+      testsDescription: _testsDescriptionController.text.trim(),
+      medicationsNote: _medicationsNoteController.text.trim(),
       isDraft: isDraft,
     );
     if (mounted) {
@@ -124,6 +133,9 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
               _hydratedDraftFields = true;
               _complaintController.text = state.data.complaint;
               _diagnosisController.text = state.data.diagnosis;
+              _noteController.text = state.data.note;
+              _testsDescriptionController.text = state.data.testsDescription;
+              _medicationsNoteController.text = state.data.medicationsNote;
             }
           },
           builder: (context, state) {
@@ -153,32 +165,31 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
                         selectedIndex: data.tabIndex,
                         onChanged: _cubit.setTab,
                       ),
-                      16.height,
+                      18.height,
                       if (data.tabIndex == 0) ...[
-                        AppText(LocaleKeys.consultation_complaintLabel.tr(),
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.mutedColor.themeColor),
-                        8.height,
-                        CustomTextField(
+                        AppSectionTitle(
+                            LocaleKeys.consultation_assessmentTitle.tr()),
+                        12.height,
+                        ConsultationNoteField(
+                          label: LocaleKeys.consultation_complaintLabel.tr(),
                           controller: _complaintController,
-                          hint: LocaleKeys.consultation_complaintHint.tr(),
-                          maxLines: 2,
+                          maxLines: 3,
                           validator: _validateRequired,
                         ),
                         14.height,
-                        AppText(LocaleKeys.consultation_diagnosisLabel.tr(),
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.mutedColor.themeColor),
-                        8.height,
-                        CustomTextField(
+                        ConsultationNoteField(
+                          label: LocaleKeys.consultation_diagnosisLabel.tr(),
                           controller: _diagnosisController,
-                          hint: LocaleKeys.consultation_diagnosisHint.tr(),
-                          maxLines: 5,
+                          maxLines: 4,
                           validator: _validateRequired,
                         ),
-                        18.height,
+                        14.height,
+                        ConsultationNoteField(
+                          label: LocaleKeys.consultation_noteLabel.tr(),
+                          controller: _noteController,
+                          maxLines: 3,
+                        ),
+                        26.height,
                         ConsultationPrescriptionSection(
                           prescriptions: data.prescriptions,
                           onAdd: _cubit.addPrescription,
@@ -187,33 +198,50 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
                                   name: name, dose: dose, duration: duration),
                           onRemove: _cubit.removePrescription,
                         ),
-                        18.height,
+                        14.height,
+                        ConsultationNoteField(
+                          label:
+                              LocaleKeys.consultation_medicationsNoteLabel.tr(),
+                          controller: _medicationsNoteController,
+                          maxLines: 2,
+                        ),
+                        26.height,
+                        AppSectionTitle(
+                            LocaleKeys.consultation_testsTitle.tr()),
+                        12.height,
                         ConsultationOptionsSection(
                           label: LocaleKeys.consultation_ordersLabel.tr(),
-                          hint: LocaleKeys.consultation_ordersHint.tr(),
                           options: data.analysisOptions,
                           selectedIds: data.selectedAnalysisIds,
                           onToggle: _cubit.toggleAnalysis,
                         ),
-                        18.height,
+                        16.height,
                         ConsultationOptionsSection(
                           label: LocaleKeys.consultation_xraysLabel.tr(),
                           options: data.xrayOptions,
                           selectedIds: data.selectedXrayIds,
                           onToggle: _cubit.toggleXray,
                         ),
-                        20.height,
+                        16.height,
+                        ConsultationNoteField(
+                          label: LocaleKeys.consultation_testsDescriptionLabel
+                              .tr(),
+                          controller: _testsDescriptionController,
+                          maxLines: 2,
+                        ),
+                        30.height,
                         CustomButton(
                           onTap: () => _finish(isDraft: false),
                           title: LocaleKeys.consultation_finishConsult.tr(),
                           loading: _finishing,
                         ),
-                        9.height,
+                        10.height,
                         CustomButton(
                           onTap: () => _finish(isDraft: true),
                           title: LocaleKeys.consultation_saveDraft.tr(),
-                          color: AppColors.surfaceColor.themeColor,
-                          textColor: AppColors.textPrimaryColor.themeColor,
+                          isOutlined: true,
+                          borderColor: AppColors.dividerColor.themeColor,
+                          textColor: AppColors.textSecondaryColor.themeColor,
                           loading: _savingDraft,
                         ),
                       ] else

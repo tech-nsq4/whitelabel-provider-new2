@@ -28,6 +28,7 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _showEmail = kUserModel?.isManager ?? true;
   late final _nameCtrl = TextEditingController(text: kUserModel?.name);
   late final _emailCtrl = TextEditingController(text: kUserModel?.email);
 
@@ -102,15 +103,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       keyboardType: TextInputType.name,
                       validator: _validateName,
                     ),
-                    14.height,
-                    FieldLabel(text: LocaleKeys.profile_emailLabel.tr()),
-                    8.height,
-                    CustomTextField(
-                      hint: LocaleKeys.profile_emailHint.tr(),
-                      controller: _emailCtrl,
-                      keyboardType: TextInputType.emailAddress,
-                      validator: _validateEmail,
-                    ),
+                    if (_showEmail) ...[
+                      14.height,
+                      FieldLabel(text: LocaleKeys.profile_emailLabel.tr()),
+                      8.height,
+                      CustomTextField(
+                        hint: LocaleKeys.profile_emailHint.tr(),
+                        controller: _emailCtrl,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: _validateEmail,
+                      ),
+                    ],
                     14.height,
                     FieldLabel(text: LocaleKeys.auth_phone.tr()),
                     8.height,

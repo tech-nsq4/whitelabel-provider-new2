@@ -86,7 +86,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               width: 108.w,
                               height: 34.h,
                               radius: 10,
-                              fontSize: 10.5,
+                              fontSize: 10,
                               color: AppColors.surfaceColor.themeColor,
                               textColor: AppColors.primaryColor.themeColor,
                             )

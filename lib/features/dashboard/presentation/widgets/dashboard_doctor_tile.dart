@@ -19,8 +19,8 @@ class DashboardDoctorTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final subtitle = [
-      if (doctor.specializations.isNotEmpty) doctor.specializations.join('، '),
-      if (doctor.clinicName != null) doctor.clinicName!,
+      if (doctor.specializations.isNotEmpty) doctor.specializationsLabel,
+      if (doctor.primaryClinicName != null) doctor.primaryClinicName!,
     ].join(' · ');
 
     return AppCard(

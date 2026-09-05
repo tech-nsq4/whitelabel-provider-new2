@@ -17,6 +17,8 @@ import '../../features/branding/data/branding_repo.dart';
 import '../../features/branding/logic/branding_cubit.dart';
 import '../../features/calendar/data/calendar_repo.dart';
 import '../../features/calendar/logic/calendar_cubit.dart';
+import '../../features/chat/data/chat_repo.dart';
+import '../../features/chat/logic/chat_cubit.dart';
 import '../../features/consultation/data/consultation_repo.dart';
 import '../../features/consultation/logic/consultation_cubit.dart';
 import '../../features/dashboard/data/dashboard_repo.dart';
@@ -84,6 +86,7 @@ Future<void> setupDi() async {
   getIt.registerLazySingleton(() => PolicyRepo());
   getIt.registerLazySingleton(() => BrandingRepo());
   getIt.registerLazySingleton(() => AnalyticsRepo());
+  getIt.registerLazySingleton(() => ChatRepo(dio: getIt()));
 
   // ─── Cubits ───────────────────────────────────────────────────────────────
   getIt.registerFactory(() => AuthCubit(getIt()));
@@ -107,6 +110,7 @@ Future<void> setupDi() async {
   getIt.registerFactory(() => PolicyCubit(getIt()));
   getIt.registerFactory(() => BrandingCubit(getIt()));
   getIt.registerFactory(() => AnalyticsCubit(getIt()));
+  getIt.registerFactory(() => ChatCubit(getIt()));
 
   // `QueueCubit`, `OrdersCubit`, `NotificationsBadgeCubit`, and
   // `NotificationsCubit` are singletons (not the usual per-screen

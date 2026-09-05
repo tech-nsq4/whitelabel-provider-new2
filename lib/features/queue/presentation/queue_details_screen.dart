@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/extensions/extensions.dart';
 import '../../../core/utils/app_colors.dart';
+import '../../../core/utils/app_constants.dart';
 import '../../../core/utils/app_svg_icons.dart';
 import '../../../core/utils/convert_helper.dart';
 import '../../../core/utils/locale_keys.dart';
@@ -18,6 +19,7 @@ import '../../../core/widgets/app_text.dart';
 import '../../../core/widgets/image/custom_image.dart';
 import '../data/models/queue_patient_model.dart';
 import '../../../core/widgets/booked_by_caption.dart';
+import 'widgets/queue_chat_button.dart';
 import 'widgets/queue_status_chip.dart';
 
 /// The queue's full appointment-details screen — opened from a card in
@@ -343,6 +345,10 @@ class QueueDetailsScreen extends StatelessWidget {
           ),
         ),
         QueueStatusChip(status: patient.status),
+        if (patient.userId != null && (kUserModel?.isDoctor ?? false)) ...[
+          8.width,
+          QueueChatButton(userId: patient.userId!, userName: patient.name),
+        ],
       ],
     );
   }

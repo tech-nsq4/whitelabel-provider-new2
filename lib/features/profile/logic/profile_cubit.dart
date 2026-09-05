@@ -5,7 +5,7 @@ import '../../../core/network/network_exceptions.dart';
 import '../../../core/utils/app_constants.dart';
 import '../../../core/utils/app_overlay.dart';
 import '../../../features/auth/data/auth_repo.dart';
-import '../../../features/auth/data/models/manager_model.dart';
+import '../../../features/auth/data/models/profile_model.dart';
 
 part 'profile_state.dart';
 
@@ -17,11 +17,11 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> getProfile() async {
     emit(const ProfileLoading());
     try {
-      final manager = await _repo.getProfile();
-      kUserModel = manager;
-      emit(ProfileSuccess(manager));
+      final profile = await _repo.getProfile();
+      kUserModel = profile;
+      emit(ProfileSuccess(profile));
     } catch (e) {
-      // Any profile fetch failure should drop the cached manager in
+      // Any profile fetch failure should drop the cached account in
       // app-wide guest checks.
       kUserModel = null;
       final msg = e is NetworkException ? e.message : e.toString();
@@ -29,20 +29,20 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  /// Seeds the cache with a [ManagerModel] already fetched elsewhere (e.g.
+  /// Seeds the cache with a [ProfileModel] already fetched elsewhere (e.g.
   /// right after login) without an extra network round-trip.
-  void setUser(ManagerModel manager) {
-    kUserModel = manager;
-    emit(ProfileSuccess(manager));
+  void setUser(ProfileModel profile) {
+    kUserModel = profile;
+    emit(ProfileSuccess(profile));
   }
 
-  /// Updates the manager's name/email — used by `EditProfileScreen`.
+  /// Updates the account's name/email — used by `EditProfileScreen`.
   Future<void> updateProfile({required String name, String? email}) async {
     emit(const ProfileLoading());
     try {
-      final manager = await _repo.updateProfile(name: name, email: email);
-      kUserModel = manager;
-      emit(ProfileSuccess(manager));
+      final profile = await _repo.updateProfile(name: name, email: email);
+      kUserModel = profile;
+      emit(ProfileSuccess(profile));
     } catch (e) {
       final msg = e is NetworkException ? e.message : e.toString();
       AppOverlay.showError(msg);

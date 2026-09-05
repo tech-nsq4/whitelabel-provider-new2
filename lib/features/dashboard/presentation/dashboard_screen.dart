@@ -94,7 +94,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             final profileState =
                                 context.watch<ProfileCubit>().state;
                             final name = profileState is ProfileSuccess
-                                ? profileState.manager.name.trim()
+                                ? profileState.profile.name.trim()
                                 : '';
                             return GestureDetector(
                               onTap: () =>

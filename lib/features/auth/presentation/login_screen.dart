@@ -68,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          context.read<ProfileCubit>().setUser(state.manager);
+          context.read<ProfileCubit>().setUser(state.profile);
           Navigator.pushNamedAndRemoveUntil(
               context, Routes.layoutScreen, (_) => false);
         }

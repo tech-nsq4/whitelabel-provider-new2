@@ -42,7 +42,9 @@
         "coming_soon_desc": "This part is still being wired up — it'll be ready in the next update.",
         "edit": "Edit",
         "delete": "Delete",
-        "booked_by_value": "Booked by {name}"
+        "booked_by_value": "Booked by {name}",
+        "no_data_title": "No data",
+        "no_data_desc": "There's nothing to show here"
     },
     "setup_screen": {
         "title": "Clinic Setup",
@@ -209,6 +211,20 @@
         "details_started_at": "Consultation Started",
         "details_ended_at": "Consultation Ended",
         "details_cancelled_at": "Cancelled At"
+    },
+    "chat": {
+        "online": "Online now",
+        "last_seen_today": "Last seen today {time}",
+        "last_seen_date": "Last seen {date} {time}",
+        "offline": "Offline",
+        "input_hint": "Type a message...",
+        "attach_camera": "Camera",
+        "attach_gallery": "Gallery",
+        "attach_location": "Location",
+        "location_message_label": "Shared location",
+        "location_unavailable": "Could not access your current location",
+        "empty_title": "Start the conversation",
+        "empty_description": "Send a message to reach the patient directly"
     },
     "consultation": {
         "tab_consult": "Consultation",

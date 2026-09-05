@@ -4,16 +4,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/extensions/extensions.dart';
 import '../../../../core/utils/app_colors.dart';
-import '../../../../core/utils/app_svg_icons.dart';
 import '../../../../core/utils/locale_keys.dart';
-import '../../../../core/widgets/app_svg_icon.dart';
+import '../../../../core/widgets/app_section_title.dart';
 import '../../../../core/widgets/app_text.dart';
 import '../../../../core/widgets/custom_tap_effect.dart';
 import '../../data/models/prescription_entry_model.dart';
 import 'consultation_prescription_row.dart';
 
-/// "الوصفة الدوائية" — the section label, its "دواء" add button, and the
-/// list of editable prescription rows (or an empty-state placeholder).
+/// "الوصفة الدوائية" — the section header with its add action and the list
+/// of editable prescription rows (or a tap-to-add empty state).
 class ConsultationPrescriptionSection extends StatelessWidget {
   const ConsultationPrescriptionSection({
     super.key,
@@ -34,64 +33,40 @@ class ConsultationPrescriptionSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            AppText(
-              LocaleKeys.consultation_prescriptionLabel.tr(),
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: AppColors.mutedColor.themeColor,
-            ),
-            CustomTapEffect(
-              onTap: onAdd,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceColor.themeColor,
-                  borderRadius: BorderRadius.circular(11.r),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AppSvgIcon(AppSvgIcons.plus,
-                        size: 14.sp,
-                        color: AppColors.textPrimaryColor.themeColor),
-                    5.width,
-                    AppText(LocaleKeys.consultation_addMedication.tr(),
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.textPrimaryColor.themeColor),
-                  ],
-                ),
-              ),
-            ),
-          ],
+        AppSectionTitle(
+          LocaleKeys.consultation_prescriptionLabel.tr(),
+          actionLabel: '+ ${LocaleKeys.consultation_addMedication.tr()}',
+          onAction: onAdd,
         ),
-        10.height,
+        12.height,
         if (prescriptions.isEmpty)
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(14.r),
-            decoration: BoxDecoration(
-              color: AppColors.surfaceColor.themeColor,
-              borderRadius: BorderRadius.circular(13.r),
-            ),
-            child: AppText(
-              LocaleKeys.consultation_noMedications.tr(),
-              textAlign: TextAlign.center,
-              fontSize: 11.5,
-              color: AppColors.mutedColor.themeColor,
+          CustomTapEffect(
+            onTap: onAdd,
+            child: Container(
+              width: double.infinity,
+              alignment: Alignment.center,
+              padding: EdgeInsets.symmetric(vertical: 22.h),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceColor.themeColor,
+                borderRadius: BorderRadius.circular(14.r),
+                border: Border.all(color: AppColors.dividerColor.themeColor),
+              ),
+              child: AppText(LocaleKeys.consultation_noMedications.tr(),
+                  fontSize: 11.5, color: AppColors.mutedColor.themeColor),
             ),
           )
         else
-          for (final entry in prescriptions)
+          for (var i = 0; i < prescriptions.length; i++)
             ConsultationPrescriptionRow(
-              key: ValueKey(entry.id),
-              entry: entry,
-              onChanged: ({name, dose, duration}) => onChanged(entry.id,
-                  name: name, dose: dose, duration: duration),
-              onRemove: () => onRemove(entry.id),
+              key: ValueKey(prescriptions[i].id),
+              index: i,
+              entry: prescriptions[i],
+              onChanged: ({name, dose, duration}) => onChanged(
+                  prescriptions[i].id,
+                  name: name,
+                  dose: dose,
+                  duration: duration),
+              onRemove: () => onRemove(prescriptions[i].id),
             ),
       ],
     );

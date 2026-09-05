@@ -11,6 +11,7 @@ import '../../../../core/widgets/app_initials_avatar.dart';
 import '../../../../core/widgets/app_svg_icon.dart';
 import '../../../../core/widgets/app_text.dart';
 import '../../data/models/doctor_profile_model.dart';
+import 'doctor_rating_stars.dart';
 
 /// One read-only doctor row on the "الأطباء" directory. Tapping it opens
 /// the doctor's full details screen.
@@ -40,13 +41,13 @@ class DoctorProfileCard extends StatelessWidget {
                     color: AppColors.textPrimaryColor.themeColor),
                 if (doctor.specializations.isNotEmpty) ...[
                   3.height,
-                  AppText(doctor.specializations.join('، '),
+                  AppText(doctor.specializationsLabel,
                       fontSize: 11.5,
                       color: AppColors.mutedColor.themeColor,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis),
                 ],
-                if (doctor.clinicName != null) ...[
+                if (doctor.primaryClinicName != null) ...[
                   5.height,
                   Row(
                     children: [
@@ -54,7 +55,7 @@ class DoctorProfileCard extends StatelessWidget {
                           size: 12.sp, color: AppColors.mutedColor.themeColor),
                       4.width,
                       Expanded(
-                        child: AppText(doctor.clinicName!,
+                        child: AppText(doctor.primaryClinicName!,
                             fontSize: 11,
                             color: AppColors.mutedColor.themeColor,
                             maxLines: 1,
@@ -77,11 +78,15 @@ class DoctorProfileCard extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                     color: AppColors.primaryColor.themeColor),
               if (doctor.experience != null) ...[
-                2.height,
+                5.height,
                 AppText(
                     LocaleKeys.queue_detailsExperienceValue
                         .tr(namedArgs: {'years': '${doctor.experience}'}),
                     fontSize: 10, color: AppColors.mutedColor.themeColor),
+              ],
+              if (doctor.avgRate != null) ...[
+                5.height,
+                DoctorRatingStars(rating: doctor.avgRate!),
               ],
             ],
           ),

@@ -19,6 +19,9 @@ class ConsultationData extends Equatable {
     this.selectedXrayIds = const {},
     this.complaint = '',
     this.diagnosis = '',
+    this.note = '',
+    this.testsDescription = '',
+    this.medicationsNote = '',
   });
 
   final QueuePatientModel patient;
@@ -37,6 +40,9 @@ class ConsultationData extends Equatable {
 
   final String complaint;
   final String diagnosis;
+  final String note;
+  final String testsDescription;
+  final String medicationsNote;
 
   ConsultationData copyWith({
     PatientHistoryModel? history,
@@ -56,6 +62,9 @@ class ConsultationData extends Equatable {
         selectedXrayIds: selectedXrayIds ?? this.selectedXrayIds,
         complaint: complaint,
         diagnosis: diagnosis,
+        note: note,
+        testsDescription: testsDescription,
+        medicationsNote: medicationsNote,
       );
 
   @override
@@ -70,5 +79,8 @@ class ConsultationData extends Equatable {
         selectedXrayIds,
         complaint,
         diagnosis,
+        note,
+        testsDescription,
+        medicationsNote,
       ];
 }

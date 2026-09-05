@@ -10,6 +10,7 @@ class Routes {
   static const String more = '/more';
   static const String consultation = '/consultation';
   static const String queueDetails = '/queue-details';
+  static const String chat = '/chat';
   static const String agenda = '/agenda';
   static const String inbox = '/inbox';
   static const String notifications = '/notifications';

@@ -24,13 +24,13 @@ class MoreProfileCard extends StatelessWidget {
     final subtitle = LocaleKeys.more_profileCardSubtitle.tr();
 
     final state = context.watch<ProfileCubit>().state;
-    final manager = state is ProfileSuccess ? state.manager : null;
-    final displayName = manager != null && manager.name.trim().isNotEmpty
-        ? manager.name
+    final profile = state is ProfileSuccess ? state.profile : null;
+    final displayName = profile != null && profile.name.trim().isNotEmpty
+        ? profile.name
         : title;
     final initial = displayName.trim().isNotEmpty ? displayName.trim()[0] : '؟';
     final displaySubtitle =
-        manager?.phone.trim().isNotEmpty ?? false ? manager!.phone : subtitle;
+        profile?.phone.trim().isNotEmpty ?? false ? profile!.phone : subtitle;
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
@@ -66,7 +66,7 @@ class MoreProfileCard extends StatelessWidget {
               ],
             ),
           ),
-          if (manager == null)
+          if (profile == null)
             TextButton(
               onPressed: () => Navigator.pushNamed(context, Routes.loginScreen),
               style: TextButton.styleFrom(

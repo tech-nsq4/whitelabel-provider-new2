@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/network/network_exceptions.dart';
 import '../../../core/utils/app_overlay.dart';
 import '../data/auth_repo.dart';
-import '../data/models/manager_model.dart';
+import '../data/models/profile_model.dart';
 
 part 'auth_state.dart';
 
@@ -13,12 +13,12 @@ class AuthCubit extends Cubit<AuthState> {
 
   final AuthRepo _repo;
 
-  /// Logs the manager in with [phone] + [password] and persists the session.
+  /// Logs the account in with [phone] + [password] and persists the session.
   Future<void> login({required String phone, required String password}) async {
     emit(const AuthLoading());
     try {
-      final manager = await _repo.login(phone: phone, password: password);
-      emit(AuthSuccess(manager));
+      final profile = await _repo.login(phone: phone, password: password);
+      emit(AuthSuccess(profile));
     } catch (e) {
       final msg = e is NetworkException ? e.message : e.toString();
       AppOverlay.showError(msg);

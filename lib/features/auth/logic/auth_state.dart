@@ -16,11 +16,11 @@ final class AuthLoading extends AuthState {
 }
 
 final class AuthSuccess extends AuthState {
-  final ManagerModel manager;
-  const AuthSuccess(this.manager);
+  final ProfileModel profile;
+  const AuthSuccess(this.profile);
 
   @override
-  List<Object?> get props => [manager];
+  List<Object?> get props => [profile];
 }
 
 final class AuthError extends AuthState {

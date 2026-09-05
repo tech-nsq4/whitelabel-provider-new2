@@ -96,6 +96,9 @@ class ConsultationRepo {
     required String appointmentId,
     required String complaint,
     required String diagnosis,
+    String? note,
+    String? testsDescription,
+    String? medicationsNote,
     required List<PrescriptionEntryModel> prescriptions,
     required List<String> analysisIds,
     required List<String> xrayIds,
@@ -104,6 +107,11 @@ class ConsultationRepo {
       final data = <String, dynamic>{
         'complaint': complaint,
         'diagnosis': diagnosis,
+        if (note != null && note.isNotEmpty) 'note': note,
+        if (testsDescription != null && testsDescription.isNotEmpty)
+          'tests_description': testsDescription,
+        if (medicationsNote != null && medicationsNote.isNotEmpty)
+          'medications_note': medicationsNote,
       };
       for (var i = 0; i < analysisIds.length; i++) {
         data['analysis_ids[$i]'] = int.parse(analysisIds[i]);

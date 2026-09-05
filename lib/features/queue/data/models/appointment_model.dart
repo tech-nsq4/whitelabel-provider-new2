@@ -118,7 +118,8 @@ class AppointmentModel extends Equatable {
       familyMemberPhone: familyMember?['phone'] as String?,
       familyMemberDob: familyMember?['date_of_birth'] as String?,
       familyMemberIdNumber: familyMember?['id_number'] as String?,
-      prescriptionImage: json['prescription_image'] as String?,
+      prescriptionImage:
+          (json['prescription_image'] as Map<String, dynamic>?)?['url'] as String?,
       startedAt: json['started_at'] as String?,
       endedAt: json['ended_at'] as String?,
       cancelledAt: json['cancelled_at'] as String?,

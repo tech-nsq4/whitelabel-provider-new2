@@ -9,6 +9,7 @@ import '../../features/branches/presentation/branches_screen.dart';
 import '../../features/branches/presentation/clinics_screen.dart';
 import '../../features/branding/presentation/branding_screen.dart';
 import '../../features/calendar/presentation/calendar_screen.dart';
+import '../../features/chat/presentation/chat_screen.dart';
 import '../../features/consultation/presentation/consultation_screen.dart';
 import '../../features/docs/presentation/docs_screen.dart';
 import '../../features/homecare/presentation/homecare_screen.dart';
@@ -78,6 +79,12 @@ class RouteGenerator {
           onCallIn: arguments?['onCallIn'] as VoidCallback?,
           onCancel: arguments?['onCancel'] as VoidCallback?,
           onConsultAction: arguments?['onConsultAction'] as VoidCallback?,
+        ));
+
+      case Routes.chat:
+        return _pageRoute(ChatScreen(
+          userId: arguments?['userId'] as int,
+          userName: arguments?['userName'] as String,
         ));
 
       case Routes.agenda:

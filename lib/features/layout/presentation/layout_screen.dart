@@ -11,6 +11,8 @@ import '../../../core/utils/app_overlay.dart';
 import '../../../core/utils/app_svg_icons.dart';
 import '../../../core/utils/locale_keys.dart';
 import '../../calendar/presentation/widgets/add_appointment_sheet.dart';
+import '../../chat/data/chat_repo.dart';
+import '../../chat/data/models/chat_message_model.dart';
 import '../../dashboard/presentation/dashboard_screen.dart';
 import '../../docs/presentation/widgets/issue_document_sheet.dart';
 import '../../notifications/logic/notifications_badge_cubit.dart';
@@ -33,7 +35,7 @@ class LayoutScreen extends StatefulWidget {
   State<LayoutScreen> createState() => _LayoutScreenState();
 }
 
-class _LayoutScreenState extends State<LayoutScreen> {
+class _LayoutScreenState extends State<LayoutScreen> with WidgetsBindingObserver {
   late int _currentIndex;
 
   static final _navItems = [
@@ -46,9 +48,31 @@ class _LayoutScreenState extends State<LayoutScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _currentIndex = widget.currentPage;
     _syncDeviceOnLogin();
     getIt<NotificationsBadgeCubit>().refresh();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _setPresence(online: state == AppLifecycleState.resumed);
+  }
+
+  void _setPresence({required bool online}) {
+    if (kUserModel?.isDoctor != true) return;
+    final repo = getIt<ChatRepo>();
+    if (online) {
+      repo.setOnline(role: ChatSenderRole.doctor, id: kUserModel!.id);
+    } else {
+      repo.setOffline(role: ChatSenderRole.doctor, id: kUserModel!.id);
+    }
   }
 
   /// Fires the two device-housekeeping calls once, right when the
@@ -69,6 +93,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
 });
 
     profileCubit.syncAppLang(getIt<LocalStorage>().getLang());
+    _setPresence(online: true);
   }
 
   void _goToQueue() => setState(() => _currentIndex = 1);
