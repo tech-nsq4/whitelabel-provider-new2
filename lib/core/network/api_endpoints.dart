@@ -51,7 +51,7 @@ class ApiEndpoints {
   static String notificationRead(String id) => 'notifications/$id/read';
 
   // ─── Chat ─────────────────────────────────────────────────────────────────
-  static const String chatImageUpload = 'chat/upload-image';
+  static const String chatImageUpload = 'chat/images';
 
   // ─── Device ───────────────────────────────────────────────────────────────
   /// Registers/refreshes this device's push-notification token.

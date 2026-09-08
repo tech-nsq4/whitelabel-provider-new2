@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBhe2Kuu2-nhd36SGUaaxXbWKX3GK-tkIM',
-    appId: '1:317023976449:android:61c95ecac86b554b219400',
+    appId: '1:317023976449:android:a45b7ebdb16b49a2219400',
     messagingSenderId: '317023976449',
     projectId: 'white-label-app-605ad',
     storageBucket: 'white-label-app-605ad.firebasestorage.app',
@@ -59,10 +59,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDruWJj75cHcQzLWJxMIOGcKvnmLDToXfk',
-    appId: '1:317023976449:ios:923c0222512c8288219400',
+    appId: '1:317023976449:ios:d9e2acbe100f427e219400',
     messagingSenderId: '317023976449',
     projectId: 'white-label-app-605ad',
     storageBucket: 'white-label-app-605ad.firebasestorage.app',
-    iosBundleId: 'com.hazem.whiteLabelProvider',
+    iosBundleId: 'com.whiteLabel.provider',
   );
 }

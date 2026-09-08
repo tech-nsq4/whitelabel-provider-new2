@@ -8,7 +8,7 @@
 PRODUCT_NAME = White Label Provider
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.hazem.whiteLabelProvider
+PRODUCT_BUNDLE_IDENTIFIER = com.whiteLabel.provider
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2026 com.hazem. All rights reserved.

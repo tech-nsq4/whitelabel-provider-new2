@@ -1,4 +1,4 @@
-package com.hazem.white_label_provider
+package com.whiteLabel.provider
 
 import io.flutter.embedding.android.FlutterActivity
 
