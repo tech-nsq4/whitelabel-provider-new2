@@ -14,27 +14,34 @@ class QueueRepo {
 
   final DioClient _dio;
 
-  Future<QueueSnapshotModel> getQueue() async {
-    final results = await Future.wait([getWaiting(), getInRoom(), getDone()]);
+  Future<QueueSnapshotModel> getQueue({int? clinicId}) async {
+    final results = await Future.wait([
+      getWaiting(clinicId: clinicId),
+      getInRoom(clinicId: clinicId),
+      getDone(clinicId: clinicId),
+    ]);
     return QueueSnapshotModel(
         waiting: results[0], inRoom: results[1], done: results[2]);
   }
 
-  Future<List<QueuePatientModel>> getWaiting() =>
-      _getByStatuses(const ['pending']);
+  Future<List<QueuePatientModel>> getWaiting({int? clinicId}) =>
+      _getByStatuses(const ['pending'], clinicId: clinicId);
 
-  Future<List<QueuePatientModel>> getInRoom() =>
-      _getByStatuses(const ['confirmed', 'in_progress']);
+  Future<List<QueuePatientModel>> getInRoom({int? clinicId}) =>
+      _getByStatuses(const ['confirmed', 'in_progress'], clinicId: clinicId);
 
-  Future<List<QueuePatientModel>> getDone() =>
-      _getByStatuses(const ['completed']);
+  Future<List<QueuePatientModel>> getDone({int? clinicId}) =>
+      _getByStatuses(const ['completed'], clinicId: clinicId);
 
-  Future<List<QueuePatientModel>> _getByStatuses(List<String> statuses) async {
+  Future<List<QueuePatientModel>> _getByStatuses(List<String> statuses,
+      {int? clinicId}) async {
     try {
       final responses = await Future.wait([
         for (final status in statuses)
-          _dio.get(ApiEndpoints.appointments,
-              queryParameters: {'status': status}),
+          _dio.get(ApiEndpoints.appointments, queryParameters: {
+            'status': status,
+            if (clinicId != null) 'clinic_id': clinicId,
+          }),
       ]);
       return [
         for (final response in responses)

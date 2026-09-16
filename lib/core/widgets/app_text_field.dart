@@ -1,5 +1,5 @@
-import 'package:white_label_provider/core/utils/app_colors.dart';
-import 'package:white_label_provider/core/utils/app_constants.dart';
+import 'package:viva_connect_provider/core/utils/app_colors.dart';
+import 'package:viva_connect_provider/core/utils/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

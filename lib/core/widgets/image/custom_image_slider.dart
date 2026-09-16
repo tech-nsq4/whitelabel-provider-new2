@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:white_label_provider/core/extensions/extensions.dart';
+import 'package:viva_connect_provider/core/extensions/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

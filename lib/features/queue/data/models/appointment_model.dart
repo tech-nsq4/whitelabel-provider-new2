@@ -1,5 +1,18 @@
 import 'package:equatable/equatable.dart';
 
+bool _boolFromJson(dynamic value) => switch (value) {
+      bool b => b,
+      num n => n != 0,
+      String s => s == 'true' || s == '1',
+      _ => false,
+    };
+
+num? _numFromJson(dynamic value) => switch (value) {
+      num n => n,
+      String s => num.tryParse(s),
+      _ => null,
+    };
+
 /// Raw `GET /appointments` row — the source of truth [QueuePatientModel]
 /// (queue/consultation UI) is derived from. Only the fields the app
 /// actually reads are parsed; the rest of the backend's nested
@@ -34,6 +47,12 @@ class AppointmentModel extends Equatable {
     this.endedAt,
     this.cancelledAt,
     this.createdAt,
+    this.hasDiscount = false,
+    this.discountSource,
+    this.promoCode,
+    this.originalPrice,
+    this.discountAmount,
+    this.finalPrice,
   });
 
   final int id;
@@ -78,6 +97,13 @@ class AppointmentModel extends Equatable {
   final String? endedAt;
   final String? cancelledAt;
   final String? createdAt;
+
+  final bool hasDiscount;
+  final String? discountSource;
+  final String? promoCode;
+  final num? originalPrice;
+  final num? discountAmount;
+  final num? finalPrice;
 
   factory AppointmentModel.fromJson(Map<String, dynamic> json) {
     final user = json['user'] as Map<String, dynamic>?;
@@ -124,6 +150,12 @@ class AppointmentModel extends Equatable {
       endedAt: json['ended_at'] as String?,
       cancelledAt: json['cancelled_at'] as String?,
       createdAt: json['created_at'] as String?,
+      hasDiscount: _boolFromJson(json['has_discount']),
+      discountSource: json['discount_source'] as String?,
+      promoCode: json['promo_code']?.toString(),
+      originalPrice: _numFromJson(json['original_price']),
+      discountAmount: _numFromJson(json['discount_amount']),
+      finalPrice: _numFromJson(json['final_price']),
     );
   }
 
@@ -166,5 +198,11 @@ class AppointmentModel extends Equatable {
         endedAt,
         cancelledAt,
         createdAt,
+        hasDiscount,
+        discountSource,
+        promoCode,
+        originalPrice,
+        discountAmount,
+        finalPrice,
       ];
 }

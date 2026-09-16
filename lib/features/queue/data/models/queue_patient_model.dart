@@ -44,6 +44,12 @@ class QueuePatientModel extends Equatable {
     this.cancelledAt,
     this.createdAt,
     this.userId,
+    this.hasDiscount = false,
+    this.discountSource,
+    this.promoCode,
+    this.originalPrice,
+    this.discountAmount,
+    this.finalPrice,
   });
 
   final String id;
@@ -127,6 +133,22 @@ class QueuePatientModel extends Equatable {
   /// own). `null` when this patient wasn't built from a real appointment.
   final int? userId;
 
+  final bool hasDiscount;
+  final String? discountSource;
+  final String? promoCode;
+  final num? originalPrice;
+  final num? discountAmount;
+  final num? finalPrice;
+
+  bool get isPromoDiscount => discountSource == 'promo_code';
+
+  int? get discountPercent {
+    final original = originalPrice;
+    final discount = discountAmount;
+    if (original == null || discount == null || original <= 0) return null;
+    return (discount / original * 100).round();
+  }
+
   /// What the avatar circle shows — the booking id when there is a real
   /// one, so two cards for the same family member (or same name) on the
   /// same day are still easy to tell apart at a glance. Falls back to
@@ -186,6 +208,12 @@ class QueuePatientModel extends Equatable {
       cancelledAt: appointment.cancelledAt,
       createdAt: appointment.createdAt,
       userId: appointment.userId,
+      hasDiscount: appointment.hasDiscount,
+      discountSource: appointment.discountSource,
+      promoCode: appointment.promoCode,
+      originalPrice: appointment.originalPrice,
+      discountAmount: appointment.discountAmount,
+      finalPrice: appointment.finalPrice,
     );
   }
 
@@ -228,6 +256,12 @@ class QueuePatientModel extends Equatable {
         cancelledAt: cancelledAt,
         createdAt: createdAt,
         userId: userId,
+        hasDiscount: hasDiscount,
+        discountSource: discountSource,
+        promoCode: promoCode,
+        originalPrice: originalPrice,
+        discountAmount: discountAmount,
+        finalPrice: finalPrice,
       );
 
   @override
@@ -269,5 +303,11 @@ class QueuePatientModel extends Equatable {
         cancelledAt,
         createdAt,
         userId,
+        hasDiscount,
+        discountSource,
+        promoCode,
+        originalPrice,
+        discountAmount,
+        finalPrice,
       ];
 }

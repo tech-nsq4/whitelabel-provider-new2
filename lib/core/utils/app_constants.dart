@@ -1,10 +1,10 @@
-import 'package:white_label_provider/features/auth/data/models/profile_model.dart';
+import 'package:viva_connect_provider/features/auth/data/models/profile_model.dart';
 
 class AppConstants {
   AppConstants._();
 
   // ─── App ──────────────────────────────────────────────────────────────────
-  static const String appName = 'White Label Provider';
+  static const String appName = 'Viva Connect Provider';
 
   // ─── Pagination ───────────────────────────────────────────────────────────
   static const int pageSize = 15;
@@ -13,6 +13,9 @@ class AppConstants {
   // ─── Animation ────────────────────────────────────────────────────────────
   static const Duration defaultAnimationDuration = Duration(milliseconds: 300);
   static const Duration shortAnimationDuration = Duration(milliseconds: 150);
+
+  // ─── Search ───────────────────────────────────────────────────────────────
+  static const Duration searchDebounceDuration = Duration(milliseconds: 400);
 
   // ─── UI ───────────────────────────────────────────────────────────────────
   static const double defaultBorderRadius = 12.0;

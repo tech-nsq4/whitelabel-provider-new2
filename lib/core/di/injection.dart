@@ -4,6 +4,8 @@ import '../../features/agenda/data/agenda_repo.dart';
 import '../../features/agenda/logic/agenda_cubit.dart';
 import '../../features/analytics/data/analytics_repo.dart';
 import '../../features/analytics/logic/analytics_cubit.dart';
+import '../../features/appointment_details/data/appointment_details_repo.dart';
+import '../../features/appointment_details/logic/appointment_details_cubit.dart';
 import '../../features/auth/data/auth_repo.dart';
 import '../../features/auth/logic/auth_cubit.dart';
 import '../../features/billing/data/billing_repo.dart';
@@ -17,6 +19,7 @@ import '../../features/branding/data/branding_repo.dart';
 import '../../features/branding/logic/branding_cubit.dart';
 import '../../features/calendar/data/calendar_repo.dart';
 import '../../features/calendar/logic/calendar_cubit.dart';
+import '../../features/chat/data/chat_notifications_api.dart';
 import '../../features/chat/data/chat_repo.dart';
 import '../../features/chat/logic/chat_cubit.dart';
 import '../../features/consultation/data/consultation_repo.dart';
@@ -32,6 +35,8 @@ import '../../features/inbox/logic/inbox_cubit.dart';
 import '../../features/notifications/data/notifications_repo.dart';
 import '../../features/notifications/logic/notifications_badge_cubit.dart';
 import '../../features/notifications/logic/notifications_cubit.dart';
+import '../../features/onboarding/data/onboarding_repo.dart';
+import '../../features/onboarding/logic/onboarding_cubit.dart';
 import '../../features/orders/data/orders_repo.dart';
 import '../../features/orders/logic/orders_cubit.dart';
 import '../../features/patients/data/patients_repo.dart';
@@ -67,6 +72,7 @@ Future<void> setupDi() async {
   getIt.registerLazySingleton(() => DashboardRepo(dio: getIt()));
   getIt.registerLazySingleton(() => QueueRepo(dio: getIt()));
   getIt.registerLazySingleton(() => NotificationsRepo(dio: getIt()));
+  getIt.registerLazySingleton(() => AppointmentDetailsRepo(dio: getIt()));
   getIt.registerLazySingleton(
       () => ConsultationRepo(dio: getIt(), storage: getIt()));
   getIt.registerLazySingleton(() => OrdersRepo(dio: getIt()));
@@ -76,7 +82,8 @@ Future<void> setupDi() async {
   getIt.registerLazySingleton(() => BookingsRepo());
   getIt.registerLazySingleton(() => CalendarRepo());
   getIt.registerLazySingleton(() => StaffRepo(dio: getIt()));
-  getIt.registerLazySingleton(() => SchedulesRepo());
+  getIt.registerLazySingleton(() => SchedulesRepo(dio: getIt()));
+  getIt.registerLazySingleton(() => OnboardingRepo(dio: getIt()));
   getIt.registerLazySingleton(() => HomecareRepo());
   getIt.registerLazySingleton(() => BillingRepo());
   getIt.registerLazySingleton(() => DocsRepo());
@@ -86,7 +93,9 @@ Future<void> setupDi() async {
   getIt.registerLazySingleton(() => PolicyRepo());
   getIt.registerLazySingleton(() => BrandingRepo());
   getIt.registerLazySingleton(() => AnalyticsRepo());
-  getIt.registerLazySingleton(() => ChatRepo(dio: getIt()));
+  getIt.registerLazySingleton(() => ChatNotificationsApi(storage: getIt()));
+  getIt.registerLazySingleton(
+      () => ChatRepo(dio: getIt(), notifications: getIt()));
 
   // ─── Cubits ───────────────────────────────────────────────────────────────
   getIt.registerFactory(() => AuthCubit(getIt()));
@@ -95,11 +104,13 @@ Future<void> setupDi() async {
   getIt.registerFactory(() => PatientsCubit(getIt()));
   getIt.registerFactory(() => PatientFileCubit(getIt()));
   getIt.registerFactory(() => AgendaCubit(getIt()));
+  getIt.registerFactory(() => AppointmentDetailsCubit(getIt()));
   getIt.registerFactory(() => InboxCubit(getIt()));
   getIt.registerFactory(() => BookingsCubit(getIt()));
   getIt.registerFactory(() => CalendarCubit(getIt()));
   getIt.registerFactory(() => StaffCubit(getIt()));
   getIt.registerFactory(() => SchedulesCubit(getIt()));
+  getIt.registerFactory(() => OnboardingCubit(getIt()));
   getIt.registerFactory(() => HomecareCubit(getIt()));
   getIt.registerFactory(() => BillingCubit(getIt()));
   getIt.registerFactory(() => DocsCubit(getIt()));

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/network/network_exceptions.dart';
 import '../../../core/utils/app_overlay.dart';
+import '../data/models/orders_filter.dart';
 import '../data/models/test_request_model.dart';
 import '../data/orders_repo.dart';
 
@@ -14,6 +15,9 @@ class OrdersCubit extends Cubit<OrdersState> {
   OrdersCubit(this._repo) : super(const OrdersInitial());
 
   final OrdersRepo _repo;
+
+  OrdersFilter _filter = OrdersFilter.empty;
+  OrdersFilter get filter => _filter;
 
   int get pendingCount => state is OrdersSuccess
       ? (state as OrdersSuccess)
@@ -25,13 +29,24 @@ class OrdersCubit extends Cubit<OrdersState> {
   Future<void> loadOrders() async {
     emit(const OrdersLoading());
     try {
-      final requests = await _repo.getTestRequests();
+      final requests = await _repo.getTestRequests(
+        clinicId: _filter.locationId,
+        dateFrom: _filter.dateFrom,
+        dateTo: _filter.dateTo,
+      );
       emit(OrdersSuccess(requests));
     } catch (e) {
       final msg = e is NetworkException ? e.message : e.toString();
       emit(OrdersError(msg));
     }
   }
+
+  Future<void> applyFilter(OrdersFilter filter) async {
+    _filter = filter;
+    await loadOrders();
+  }
+
+  Future<void> clearFilter() => applyFilter(OrdersFilter.empty);
 
   Future<bool> uploadResult({
     required String testRequestId,

@@ -15,15 +15,15 @@ final class SchedulesLoading extends SchedulesState {
 }
 
 final class SchedulesSuccess extends SchedulesState {
-  final List<WorkScheduleModel> schedules;
-  const SchedulesSuccess(this.schedules);
+  const SchedulesSuccess(this.doctors);
+  final List<DoctorScheduleModel> doctors;
   @override
-  List<Object?> get props => [schedules];
+  List<Object?> get props => [doctors];
 }
 
 final class SchedulesError extends SchedulesState {
-  final String message;
   const SchedulesError(this.message);
+  final String message;
   @override
   List<Object?> get props => [message];
 }

@@ -12,9 +12,20 @@ class OrdersRepo {
 
   final DioClient _dio;
 
-  Future<List<TestRequestModel>> getTestRequests() async {
+  Future<List<TestRequestModel>> getTestRequests({
+    int? clinicId,
+    String? dateFrom,
+    String? dateTo,
+  }) async {
     try {
-      final response = await _dio.get(ApiEndpoints.testRequests);
+      final response = await _dio.get(
+        ApiEndpoints.testRequests,
+        queryParameters: {
+          if (clinicId != null) 'clinic_id': clinicId,
+          if (dateFrom != null) 'date_from': dateFrom,
+          if (dateTo != null) 'date_to': dateTo,
+        },
+      );
       return [
         for (final row in response.data['data'] as List)
           TestRequestModel.fromJson(row as Map<String, dynamic>),

@@ -3,24 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../app/router/routes.dart';
 import '../../../core/di/injection.dart';
 import '../../../core/extensions/extensions.dart';
 import '../../../core/utils/app_colors.dart';
-import '../../../core/utils/app_overlay.dart';
+import '../../../core/utils/app_constants.dart';
 import '../../../core/utils/app_svg_icons.dart';
 import '../../../core/utils/locale_keys.dart';
 import '../../../core/widgets/app_header_icon_button.dart';
 import '../../../core/widgets/app_screen_header.dart';
-import '../../../core/widgets/app_segmented_tabs.dart';
 import '../../../core/widgets/screen_state_layout.dart';
-import '../data/models/work_schedule_model.dart';
+import '../data/models/doctor_schedule_model.dart';
 import '../logic/schedules_cubit.dart';
-import 'widgets/leave_request_sheet.dart';
-import 'widgets/new_schedule_sheet.dart';
-import 'widgets/work_schedule_tile.dart';
+import 'widgets/clinic_schedule_group.dart';
+import 'widgets/doctor_schedule_group.dart';
 
-/// "جداول العمل" — every doctor × service-mode combination and its slots.
 class SchedulesScreen extends StatefulWidget {
   const SchedulesScreen({super.key});
 
@@ -30,7 +26,6 @@ class SchedulesScreen extends StatefulWidget {
 
 class _SchedulesScreenState extends State<SchedulesScreen> {
   late final _cubit = getIt<SchedulesCubit>()..loadSchedules();
-  int _tabIndex = 0;
 
   @override
   void dispose() {
@@ -38,52 +33,18 @@ class _SchedulesScreenState extends State<SchedulesScreen> {
     super.dispose();
   }
 
-  void _openEditor({
-    required String doctorName,
-    required String doctorInitial,
-    required WorkScheduleMode mode,
-    WorkScheduleModel? existing,
-  }) {
-    Navigator.pushNamed(context, Routes.scheduleEditor, arguments: {
-      'doctorName': doctorName,
-      'doctorInitial': doctorInitial,
-      'mode': mode,
-      'existing': existing,
-      'onSave': (WorkScheduleModel model) {
-        _cubit.upsert(model);
-        AppOverlay.showSuccess(LocaleKeys.scheduleEditor_success.tr(namedArgs: {'name': doctorName}));
-      },
-    });
-  }
-
-  void _openNewSchedule() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => NewScheduleSheet(
-        onNext: (doctorName, doctorInitial, mode) =>
-            _openEditor(doctorName: doctorName, doctorInitial: doctorInitial, mode: mode),
-      ),
-    );
-  }
-
-  void _openLeave(WorkScheduleModel schedule) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => LeaveRequestSheet(
-        doctorName: schedule.doctorName,
-        onSubmit: () => AppOverlay.showSuccess(
-          LocaleKeys.leave_success.tr(namedArgs: {'name': schedule.doctorName}),
-        ),
-      ),
-    );
+  DoctorScheduleModel? _currentDoctor(List<DoctorScheduleModel> doctors) {
+    if (doctors.isEmpty) return null;
+    for (final doctor in doctors) {
+      if (doctor.id == kUserModel?.id) return doctor;
+    }
+    return doctors.first;
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDoctor = kUserModel?.isDoctor ?? false;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor.themeColor,
       body: SafeArea(
@@ -91,60 +52,53 @@ class _SchedulesScreenState extends State<SchedulesScreen> {
         child: BlocBuilder<SchedulesCubit, SchedulesState>(
           bloc: _cubit,
           builder: (context, state) {
+            final doctors = state is SchedulesSuccess
+                ? state.doctors
+                : const <DoctorScheduleModel>[];
+            final List<ClinicScheduleModel> clinics = isDoctor
+                ? (_currentDoctor(doctors)?.clinics ??
+                    const <ClinicScheduleModel>[])
+                : const <ClinicScheduleModel>[];
+
             return CustomScreenStateLayout(
+              onRefresh: () async => _cubit.loadSchedules(),
+              onRetry: () => _cubit.loadSchedules(),
               isLoading: state is SchedulesLoading || state is SchedulesInitial,
               error: state is SchedulesError
                   ? ErrorModel(code: ErrorEnum.other, errorMessage: state.message)
                   : null,
+              isEmpty: state is SchedulesSuccess &&
+                  (isDoctor ? clinics.isEmpty : doctors.isEmpty),
+              noDataBuilder: (_) => CustomNoDataView(
+                title: LocaleKeys.schedules_emptyTitle.tr(),
+                desc: LocaleKeys.schedules_emptyDesc.tr(),
+                onRefresh: () async => _cubit.loadSchedules(),
+              ),
               builder: (context) {
-                final all = (state as SchedulesSuccess).schedules;
-                final filtered = switch (_tabIndex) {
-                  1 => all.where((s) => s.mode == WorkScheduleMode.clinic).toList(),
-                  2 => all.where((s) => s.mode == WorkScheduleMode.online).toList(),
-                  3 => all.where((s) => s.mode == WorkScheduleMode.home).toList(),
-                  _ => all,
-                };
-
                 return ListView(
                   padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 32.h),
                   children: [
                     AppScreenHeader(
                       title: LocaleKeys.schedules_title.tr(),
-                      eyebrow: LocaleKeys.schedules_subtitle.tr(),
+                      eyebrow: isDoctor
+                          ? LocaleKeys.schedules_subtitleDoctor.tr()
+                          : LocaleKeys.schedules_subtitleManager.tr(),
                       leading: AppHeaderIconButton(
                         svgIcon: AppSvgIcons.chevronBack,
                         size: 38,
                         onTap: () => Navigator.pop(context),
                       ),
-                      trailing: AppHeaderIconButton(
-                        svgIcon: AppSvgIcons.plus,
-                        color: AppColors.primaryColor.themeColor,
-                        onTap: _openNewSchedule,
-                      ),
                     ),
                     16.height,
-                    AppSegmentedTabs(
-                      labels: [
-                        LocaleKeys.schedules_tabAll.tr(),
-                        LocaleKeys.schedules_modeClinic.tr(),
-                        LocaleKeys.schedules_modeOnline.tr(),
-                        LocaleKeys.schedules_modeHome.tr(),
-                      ],
-                      selectedIndex: _tabIndex,
-                      onChanged: (i) => setState(() => _tabIndex = i),
-                    ),
-                    16.height,
-                    for (final schedule in filtered)
-                      WorkScheduleTile(
-                        schedule: schedule,
-                        onEdit: () => _openEditor(
-                          doctorName: schedule.doctorName,
-                          doctorInitial: schedule.doctorInitial,
-                          mode: schedule.mode,
-                          existing: schedule,
-                        ),
-                        onLeave: () => _openLeave(schedule),
-                      ),
+                    if (isDoctor)
+                      for (final clinic in clinics)
+                        ClinicScheduleGroup(
+                          clinic: clinic,
+                          initiallyExpanded: clinics.length == 1,
+                        )
+                    else
+                      for (final doctor in doctors)
+                        DoctorScheduleGroup(doctor: doctor),
                   ],
                 );
               },

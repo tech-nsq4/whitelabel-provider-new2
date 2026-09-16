@@ -214,4 +214,13 @@ $paths
   static final String edit = _icon(
     '<path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5z"/>',
   );
+
+  static final String tag = _icon(
+    '<path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0l-7.2-7.2A2 2 0 013 12V4.5A1.5 1.5 0 014.5 3H12a2 2 0 011.4.6l7.2 7.2a2 2 0 010 2.6z"/>'
+    '<circle cx="7.6" cy="7.6" r="1.4"/>',
+  );
+
+  static final String filter = _icon(
+    '<path d="M3 5h18l-7 8.5V20l-4 1v-7.5z"/>',
+  );
 }

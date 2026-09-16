@@ -67,9 +67,9 @@ class CustomNavBar extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 0),
+            padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 10),
             child: Container(
-              height: 58.h,
+              height: 70.h,
               decoration: BoxDecoration(
                 color: AppColors.cardColor.themeColor,
                 border: Border.all(color: AppColors.dividerColor.themeColor),
@@ -94,7 +94,7 @@ class CustomNavBar extends StatelessWidget {
                       badgeCount: badges[i],
                       onTap: () => onTap(i),
                     ),
-                  SizedBox(width: 50.w),
+                  // SizedBox(width: 50.w),
                   for (var i = 0; i < trailing.length; i++)
                     _NavButton(
                       data: trailing[i],
@@ -108,7 +108,7 @@ class CustomNavBar extends StatelessWidget {
               ),
             ),
           ),
-          _Fab(onTap: onFabTap),
+          // _Fab(onTap: onFabTap),
         ],
       ),
     );
@@ -131,7 +131,7 @@ class _NavButton extends StatelessWidget {
   final Color inactiveColor;
   final VoidCallback onTap;
   final int? badgeCount;
-
+//3e91ca5165b97d06d7d846e1620369970e11078ee0d232e920d95e9029ae28b7
   @override
   Widget build(BuildContext context) {
     final color = isActive ? activeColor : inactiveColor;

@@ -6,14 +6,20 @@ import 'package:dio/dio.dart';
 import '../../../core/network/api_endpoints.dart';
 import '../../../core/network/dio_client.dart';
 import '../../../core/network/network_exceptions.dart';
+import 'chat_notifications_api.dart';
 import 'models/chat_message_model.dart';
 
 class ChatRepo {
-  ChatRepo({required DioClient dio, FirebaseFirestore? firestore})
-      : _dio = dio,
+  ChatRepo({
+    required DioClient dio,
+    required ChatNotificationsApi notifications,
+    FirebaseFirestore? firestore,
+  })  : _dio = dio,
+        _notifications = notifications,
         _firestore = firestore ?? FirebaseFirestore.instance;
 
   final DioClient _dio;
+  final ChatNotificationsApi _notifications;
   final FirebaseFirestore _firestore;
 
   String chatId({required int doctorId, required int userId}) => 'd${doctorId}_u$userId';
@@ -40,6 +46,18 @@ class ChatRepo {
 
   Stream<ChatReadStateModel> watchReadState(String chatId) {
     return _chatDoc(chatId).snapshots().map((snapshot) => ChatReadStateModel.fromJson(snapshot.data()));
+  }
+
+  Future<void> deleteMessages({
+    required String chatId,
+    required List<String> messageIds,
+  }) async {
+    if (messageIds.isEmpty) return;
+    final batch = _firestore.batch();
+    for (final id in messageIds) {
+      batch.delete(_messagesCol(chatId).doc(id));
+    }
+    await batch.commit();
   }
 
   Future<void> markRead({required String chatId, required ChatSenderRole role}) {
@@ -117,6 +135,11 @@ class ChatRepo {
       lastMessageType: ChatMessageType.text,
       lastMessageText: text,
     );
+    await _notifications.send(
+      recipientUserId: userId,
+      title: doctorName,
+      body: text,
+    );
   }
 
   Future<String> uploadImage(File file) async {
@@ -192,5 +215,15 @@ class ChatRepo {
       senderRole: senderRole,
       lastMessageType: ChatMessageType.location,
     );
+  }
+
+  Future<void> refreshLastMessage({required String chatId, ChatMessageModel? latest}) {
+    return _chatDoc(chatId).set({
+      'last_message_type': latest?.type.name,
+      'last_message_text': latest?.text,
+      'last_sender_role': latest?.senderRole.name,
+      'last_message_at':
+          latest?.createdAt == null ? null : Timestamp.fromDate(latest!.createdAt!),
+    }, SetOptions(merge: true));
   }
 }

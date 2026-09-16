@@ -11,8 +11,8 @@ import '../../../../core/widgets/app_icon_box.dart';
 import '../../../../core/widgets/app_text.dart';
 import '../../data/models/notification_model.dart';
 
-/// One booking-lifecycle event on the "الإشعارات" screen. Tapping an
-/// unread one marks it read.
+/// One booking-lifecycle event on the "الإشعارات" screen. Tapping it opens
+/// the appointment's details (and marks the notification read on the way).
 class NotificationTile extends StatelessWidget {
   const NotificationTile({super.key, required this.notification, required this.onTap});
 
@@ -33,7 +33,7 @@ class NotificationTile extends StatelessWidget {
 
     return AppCard(
       margin: 10.paddingBottom,
-      onTap: notification.isRead ? null : onTap,
+      onTap: onTap,
       color: notification.isRead
           ? AppColors.cardColor.themeColor
           : AppColors.surfaceColor.themeColor,

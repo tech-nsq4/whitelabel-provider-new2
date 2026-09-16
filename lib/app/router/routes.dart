@@ -14,6 +14,7 @@ class Routes {
   static const String agenda = '/agenda';
   static const String inbox = '/inbox';
   static const String notifications = '/notifications';
+  static const String appointmentDetails = '/appointment-details';
   static const String bookings = '/bookings';
   static const String orderDetails = '/order-details';
   static const String calendar = '/calendar';
@@ -21,7 +22,6 @@ class Routes {
   static const String staff = '/staff';
   static const String doctorDetails = '/doctor-details';
   static const String schedules = '/schedules';
-  static const String scheduleEditor = '/schedule-editor';
   static const String homecare = '/homecare';
   static const String billing = '/billing';
   static const String docs = '/docs';

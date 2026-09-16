@@ -1,4 +1,4 @@
-import 'package:white_label_provider/app/router/navigation_services.dart';
+import 'package:viva_connect_provider/app/router/navigation_services.dart';
 import 'package:flutter/material.dart';
 
 class ColorModel {
@@ -25,25 +25,46 @@ extension ColorTheme on ColorModel {
 class AppColors {
   AppColors._();
 
-  // ─── Brand (deep emerald) ───────────────────────────────────────────────
+  // ─── Brand ──────────────────────────────────────────────────────────────
   static const ColorModel primaryColor = ColorModel(
-    lightColor: Color(0xFF0F6B5C),
-    darkColor: Color(0xFF1A8B77),
+    lightColor: Color(0xFF113C7A),
+    darkColor: Color(0xFF5388BA),
   );
 
   static const ColorModel primaryLightColor = ColorModel(
-    lightColor: Color(0xFF1A8B77),
-    darkColor: Color(0xFF1A8B77),
+    lightColor: Color(0xFF5388BA),
+    darkColor: Color(0xFF5388BA),
   );
 
   static const ColorModel primaryDarkColor = ColorModel(
-    lightColor: Color(0xFF0A4F44),
-    darkColor: Color(0xFF0A4F44),
+    lightColor: Color(0xFF174882),
+    darkColor: Color(0xFF174882),
   );
 
   static const ColorModel secondaryColor = ColorModel(
-    lightColor: Color(0xff1B5583),
-    darkColor: Color(0xff1B5583),
+    lightColor: Color(0xFF00A0A1),
+    darkColor: Color(0xFF00A0A1),
+  );
+
+  // ─── Brand gradient stops ───────────────────────────────────────────────
+  static const ColorModel blueGradientStart = ColorModel(
+    lightColor: Color(0xFF174882),
+    darkColor: Color(0xFF174882),
+  );
+
+  static const ColorModel blueGradientEnd = ColorModel(
+    lightColor: Color(0xFF5388BA),
+    darkColor: Color(0xFF5388BA),
+  );
+
+  static const ColorModel turquoiseGradientStart = ColorModel(
+    lightColor: Color(0xFF00A1A1),
+    darkColor: Color(0xFF00A1A1),
+  );
+
+  static const ColorModel turquoiseGradientEnd = ColorModel(
+    lightColor: Color(0xFF006A6A),
+    darkColor: Color(0xFF006A6A),
   );
 
   // ─── Surfaces ────────────────────────────────────────────────────────────
@@ -125,4 +146,26 @@ class AppColors {
     lightColor: Color(0xFFFBEDEA),
     darkColor: Color(0xFFFBEDEA),
   );
+}
+
+class AppGradients {
+  AppGradients._();
+
+  static LinearGradient get blue => LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          AppColors.blueGradientStart.themeColor,
+          AppColors.blueGradientEnd.themeColor,
+        ],
+      );
+
+  static LinearGradient get turquoise => LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          AppColors.turquoiseGradientStart.themeColor,
+          AppColors.turquoiseGradientEnd.themeColor,
+        ],
+      );
 }

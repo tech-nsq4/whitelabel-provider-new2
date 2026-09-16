@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../app/router/routes.dart';
 import '../../../core/di/injection.dart';
 import '../../../core/extensions/extensions.dart';
 import '../../../core/utils/app_colors.dart';
@@ -13,6 +14,7 @@ import '../../../core/widgets/app_header_icon_button.dart';
 import '../../../core/widgets/app_screen_header.dart';
 import '../../../core/widgets/app_text.dart';
 import '../../../core/widgets/screen_state_layout.dart';
+import '../data/models/notification_model.dart';
 import '../logic/notifications_cubit.dart';
 import 'widgets/notification_tile.dart';
 
@@ -39,6 +41,16 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     setState(() => _markingAllRead = true);
     await getIt<NotificationsCubit>().markAllAsRead();
     if (mounted) setState(() => _markingAllRead = false);
+  }
+
+  void _openNotification(NotificationModel notification) {
+    if (!notification.isRead) {
+      getIt<NotificationsCubit>().markAsRead(notification.id);
+    }
+    final appointmentId = notification.appointmentId;
+    if (appointmentId == null) return;
+    context.pushNamed(Routes.appointmentDetails,
+        arguments: {'appointmentId': appointmentId});
   }
 
   @override
@@ -96,8 +108,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     for (final notification in notifications)
                       NotificationTile(
                         notification: notification,
-                        onTap: () => getIt<NotificationsCubit>()
-                            .markAsRead(notification.id),
+                        onTap: () => _openNotification(notification),
                       ),
                   ],
                 );

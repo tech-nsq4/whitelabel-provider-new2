@@ -8,14 +8,21 @@ import '../../../core/di/injection.dart';
 import '../../../core/extensions/extensions.dart';
 import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/app_overlay.dart';
+import '../../../core/utils/app_svg_icons.dart';
+import '../../../core/utils/convert_helper.dart';
 import '../../../core/utils/locale_keys.dart';
+import '../../../core/widgets/app_header_icon_button.dart';
 import '../../../core/widgets/app_screen_header.dart';
 import '../../../core/widgets/app_segmented_tabs.dart';
+import '../../../core/widgets/app_text.dart';
+import '../../../core/widgets/custom_tap_effect.dart';
 import '../../../core/widgets/screen_state_layout.dart';
+import '../data/models/orders_filter.dart';
 import '../data/models/test_request_model.dart';
 import '../logic/orders_cubit.dart';
 import 'widgets/order_card.dart';
 import 'widgets/order_upload_sheet.dart';
+import 'widgets/orders_filter_sheet.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -67,6 +74,48 @@ class _OrdersScreenState extends State<OrdersScreen> {
     });
   }
 
+  Future<void> _openFilterSheet() async {
+    final result = await showModalBottomSheet<OrdersFilter>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => OrdersFilterSheet(current: getIt<OrdersCubit>().filter),
+    );
+    if (result != null) getIt<OrdersCubit>().applyFilter(result);
+  }
+
+  Widget _activeFilterSummary(OrdersFilter filter) {
+    final parts = [
+      if (filter.locationName != null) filter.locationName!,
+      if (filter.hasDate)
+        ConvertHelper.formatDateRange(filter.dateFrom!, filter.dateTo!),
+    ].join(' · ');
+
+    return Padding(
+      padding: EdgeInsets.only(top: 12.h),
+      child: Row(
+        children: [
+          Expanded(
+            child: AppText(parts,
+                fontSize: 11.5,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondaryColor.themeColor,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis),
+          ),
+          8.width,
+          CustomTapEffect(
+            onTap: () => getIt<OrdersCubit>().clearFilter(),
+            child: AppText(LocaleKeys.orders_filterClear.tr(),
+                fontSize: 11.5,
+                fontWeight: FontWeight.w700,
+                color: AppColors.errorColor.themeColor),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,6 +134,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
               onRetry: () => getIt<OrdersCubit>().loadOrders(),
               builder: (context) {
                 final requests = (state as OrdersSuccess).requests;
+                final filter = getIt<OrdersCubit>().filter;
                 final filtered = switch (_tabIndex) {
                   1 => requests.where((r) => !r.hasResult).toList(),
                   2 => requests.where((r) => r.hasResult).toList(),
@@ -97,7 +147,16 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     AppScreenHeader(
                       eyebrow: LocaleKeys.ordersScreen_subtitle.tr(),
                       title: LocaleKeys.ordersScreen_title.tr(),
+                      trailing: AppHeaderIconButton(
+                        svgIcon: AppSvgIcons.filter,
+                        color: filter.isActive
+                            ? AppColors.primaryColor.themeColor
+                            : null,
+                        badgeCount: filter.activeCount,
+                        onTap: _openFilterSheet,
+                      ),
                     ),
+                    if (filter.isActive) _activeFilterSummary(filter),
                     // 16.height,
                     // AppCard(
                     //   color: AppColors.surfaceColor.themeColor,

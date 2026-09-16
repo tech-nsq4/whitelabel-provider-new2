@@ -6,6 +6,9 @@ abstract class LocaleKeys {
   // ─── App ─────────────────────────────────────────────────────────────────
   static const String app_name = 'app_name';
 
+  // ─── Splash ──────────────────────────────────────────────────────────────
+  static const String splash_tagline = 'splash.tagline';
+
   // ─── Auth ─────────────────────────────────────────────────────────────────
   static const String auth_tagline = 'auth.tagline';
   static const String auth_login = 'auth.login';
@@ -51,6 +54,7 @@ abstract class LocaleKeys {
   static const String common_bookedByValue = 'common.booked_by_value';
   static const String common_noDataTitle = 'common.no_data_title';
   static const String common_noDataDesc = 'common.no_data_desc';
+  static const String common_dateRange = 'common.date_range';
 
   // ─── Setup hub ────────────────────────────────────────────────────────────
   static const String setupScreen_title = 'setup_screen.title';
@@ -201,6 +205,12 @@ abstract class LocaleKeys {
   static const String dashboard_setupSchedules = 'dashboard.setup_schedules';
   static const String dashboard_setupBranches = 'dashboard.setup_branches';
   static const String dashboard_setupPolicy = 'dashboard.setup_policy';
+  static const String dashboard_doctorShortcutsTitle =
+      'dashboard.doctor_shortcuts_title';
+  static const String dashboard_doctorSchedulesHint =
+      'dashboard.doctor_schedules_hint';
+  static const String dashboard_doctorBranchesHint =
+      'dashboard.doctor_branches_hint';
   static const String dashboard_doctorsNowTitle = 'dashboard.doctors_now_title';
   static const String dashboard_manage = 'dashboard.manage';
   static const String dashboard_noDoctorsToday = 'dashboard.no_doctors_today';
@@ -258,6 +268,26 @@ abstract class LocaleKeys {
   static const String queue_detailsStartedAt = 'queue.details_started_at';
   static const String queue_detailsEndedAt = 'queue.details_ended_at';
   static const String queue_detailsCancelledAt = 'queue.details_cancelled_at';
+  static const String queue_detailsDiscountTitle =
+      'queue.details_discount_title';
+  static const String queue_detailsDiscountPromo =
+      'queue.details_discount_promo';
+  static const String queue_detailsDiscountOffer =
+      'queue.details_discount_offer';
+  static const String queue_detailsDiscountSavedBadge =
+      'queue.details_discount_saved_badge';
+  static const String queue_detailsDiscountOriginal =
+      'queue.details_discount_original';
+  static const String queue_detailsDiscountValue =
+      'queue.details_discount_value';
+  static const String queue_detailsDiscountTotal =
+      'queue.details_discount_total';
+  static const String queue_filterTitle = 'queue.filter_title';
+  static const String queue_filterBranch = 'queue.filter_branch';
+  static const String queue_filterAllBranches = 'queue.filter_all_branches';
+  static const String queue_filterApply = 'queue.filter_apply';
+  static const String queue_filterClear = 'queue.filter_clear';
+  static const String queue_filterEmptyBranches = 'queue.filter_empty_branches';
 
   // ─── Chat ─────────────────────────────────────────────────────────────────
   static const String chat_online = 'chat.online';
@@ -272,6 +302,10 @@ abstract class LocaleKeys {
   static const String chat_locationUnavailable = 'chat.location_unavailable';
   static const String chat_emptyTitle = 'chat.empty_title';
   static const String chat_emptyDescription = 'chat.empty_description';
+  static const String chat_selectedCount = 'chat.selected_count';
+  static const String chat_deleteConfirmTitle = 'chat.delete_confirm_title';
+  static const String chat_deleteConfirmMessage = 'chat.delete_confirm_message';
+  static const String chat_deleteConfirmAction = 'chat.delete_confirm_action';
 
   // ─── Consultation ─────────────────────────────────────────────────────────
   static const String consultation_tabConsult = 'consultation.tab_consult';
@@ -474,70 +508,29 @@ abstract class LocaleKeys {
 
   // ─── Schedules ────────────────────────────────────────────────────────────
   static const String schedules_title = 'schedules.title';
-  static const String schedules_subtitle = 'schedules.subtitle';
-  static const String schedules_tabAll = 'schedules.tab_all';
+  static const String schedules_subtitleManager = 'schedules.subtitle_manager';
+  static const String schedules_subtitleDoctor = 'schedules.subtitle_doctor';
+  static const String schedules_clinicsCount = 'schedules.clinics_count';
+  static const String schedules_timetablesCount = 'schedules.timetables_count';
+  static const String schedules_slotsCount = 'schedules.slots_count';
+  static const String schedules_noClinics = 'schedules.no_clinics';
+  static const String schedules_noTimetables = 'schedules.no_timetables';
+  static const String schedules_noSlots = 'schedules.no_slots';
+  static const String schedules_emptyTitle = 'schedules.empty_title';
+  static const String schedules_emptyDesc = 'schedules.empty_desc';
+  static const String schedules_dateRange = 'schedules.date_range';
+  static const String schedules_sessionDuration = 'schedules.session_duration';
+  static const String schedules_sessionGap = 'schedules.session_gap';
   static const String schedules_modeClinic = 'schedules.mode_clinic';
   static const String schedules_modeOnline = 'schedules.mode_online';
   static const String schedules_modeHome = 'schedules.mode_home';
-  static const String schedules_daysLabel = 'schedules.days_label';
-  static const String schedules_hoursLabel = 'schedules.hours_label';
-  static const String schedules_edit = 'schedules.edit';
-  static const String schedules_leave = 'schedules.leave';
-
-  // ─── Leave request sheet ──────────────────────────────────────────────────
-  static const String leave_title = 'leave.title';
-  static const String leave_fromLabel = 'leave.from_label';
-  static const String leave_toLabel = 'leave.to_label';
-  static const String leave_dateHint = 'leave.date_hint';
-  static const String leave_submit = 'leave.submit';
-  static const String leave_success = 'leave.success';
-
-  // ─── New schedule sheet ───────────────────────────────────────────────────
-  static const String newScheduleSheet_title = 'new_schedule_sheet.title';
-  static const String newScheduleSheet_branchLabel =
-      'new_schedule_sheet.branch_label';
-  static const String newScheduleSheet_doctorLabel =
-      'new_schedule_sheet.doctor_label';
-  static const String newScheduleSheet_typeLabel =
-      'new_schedule_sheet.type_label';
-  static const String newScheduleSheet_typeClinic =
-      'new_schedule_sheet.type_clinic';
-  static const String newScheduleSheet_typeOnline =
-      'new_schedule_sheet.type_online';
-  static const String newScheduleSheet_typeHome =
-      'new_schedule_sheet.type_home';
-  static const String newScheduleSheet_next = 'new_schedule_sheet.next';
-
-  // ─── Schedule editor ──────────────────────────────────────────────────────
-  static const String scheduleEditor_title = 'schedule_editor.title';
-  static const String scheduleEditor_servicesLabel =
-      'schedule_editor.services_label';
-  static const String scheduleEditor_onlineNowLabel =
-      'schedule_editor.online_now_label';
-  static const String scheduleEditor_onlineNowSub =
-      'schedule_editor.online_now_sub';
-  static const String scheduleEditor_coverageLabel =
-      'schedule_editor.coverage_label';
-  static const String scheduleEditor_daysLabel = 'schedule_editor.days_label';
-  static const String scheduleEditor_daySat = 'schedule_editor.day_sat';
-  static const String scheduleEditor_daySun = 'schedule_editor.day_sun';
-  static const String scheduleEditor_dayMon = 'schedule_editor.day_mon';
-  static const String scheduleEditor_dayTue = 'schedule_editor.day_tue';
-  static const String scheduleEditor_dayWed = 'schedule_editor.day_wed';
-  static const String scheduleEditor_dayThu = 'schedule_editor.day_thu';
-  static const String scheduleEditor_dayFri = 'schedule_editor.day_fri';
-  static const String scheduleEditor_hoursLabel = 'schedule_editor.hours_label';
-  static const String scheduleEditor_hoursFrom = 'schedule_editor.hours_from';
-  static const String scheduleEditor_hoursTo = 'schedule_editor.hours_to';
-  static const String scheduleEditor_slotsFormula =
-      'schedule_editor.slots_formula';
-  static const String scheduleEditor_unitClinic = 'schedule_editor.unit_clinic';
-  static const String scheduleEditor_unitOnline = 'schedule_editor.unit_online';
-  static const String scheduleEditor_unitHome = 'schedule_editor.unit_home';
-  static const String scheduleEditor_branchLabel =
-      'schedule_editor.branch_label';
-  static const String scheduleEditor_save = 'schedule_editor.save';
-  static const String scheduleEditor_success = 'schedule_editor.success';
+  static const String schedules_daySaturday = 'schedules.day_saturday';
+  static const String schedules_daySunday = 'schedules.day_sunday';
+  static const String schedules_dayMonday = 'schedules.day_monday';
+  static const String schedules_dayTuesday = 'schedules.day_tuesday';
+  static const String schedules_dayWednesday = 'schedules.day_wednesday';
+  static const String schedules_dayThursday = 'schedules.day_thursday';
+  static const String schedules_dayFriday = 'schedules.day_friday';
 
   // ─── Homecare ─────────────────────────────────────────────────────────────
   static const String homecareScreen_title = 'homecare_screen.title';
@@ -610,6 +603,15 @@ abstract class LocaleKeys {
   static const String orders_detailsResultedAt = 'orders.details_resulted_at';
   static const String orders_detailsNoNote = 'orders.details_no_note';
   static const String orders_detailsViewBooking = 'orders.details_view_booking';
+  static const String orders_filterTitle = 'orders.filter_title';
+  static const String orders_filterBranch = 'orders.filter_branch';
+  static const String orders_filterAllBranches = 'orders.filter_all_branches';
+  static const String orders_filterDate = 'orders.filter_date';
+  static const String orders_filterAnyDate = 'orders.filter_any_date';
+  static const String orders_filterPickDate = 'orders.filter_pick_date';
+  static const String orders_filterApply = 'orders.filter_apply';
+  static const String orders_filterClear = 'orders.filter_clear';
+  static const String orders_filterEmptyBranches = 'orders.filter_empty_branches';
 
   // ─── Patients (list) ──────────────────────────────────────────────────────
   static const String patientsScreen_title = 'patients_screen.title';

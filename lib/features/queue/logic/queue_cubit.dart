@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/network/network_exceptions.dart';
 import '../../../core/utils/app_overlay.dart';
+import '../data/models/queue_filter.dart';
 import '../data/models/queue_patient_model.dart';
 import '../data/models/queue_snapshot_model.dart';
 import '../data/queue_repo.dart';
@@ -14,6 +15,9 @@ class QueueCubit extends Cubit<QueueState> {
 
   final QueueRepo _repo;
 
+  QueueFilter _filter = QueueFilter.empty;
+  QueueFilter get filter => _filter;
+
   int get waitingCount => state is QueueSuccess
       ? (state as QueueSuccess).snapshot.waiting.length
       : 0;
@@ -21,7 +25,7 @@ class QueueCubit extends Cubit<QueueState> {
   Future<void> loadQueue() async {
     emit(const QueueLoading());
     try {
-      final snapshot = await _repo.getQueue();
+      final snapshot = await _repo.getQueue(clinicId: _filter.clinicId);
       emit(QueueSuccess(snapshot));
     } catch (e) {
       final msg = e is NetworkException ? e.message : e.toString();
@@ -29,19 +33,26 @@ class QueueCubit extends Cubit<QueueState> {
     }
   }
 
+  Future<void> applyFilter(QueueFilter filter) async {
+    _filter = filter;
+    await loadQueue();
+  }
+
+  Future<void> clearFilter() => applyFilter(QueueFilter.empty);
+
   Future<void> refreshTab(int tabIndex) async {
     final current = state;
     if (current is! QueueSuccess) return;
     try {
       switch (tabIndex) {
         case 0:
-          final waiting = await _repo.getWaiting();
+          final waiting = await _repo.getWaiting(clinicId: _filter.clinicId);
           emit(QueueSuccess(current.snapshot.copyWith(waiting: waiting)));
         case 1:
-          final inRoom = await _repo.getInRoom();
+          final inRoom = await _repo.getInRoom(clinicId: _filter.clinicId);
           emit(QueueSuccess(current.snapshot.copyWith(inRoom: inRoom)));
         default:
-          final done = await _repo.getDone();
+          final done = await _repo.getDone(clinicId: _filter.clinicId);
           emit(QueueSuccess(current.snapshot.copyWith(done: done)));
       }
     } catch (e) {

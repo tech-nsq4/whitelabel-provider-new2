@@ -24,6 +24,7 @@ import '../../profile/logic/profile_cubit.dart';
 import '../../queue/data/models/queue_patient_model.dart';
 import '../logic/dashboard_cubit.dart';
 import 'widgets/dashboard_booking_tile.dart';
+import 'widgets/dashboard_doctor_shortcuts.dart';
 import 'widgets/dashboard_doctor_tile.dart';
 import 'widgets/dashboard_setup_grid.dart';
 import 'widgets/dashboard_stat_grid.dart';
@@ -67,6 +68,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onRetry: () => _cubit.loadOverview(),
               builder: (context) {
                 final overview = (state as DashboardSuccess).overview;
+                final profileState = context.watch<ProfileCubit>().state;
+                final isDoctor = profileState is ProfileSuccess &&
+                    profileState.profile.isDoctor;
                 return ListView(
                   padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 108.h),
                   children: [
@@ -137,65 +141,75 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                     24.height,
-                    AppSectionTitle(LocaleKeys.dashboard_setupTitle.tr()),
+                    AppSectionTitle((isDoctor
+                            ? LocaleKeys.dashboard_doctorShortcutsTitle
+                            : LocaleKeys.dashboard_setupTitle)
+                        .tr()),
                     12.height,
-                    DashboardSetupGrid(items: [
-                      DashboardSetupItem(
-                        icon: AppSvgIcons.grid2x2,
-                        label: LocaleKeys.dashboard_setupServices.tr(),
-                        onTap: () =>
-                            Navigator.pushNamed(context, Routes.services),
-                      ),
-                      DashboardSetupItem(
-                        icon: AppSvgIcons.stethoscope,
-                        label: LocaleKeys.dashboard_setupSpecialties.tr(),
-                        onTap: () =>
-                            Navigator.pushNamed(context, Routes.specialties),
-                      ),
-                      DashboardSetupItem(
-                        icon: AppSvgIcons.family,
-                        label: LocaleKeys.dashboard_setupDoctors.tr(),
-                        onTap: () => Navigator.pushNamed(context, Routes.staff),
-                      ),
-                      DashboardSetupItem(
-                        icon: AppSvgIcons.calendar,
-                        label: LocaleKeys.dashboard_setupSchedules.tr(),
-                        onTap: () =>
-                            Navigator.pushNamed(context, Routes.schedules),
-                      ),
-                      DashboardSetupItem(
-                        icon: AppSvgIcons.home2,
-                        label: LocaleKeys.dashboard_setupBranches.tr(),
-                        onTap: () =>
-                            Navigator.pushNamed(context, Routes.branches),
-                      ),
-                      DashboardSetupItem(
-                        icon: AppSvgIcons.clock,
-                        label: LocaleKeys.dashboard_setupPolicy.tr(),
-                        onTap: () =>
-                            Navigator.pushNamed(context, Routes.policy),
-                      ),
-                    ]),
-                    26.height,
-                    AppSectionTitle(
-                      LocaleKeys.dashboard_doctorsNowTitle.tr(),
-                      actionLabel: LocaleKeys.dashboard_manage.tr(),
-                      onAction: () =>
-                          Navigator.pushNamed(context, Routes.staff),
-                    ),
-                    12.height,
-                    if (overview.doctors.isEmpty)
-                      AppText(LocaleKeys.dashboard_noDoctorsToday.tr(),
-                          fontSize: 12, color: AppColors.mutedColor.themeColor)
+                    if (isDoctor)
+                      const DashboardDoctorShortcuts()
                     else
-                      for (final doctor in overview.doctors)
-                        DashboardDoctorTile(
-                          doctor: doctor,
-                          onTap: () => Navigator.pushNamed(
-                              context, Routes.doctorDetails,
-                              arguments: {'doctor': doctor}),
+                      DashboardSetupGrid(items: [
+                        DashboardSetupItem(
+                          icon: AppSvgIcons.grid2x2,
+                          label: LocaleKeys.dashboard_setupServices.tr(),
+                          onTap: () =>
+                              Navigator.pushNamed(context, Routes.services),
                         ),
-                    14.height,
+                        DashboardSetupItem(
+                          icon: AppSvgIcons.stethoscope,
+                          label: LocaleKeys.dashboard_setupSpecialties.tr(),
+                          onTap: () =>
+                              Navigator.pushNamed(context, Routes.specialties),
+                        ),
+                        DashboardSetupItem(
+                          icon: AppSvgIcons.family,
+                          label: LocaleKeys.dashboard_setupDoctors.tr(),
+                          onTap: () =>
+                              Navigator.pushNamed(context, Routes.staff),
+                        ),
+                        DashboardSetupItem(
+                          icon: AppSvgIcons.calendar,
+                          label: LocaleKeys.dashboard_setupSchedules.tr(),
+                          onTap: () =>
+                              Navigator.pushNamed(context, Routes.schedules),
+                        ),
+                        DashboardSetupItem(
+                          icon: AppSvgIcons.home2,
+                          label: LocaleKeys.dashboard_setupBranches.tr(),
+                          onTap: () =>
+                              Navigator.pushNamed(context, Routes.branches),
+                        ),
+                        DashboardSetupItem(
+                          icon: AppSvgIcons.clock,
+                          label: LocaleKeys.dashboard_setupPolicy.tr(),
+                          onTap: () =>
+                              Navigator.pushNamed(context, Routes.policy),
+                        ),
+                      ]),
+                    if (!isDoctor) ...[
+                      26.height,
+                      AppSectionTitle(
+                        LocaleKeys.dashboard_doctorsNowTitle.tr(),
+                        actionLabel: LocaleKeys.dashboard_manage.tr(),
+                        onAction: () =>
+                            Navigator.pushNamed(context, Routes.staff),
+                      ),
+                      12.height,
+                      if (overview.doctors.isEmpty)
+                        AppText(LocaleKeys.dashboard_noDoctorsToday.tr(),
+                            fontSize: 12,
+                            color: AppColors.mutedColor.themeColor)
+                      else
+                        for (final doctor in overview.doctors)
+                          DashboardDoctorTile(
+                            doctor: doctor,
+                            onTap: () => Navigator.pushNamed(
+                                context, Routes.doctorDetails,
+                                arguments: {'doctor': doctor}),
+                          ),
+                    ],
+                    26.height,
                     AppSectionTitle(
                       LocaleKeys.dashboard_recentBookingsTitle.tr(),
                       actionLabel: LocaleKeys.dashboard_seeAll.tr(),

@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:white_label_provider/core/extensions/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../app/router/routes.dart';
 import '../../../core/di/injection.dart';
+import '../../../core/extensions/extensions.dart';
 import '../../../core/storage/local_storage.dart';
 import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/app_constants.dart';
@@ -12,12 +12,16 @@ import '../../../core/utils/app_images.dart';
 import '../../../core/utils/locale_keys.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_text.dart';
+import '../data/models/splash_slide_model.dart';
 import 'widgets/onboarding_dots_indicator.dart';
 import 'widgets/onboarding_illustration.dart';
+import 'widgets/onboarding_image.dart';
 import 'widgets/onboarding_slide_data.dart';
 
 class OnBoardingScreen extends StatefulWidget {
-  const OnBoardingScreen({super.key});
+  const OnBoardingScreen({super.key, this.slides = const []});
+
+  final List<SplashSlideModel> slides;
 
   @override
   State<OnBoardingScreen> createState() => _OnBoardingScreenState();
@@ -26,9 +30,22 @@ class OnBoardingScreen extends StatefulWidget {
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
   final _pageController = PageController();
   int _currentPage = 0;
-  List<OnboardingSlideData> _slides = [];
 
-  List<OnboardingSlideData> _buildSlides() {
+  List<OnboardingSlideData> _resolveSlides() {
+    if (widget.slides.isNotEmpty) {
+      return [
+        for (final slide in widget.slides)
+          OnboardingSlideData(
+            imageUrl: slide.image,
+            title: slide.title,
+            subtitle: slide.description,
+          ),
+      ];
+    }
+    return _bundledSlides();
+  }
+
+  List<OnboardingSlideData> _bundledSlides() {
     return [
       OnboardingSlideData(
         illustration: OnboardingIllustrationType.welcome,
@@ -53,10 +70,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     ];
   }
 
-  bool get _isLast => _currentPage == _slides.length - 1;
-
-  void _nextPage() {
-    if (_isLast) {
+  void _next(int slidesCount) {
+    if (_currentPage >= slidesCount - 1) {
       _finish();
     } else {
       _pageController.nextPage(
@@ -80,12 +95,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _slides = _buildSlides();
-    // Guard: if page jumped beyond new slides count, clamp it
-    if (_currentPage >= _slides.length) _currentPage = _slides.length - 1;
-    final slides = _slides;
-    final currentSlide = slides[_currentPage];
-
+    final slides = _resolveSlides();
+    if (_currentPage >= slides.length) _currentPage = slides.length - 1;
+    final isLast = _currentPage == slides.length - 1;
     final accentGold = AppColors.accentGold.themeColor;
 
     return Scaffold(
@@ -95,7 +107,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // ── Logo ────────────────────────────────────────────────────
               Center(
                 child: Image.asset(
                   AppImages.logo3,
@@ -104,34 +115,35 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   errorBuilder: (_, __, ___) => const SizedBox.shrink(),
                 ),
               ),
-
-              // ── Illustration card (PageView) ─────────────────────────────
               Expanded(
                 child: PageView.builder(
                   controller: _pageController,
                   itemCount: slides.length,
                   onPageChanged: (i) => setState(() => _currentPage = i),
-                  itemBuilder: (_, i) => Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      OnboardingIllustration(illustration: slides[i].illustration),
-                      32.height,
-                      OnboardingDotsIndicator(
-                        count: slides.length,
-                        currentIndex: _currentPage,
-                      ),
-                      24.height,
-                      AnimatedOpacity(
-                        opacity: currentSlide.hasText ? 1.0 : 0.0,
-                        duration: AppConstants.defaultAnimationDuration,
-                        child: Padding(
+                  itemBuilder: (_, i) {
+                    final slide = slides[i];
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (slide.hasImage)
+                          OnboardingImage(url: slide.imageUrl!)
+                        else if (slide.illustration != null)
+                          OnboardingIllustration(
+                              illustration: slide.illustration!),
+                        32.height,
+                        OnboardingDotsIndicator(
+                          count: slides.length,
+                          currentIndex: _currentPage,
+                        ),
+                        24.height,
+                        Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: AppConstants.defaultPadding),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               AppText(
-                                currentSlide.title,
+                                slide.title,
                                 isHeading: true,
                                 color: AppColors.textPrimaryColor.themeColor,
                                 fontWeight: FontWeight.bold,
@@ -140,7 +152,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                               ),
                               SizedBox(height: 12.h),
                               AppText(
-                                currentSlide.subtitle,
+                                slide.subtitle,
                                 color: AppColors.textSecondaryColor.themeColor,
                                 height: 1.5,
                                 fontSize: 15.sp,
@@ -152,27 +164,23 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    );
+                  },
                 ),
               ),
-
-              // ── Primary button ───────────────────────────────────────────
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: AppConstants.defaultPadding),
                 child: CustomButton(
-                  title: _isLast
+                  title: isLast
                       ? LocaleKeys.onboarding_getStarted.tr()
                       : LocaleKeys.onboarding_next.tr(),
-                  onTap: _nextPage,
-                  color: _isLast ? accentGold : null,
-                  borderColor: _isLast ? accentGold : null,
+                  onTap: () => _next(slides.length),
+                  color: isLast ? accentGold : null,
+                  borderColor: isLast ? accentGold : null,
                 ),
               ),
-
-              // ── Skip ─────────────────────────────────────────────────────
               Center(
                 child: TextButton(
                   onPressed: _finish,

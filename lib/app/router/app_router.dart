@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../features/agenda/presentation/agenda_screen.dart';
 import '../../features/analytics/presentation/analytics_screen.dart';
+import '../../features/appointment_details/presentation/appointment_details_screen.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/billing/presentation/billing_screen.dart';
 import '../../features/bookings/presentation/bookings_screen.dart';
@@ -17,6 +18,7 @@ import '../../features/inbox/presentation/inbox_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/layout/presentation/layout_screen.dart';
 import '../../features/more/presentation/more_screen.dart';
+import '../../features/onboarding/data/models/splash_slide_model.dart';
 import '../../features/onboarding/presentation/on_boarding_screen.dart';
 import '../../features/patients/data/models/patient_list_item_model.dart';
 import '../../features/patients/presentation/patient_file_screen.dart';
@@ -26,8 +28,6 @@ import '../../features/orders/data/models/test_request_model.dart';
 import '../../features/orders/presentation/order_details_screen.dart';
 import '../../features/queue/data/models/queue_patient_model.dart';
 import '../../features/queue/presentation/queue_details_screen.dart';
-import '../../features/schedules/data/models/work_schedule_model.dart';
-import '../../features/schedules/presentation/schedule_edit_screen.dart';
 import '../../features/schedules/presentation/schedules_screen.dart';
 import '../../features/services/presentation/services_screen.dart';
 import '../../features/setup/presentation/setup_screen.dart';
@@ -51,7 +51,9 @@ class RouteGenerator {
         return _pageRoute(const SplashScreen());
 
       case Routes.onBoardingScreen:
-        return _pageRoute(const OnBoardingScreen());
+        return _pageRoute(OnBoardingScreen(
+          slides: (arguments?['slides'] as List<SplashSlideModel>?) ?? const [],
+        ));
 
       case Routes.loginScreen:
         return _pageRoute(const LoginScreen());
@@ -96,6 +98,11 @@ class RouteGenerator {
       case Routes.notifications:
         return _pageRoute(const NotificationsScreen());
 
+      case Routes.appointmentDetails:
+        return _pageRoute(AppointmentDetailsScreen(
+          appointmentId: '${arguments?['appointmentId']}',
+        ));
+
       case Routes.bookings:
         return _pageRoute(const BookingsScreen());
 
@@ -123,15 +130,6 @@ class RouteGenerator {
 
       case Routes.schedules:
         return _pageRoute(const SchedulesScreen());
-
-      case Routes.scheduleEditor:
-        return _pageRoute(ScheduleEditScreen(
-          doctorName: arguments?['doctorName'] as String,
-          doctorInitial: arguments?['doctorInitial'] as String,
-          mode: arguments?['mode'] as WorkScheduleMode,
-          existing: arguments?['existing'] as WorkScheduleModel?,
-          onSave: arguments?['onSave'] as void Function(WorkScheduleModel),
-        ));
 
       case Routes.homecare:
         return _pageRoute(const HomecareScreen());

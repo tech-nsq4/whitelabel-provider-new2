@@ -1,4 +1,4 @@
-import 'package:white_label_provider/core/widgets/custom_loading_widget.dart';
+import 'package:viva_connect_provider/core/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

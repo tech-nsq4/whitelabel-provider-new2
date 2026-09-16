@@ -1,7 +1,7 @@
-import 'package:white_label_provider/core/extensions/extensions.dart';
-import 'package:white_label_provider/core/utils/app_colors.dart';
-import 'package:white_label_provider/core/widgets/app_text.dart';
-import 'package:white_label_provider/core/widgets/custom_loading_widget.dart';
+import 'package:viva_connect_provider/core/extensions/extensions.dart';
+import 'package:viva_connect_provider/core/utils/app_colors.dart';
+import 'package:viva_connect_provider/core/widgets/app_text.dart';
+import 'package:viva_connect_provider/core/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

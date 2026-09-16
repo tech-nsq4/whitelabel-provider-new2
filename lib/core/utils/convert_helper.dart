@@ -1,6 +1,8 @@
-import 'package:white_label_provider/app/router/navigation_services.dart';
+import 'package:viva_connect_provider/app/router/navigation_services.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
+
+import 'locale_keys.dart';
 
 class ConvertHelper {
   static String formatDateTime(
@@ -39,6 +41,15 @@ class ConvertHelper {
     }
 
     return parts.join(' - ');
+  }
+
+  static String formatDateRange(String from, String to) {
+    final fromLabel = formatDateTime(from, includeDate: true);
+    if (from == to) return fromLabel;
+    return LocaleKeys.common_dateRange.tr(namedArgs: {
+      'from': fromLabel,
+      'to': formatDateTime(to, includeDate: true),
+    });
   }
 
   static String formatDuration(String duration) {

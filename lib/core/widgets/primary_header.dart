@@ -1,4 +1,4 @@
-import 'package:white_label_provider/core/utils/app_colors.dart';
+import 'package:viva_connect_provider/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

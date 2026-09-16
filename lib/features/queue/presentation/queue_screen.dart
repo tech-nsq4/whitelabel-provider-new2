@@ -14,12 +14,16 @@ import '../../../core/widgets/app_confirm_dialog.dart';
 import '../../../core/widgets/app_header_icon_button.dart';
 import '../../../core/widgets/app_screen_header.dart';
 import '../../../core/widgets/app_segmented_tabs.dart';
+import '../../../core/widgets/app_text.dart';
+import '../../../core/widgets/custom_tap_effect.dart';
 import '../../../core/widgets/screen_state_layout.dart';
+import '../data/models/queue_filter.dart';
 import '../data/models/queue_patient_model.dart';
 import '../data/models/queue_snapshot_model.dart';
 import '../logic/queue_cubit.dart';
 import 'widgets/queue_done_tile.dart';
 import 'widgets/queue_empty_state.dart';
+import 'widgets/queue_filter_sheet.dart';
 import 'widgets/queue_room_card.dart';
 import 'widgets/queue_waiting_card.dart';
 import 'widgets/queue_walkin_sheet.dart';
@@ -39,6 +43,16 @@ class _QueueScreenState extends State<QueueScreen> {
     super.initState();
     final cubit = getIt<QueueCubit>();
     if (cubit.state is QueueInitial) cubit.loadQueue();
+  }
+
+  Future<void> _openFilterSheet() async {
+    final result = await showModalBottomSheet<QueueFilter>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => QueueFilterSheet(current: getIt<QueueCubit>().filter),
+    );
+    if (result != null) getIt<QueueCubit>().applyFilter(result);
   }
 
   void _openWalkin() {
@@ -133,12 +147,27 @@ class _QueueScreenState extends State<QueueScreen> {
                   AppScreenHeader(
                     eyebrow: LocaleKeys.queue_eyebrow.tr(),
                     title: LocaleKeys.queue_title.tr(),
-                    trailing: AppHeaderIconButton(
-                      svgIcon: AppSvgIcons.plus,
-                      color: AppColors.primaryColor.themeColor,
-                      onTap: _openWalkin,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AppHeaderIconButton(
+                          svgIcon: AppSvgIcons.filter,
+                          color: getIt<QueueCubit>().filter.isActive
+                              ? AppColors.primaryColor.themeColor
+                              : null,
+                          badgeCount: getIt<QueueCubit>().filter.activeCount,
+                          onTap: _openFilterSheet,
+                        ),
+                        8.width,
+                        AppHeaderIconButton(
+                          svgIcon: AppSvgIcons.plus,
+                          color: AppColors.primaryColor.themeColor,
+                          onTap: _openWalkin,
+                        ),
+                      ],
                     ),
                   ),
+                  if (getIt<QueueCubit>().filter.isActive) _activeFilterSummary(),
                   18.height,
                   _buildTabs((state as QueueSuccess).snapshot),
                   18.height,
@@ -148,6 +177,37 @@ class _QueueScreenState extends State<QueueScreen> {
             );
           },
         ),
+      ),
+    );
+  }
+
+  Widget _activeFilterSummary() {
+    final filter = getIt<QueueCubit>().filter;
+    return Padding(
+      padding: EdgeInsets.only(top: 12.h),
+      child: Row(
+        children: [
+          Expanded(
+            child: AppText(
+              filter.clinicName ?? '',
+              fontSize: 11.5,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondaryColor.themeColor,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          8.width,
+          CustomTapEffect(
+            onTap: () => getIt<QueueCubit>().clearFilter(),
+            child: AppText(
+              LocaleKeys.queue_filterClear.tr(),
+              fontSize: 11.5,
+              fontWeight: FontWeight.w700,
+              color: AppColors.errorColor.themeColor,
+            ),
+          ),
+        ],
       ),
     );
   }

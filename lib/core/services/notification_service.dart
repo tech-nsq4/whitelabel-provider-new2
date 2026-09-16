@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../utils/app_colors.dart';
+
 // Must be a top-level function — Firebase runs it in a separate isolate.
 @pragma('vm:entry-point')
 Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
@@ -13,6 +15,7 @@ Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
 const _channelId = 'white_lable_default';
 const _channelName = 'white_lable';
 const _channelDesc = 'white_lable notifications';
+const _androidNotificationIcon = 'ic_stat_notification';
 
 class NotificationService {
   NotificationService._();
@@ -52,7 +55,8 @@ class NotificationService {
   }
 
   static Future<void> _initPlugin() async {
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings =
+        AndroidInitializationSettings(_androidNotificationIcon);
 
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: false,
@@ -96,7 +100,7 @@ class NotificationService {
         notification.hashCode,
         notification.title,
         notification.body,
-        const NotificationDetails(
+        NotificationDetails(
           android: AndroidNotificationDetails(
             _channelId,
             _channelName,
@@ -104,6 +108,8 @@ class NotificationService {
             importance: Importance.high,
             priority: Priority.high,
             playSound: true,
+            icon: _androidNotificationIcon,
+            color: AppColors.primaryColor.light,
           ),
         ),
       );
